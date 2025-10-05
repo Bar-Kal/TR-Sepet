@@ -3,15 +3,11 @@ from loguru import logger
 import random
 import time
 from datetime import datetime
-import concurrent.futures
-import multiprocessing
-from flask import render_template, current_app, redirect
+from flask import render_template, current_app, redirect, request
 import pandas as pd
-import numpy as np
 from pathlib import Path
-from .scraper import A101Scraper
-CHUNK_SIZE = 1
-logger.add(f"logs/{datetime.now().strftime("%Y%m%d-%H%M")}_sepet-app.log", rotation="10 MB")
+from .scraper import A101Scraper, Scraper
+logger.add(f"sepet_applogs/{datetime.now().strftime("%Y%m%d-%H%M")}_sepet-app.log", rotation="10 MB")
 
 # By using current_app, we access the application instance created by the factory.
 # This is a clean way to access the app without circular imports.
@@ -21,8 +17,8 @@ def index():
     """Renders the home page."""
     # The render_template function automatically looks in the 'templates' folder.
     #return render_template('index.html', title='Home')
-    return redirect('/scrape/A101')
-    #return redirect('/test')
+    return redirect('/scrape?shop_name=A101&base_url=https://www.a101.com.tr')
+    #return redirect('/test?shop_name=hello&base_url=world')
 
 
 @current_app.route('/about')
@@ -30,70 +26,45 @@ def about():
     """Renders a simple about page."""
     return "<h1>About This Application</h1>"
 
-def scrape_category(category_slice: pd.DataFrame, shop_name: str, filepath: str, today_str: str, worker_id: int):
-    try:
-        logger.info(f'Got {len(category_slice)} rows for worker {worker_id}')
-        for category in category_slice:
+def scrape_categories(scraper: Scraper, product_categories: pd.DataFrame, shop_name: str, filepath: str, today_str: str):
+    logger.info(f'Got {len(product_categories)} product categories to scrape for shop {shop_name}.')
 
-            if shop_name == "A101":
-                scraper = A101Scraper()
-            else:
-                raise ValueError(f'Unknown shop name {shop_name}.')
-
+    for category in product_categories:
+        try:
             wait = random.randint(5, 20)
-            logger.info(f"Waiting {wait} seconds before scraping {category} in {scraper.shop_name} in worker {worker_id}")
+            logger.info(f"Waiting {wait} seconds before scraping {category} for shop {scraper.shop_name}")
             time.sleep(wait)  # Wait, to not create too much traffic to the server.
             retrieved_products = scraper.search(category)
             df = pd.DataFrame(retrieved_products)
-            save_to_csv(shop_name=scraper.shop_name, df=df, filepath=filepath, filename=category + '.csv',
-                        today_str=today_str)
+            save_to_csv(shop_name=scraper.shop_name, df=df, filepath=filepath, filename=category + '.csv',today_str=today_str)
             logger.info(f'File for category {category} created successfully for shop {scraper.shop_name}.')
+        except Exception as e:
+            raise Exception(f'Exception occurred while working on {category}: {e}')
 
-    except:
-        raise Exception(f'Exception in worker {worker_id} while working on {category}')
 
-
-@current_app.route('/scrape/<shop_name>')
-def scrape(shop_name):
+@current_app.route('/scrape', methods=['GET'])
+def scrape():
     """Scrapes A101 for products from the CSV and displays the links."""
-    worker_id = 0
-    jobs = []  # list of jobs
-    df = pd.read_csv('sepet_app/static/food.csv', sep=';')
-    products_categories_to_search = df['Turkish_names']#.tolist()  # e.g. Sucuk, Pirinc, etc.
+    args = request.args.to_dict()
+    if args['shop_name'] == "A101":
+        scraper = A101Scraper(shop_name=args['shop_name'], base_url=args['base_url'])
+        df = pd.read_csv('sepet_app/static/food.csv', sep=';')
+        products_categories_to_search = df['Turkish_names']  # .tolist()  # e.g. Sucuk, Pirinc, etc.
+        today_str = datetime.now().strftime('%Y-%m-%d')  # Get today's date in YYYY-MM-DD format
+        filepath = os.path.join('sepet_app', 'downloads')
 
-    filepath = os.path.join('sepet_app', 'downloads')
-    today_str = datetime.now().strftime('%Y-%m-%d')  # Get today's date in YYYY-MM-DD format
-
-    sliced_products_categories_to_search = np.array_split(products_categories_to_search, CHUNK_SIZE)
-
-    for category_slice in sliced_products_categories_to_search:
-        # Declare a new process and pass arguments to it
-        p = multiprocessing.Process(
-            target=scrape_category,
-            args=(
-                category_slice,
-                shop_name,
-                filepath,
-                today_str,
-                worker_id,
-            ),
+        scrape_categories(
+            scraper=scraper,
+            product_categories=products_categories_to_search,
+            shop_name=scraper.shop_name,
+            filepath=filepath,
+            today_str=today_str
         )
-        jobs.append(p)
-        worker_id = worker_id + 1
 
-    for job in jobs:
-        job.start()
-
-    for job in jobs:
-        logger.info("Job: " + str(job) + " finished")
-        job.join()
-
-    #with concurrent.futures.ThreadPoolExecutor() as executor:
-        #futures = [executor.submit(scrape_category, category, shop_name, filepath, today_str) for category in products_categories_to_search]
-        #concurrent.futures.wait(futures)
-
-    logger.info("Starting data combination process...")
-    combine_and_deduplicate_csvs(base_downloads_path=Path(os.path.join(filepath, shop_name, today_str)))
+        logger.info("Starting data combination process...")
+        combine_and_deduplicate_csvs(base_downloads_path=Path(os.path.join(filepath, scraper.shop_name, today_str)))
+    else:
+        raise ValueError(f'Unknown shop name {args['shop_name']}.')
 
     product_urls = {}
     return render_template('scrape_results.html', product_urls=product_urls)
@@ -102,7 +73,9 @@ def scrape(shop_name):
 @current_app.route('/test')
 def test():
     """Renders a simple about page."""
-    combine_and_deduplicate_csvs(base_downloads_path=Path(os.path.join('sepet_app', 'downloads', '2025-test', 'A101')))
+    dummy = request.args.to_dict()
+    print(dummy['shop_name'])
+    #combine_and_deduplicate_csvs(base_downloads_path=Path(os.path.join('sepet_app', 'downloads', '2025-test', 'A101')))
     return "<h1>You reached the Test endpoint</h1>"
 
 def save_to_csv(shop_name: str, df: pd.DataFrame, filepath: str, filename: str, today_str: str):

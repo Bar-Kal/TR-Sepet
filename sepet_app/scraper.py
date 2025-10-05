@@ -13,17 +13,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from loguru import logger
 
 class Scraper(ABC):
-    def __init__(self, base_url):
-        self.base_url = base_url
-
-    @abstractmethod
-    def search(self, product):
-        pass
-
-class A101Scraper(Scraper):
-    def __init__(self):
-        super().__init__("https://www.a101.com.tr")
-
+    def __init__(self, shop_name: str, base_url: str):
         # Set up the WebDriver
         user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
         options = webdriver.ChromeOptions()
@@ -34,9 +24,19 @@ class A101Scraper(Scraper):
         options.add_argument('--disable-web-security')
         options.add_argument('--allow-running-insecure-content')
         options.add_argument('--start-maximized')
-
-        self.shop_name = 'A101'
         self.options = options
+        self.shop_name = shop_name
+        self.base_url = base_url
+
+    @abstractmethod
+    def search(self, product):
+        pass
+
+class A101Scraper(Scraper):
+    def __init__(self, shop_name, base_url):
+        super().__init__(shop_name=shop_name, base_url=base_url)
+        logger.info(f"Scraper for '{self.shop_name}' initialized.")
+
 
     def search(self, product):
         search_url = f"{self.base_url}/arama?k={product}&kurumsal=1"
@@ -48,7 +48,6 @@ class A101Scraper(Scraper):
             try:
                 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, 'article')))
                 last_height = driver.execute_script("return document.body.scrollHeight")
-                # --- START: New Scrolling Logic ---
                 # This loop scrolls down the page until no new products are loaded.
                 last_article_count = 0
                 while True:
@@ -61,7 +60,7 @@ class A101Scraper(Scraper):
                         logger.info(f"Reached the end of the page. Total products found: {article_count}")
                         break
 
-                    logger.info(f"Loaded {article_count} {product} products in shop {self.shop_name}, scrolling for more...")
+                    logger.info(f"Loaded {article_count} {product} products, scrolling for more...")
                     last_article_count = article_count
 
                     # Execute JavaScript to scroll to the bottom of the page
@@ -70,7 +69,6 @@ class A101Scraper(Scraper):
 
                     # Wait for a moment to allow new products to load
                     time.sleep(2)  # This pause is crucial for the dynamic content
-                # --- END: New Scrolling Logic ---
 
                 # Now that the page is fully loaded, get the complete page source
                 # Get the page source and parse it with BeautifulSoup
@@ -91,10 +89,11 @@ class A101Scraper(Scraper):
 
                     return scraped_data
             except Exception as e:
-                logger.error(f"An error occurred in shop {self.shop_name} and product {product}: {e}")
+                logger.error(f"An error occurred: {e}")
         return None
 
-    def get_prices(self, article_text: str) -> tuple[float, float]:
+    @staticmethod
+    def get_prices(article_text: str) -> tuple[float, float]:
         """
         Extracts all prices from a string, converts them to float, and sorts them.
         The price is indicated by '₺'. It can appear anywhere in the string.
@@ -109,4 +108,3 @@ class A101Scraper(Scraper):
             return prices[0], prices[-1] # Lowest is discount, highest is original
 
         return 0.0, 0.0
-
