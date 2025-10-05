@@ -10,6 +10,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from loguru import logger
 
 class Scraper(ABC):
     def __init__(self, base_url):
@@ -57,10 +58,10 @@ class A101Scraper(Scraper):
 
                     # If the count hasn't changed after a scroll and wait, we've reached the bottom
                     if article_count == last_article_count:
-                        print(f"Reached the end of the page. Total products found: {article_count}")
+                        logger.info(f"Reached the end of the page. Total products found: {article_count}")
                         break
 
-                    print(f"Loaded {article_count} {product} products, scrolling for more...")
+                    logger.info(f"Loaded {article_count} {product} products in shop {self.shop_name}, scrolling for more...")
                     last_article_count = article_count
 
                     # Execute JavaScript to scroll to the bottom of the page
@@ -90,7 +91,7 @@ class A101Scraper(Scraper):
 
                     return scraped_data
             except Exception as e:
-                print(f"An error occurred: {e}")
+                logger.error(f"An error occurred in shop {self.shop_name} and product {product}: {e}")
         return None
 
     def get_prices(self, article_text: str) -> tuple[float, float]:
@@ -108,3 +109,4 @@ class A101Scraper(Scraper):
             return prices[0], prices[-1] # Lowest is discount, highest is original
 
         return 0.0, 0.0
+

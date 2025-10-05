@@ -1,4 +1,5 @@
 import os
+from loguru import logger
 import random
 import time
 from datetime import datetime
@@ -10,6 +11,7 @@ import numpy as np
 from pathlib import Path
 from .scraper import A101Scraper
 CHUNK_SIZE = 1
+logger.add(f"logs/{datetime.now().strftime("%Y%m%d-%H%M")}_sepet-app.log", rotation="10 MB")
 
 # By using current_app, we access the application instance created by the factory.
 # This is a clean way to access the app without circular imports.
@@ -30,7 +32,7 @@ def about():
 
 def scrape_category(category_slice: pd.DataFrame, shop_name: str, filepath: str, today_str: str, worker_id: int):
     try:
-        print(f'Got {len(category_slice)} rows for worker {worker_id}')
+        logger.info(f'Got {len(category_slice)} rows for worker {worker_id}')
         for category in category_slice:
 
             if shop_name == "A101":
@@ -39,13 +41,13 @@ def scrape_category(category_slice: pd.DataFrame, shop_name: str, filepath: str,
                 raise ValueError(f'Unknown shop name {shop_name}.')
 
             wait = random.randint(5, 20)
-            print(f"Waiting {wait} seconds before scraping {category} for shop {scraper.shop_name} in worker {worker_id}")
+            logger.info(f"Waiting {wait} seconds before scraping {category} in {scraper.shop_name} in worker {worker_id}")
             time.sleep(wait)  # Wait, to not create too much traffic to the server.
             retrieved_products = scraper.search(category)
             df = pd.DataFrame(retrieved_products)
             save_to_csv(shop_name=scraper.shop_name, df=df, filepath=filepath, filename=category + '.csv',
                         today_str=today_str)
-            print(f'File for category {category} created successfully for shop {scraper.shop_name}.')
+            logger.info(f'File for category {category} created successfully for shop {scraper.shop_name}.')
 
     except:
         raise Exception(f'Exception in worker {worker_id} while working on {category}')
@@ -83,14 +85,14 @@ def scrape(shop_name):
         job.start()
 
     for job in jobs:
-        print("Job: " + str(job) + " finished")
+        logger.info("Job: " + str(job) + " finished")
         job.join()
 
     #with concurrent.futures.ThreadPoolExecutor() as executor:
         #futures = [executor.submit(scrape_category, category, shop_name, filepath, today_str) for category in products_categories_to_search]
         #concurrent.futures.wait(futures)
 
-    print("Starting data combination process...")
+    logger.info("Starting data combination process...")
     combine_and_deduplicate_csvs(base_downloads_path=Path(os.path.join(filepath, shop_name, today_str)))
 
     product_urls = {}
@@ -108,7 +110,7 @@ def save_to_csv(shop_name: str, df: pd.DataFrame, filepath: str, filename: str, 
     Saves a list of dictionaries to a CSV file inside a date-stamped folder.
     """
     if len(df) < 1:
-        print(f"No data to save for '{filename}' and '{shop_name}'.")
+        logger.info(f"No data to save for '{filename}' and '{shop_name}'.")
         return
 
     # 1. Create the full directory path (e.g., downloads/2023-10-27/shop_name)
@@ -120,7 +122,7 @@ def save_to_csv(shop_name: str, df: pd.DataFrame, filepath: str, filename: str, 
     try:
         df.to_csv(os.path.join(output_dir,filename), sep=';', encoding='utf-8', index=False, header=True)
     except IOError as e:
-        print(f"Error writing to file '{filepath}' for {shop_name}: {e}")
+        logger.error(f"Error writing to file '{filepath}' for {shop_name}: {e}")
 
 
 def combine_and_deduplicate_csvs(base_downloads_path: Path):
@@ -132,10 +134,10 @@ def combine_and_deduplicate_csvs(base_downloads_path: Path):
     csv_files = [f for f in base_downloads_path.rglob('*.csv') if f.name != 'combined.csv']
 
     if not csv_files:
-        print("No CSV files found to combine.")
+        logger.info("No CSV files found to combine.")
         return
 
-    print(f"Found {len(csv_files)} CSV files to process.")
+    logger.info(f"Found {len(csv_files)} CSV files to process.")
 
     # Read all found CSVs into a list of DataFrames
     df_list = []
@@ -144,17 +146,17 @@ def combine_and_deduplicate_csvs(base_downloads_path: Path):
             df = pd.read_csv(file, sep=';')
             df_list.append(df)
         except pd.errors.EmptyDataError:
-            print(f"Skipping empty file: {file}")
+            logger.info(f"Skipping empty file: {file}")
         except Exception as e:
-            print(f"Error reading {file}: {e}")
+            logger.error(f"Error reading {file}: {e}")
 
     if not df_list:
-        print("No data could be loaded from the found CSV files.")
+        logger.info("No data could be loaded from the found CSV files.")
         return
 
     # Concatenate all DataFrames into one
     combined_df = pd.concat(df_list, ignore_index=True)
-    print(f"Combined {len(combined_df)} total rows from all files.")
+    logger.info(f"Combined {len(combined_df)} total rows from all files.")
 
     # Drop duplicates based on the 'id' column, keeping the first entry
     if 'id' in combined_df.columns:
@@ -163,14 +165,14 @@ def combine_and_deduplicate_csvs(base_downloads_path: Path):
         combined_df['id'] = combined_df['id'].astype(str)
         combined_df.drop_duplicates(subset=['id'], keep='first', inplace=True)
         final_rows = len(combined_df)
-        print(f"Removed {initial_rows - final_rows} duplicate rows based on unique 'id'.")
+        logger.info(f"Removed {initial_rows - final_rows} duplicate rows based on unique 'id'.")
     else:
-        print("Warning: 'id' column not found. Cannot remove duplicates.")
+        logger.warning("Warning: 'id' column not found. Cannot remove duplicates.")
 
     # Save the final, clean DataFrame
     output_file = base_downloads_path / 'combined.csv'
     try:
         combined_df.to_csv(output_file, sep=';', index=False, encoding='utf-8')
-        print(f"Successfully saved combined data with {len(combined_df)} unique rows to '{output_file}'")
+        logger.info(f"Successfully saved combined data with {len(combined_df)} unique rows to '{output_file}'")
     except IOError as e:
-        print(f"Error writing to final file '{output_file}': {e}")
+        logger.error(f"Error writing to final file '{output_file}': {e}")
