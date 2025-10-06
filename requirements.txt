@@ -6,3 +6,4 @@ Flask
 selenium
 webdriver-manager
 loguru
+APScheduler
