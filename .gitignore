@@ -9,4 +9,4 @@ __pycache__/
 sepet_app/downloads/
 
 # Logs
-sepet_app/logs/
+sepet_app/logs/*.log
