@@ -4,17 +4,24 @@ import time
 from datetime import datetime
 from pathlib import Path
 import json
-
 import pandas as pd
 from loguru import logger
-from apscheduler.schedulers.blocking import BlockingScheduler
+from scraper import A101Scraper, Scraper
 
-from sepet_app.scraper import A101Scraper, Scraper
-
-logger.add(f"sepet_app/logs/{datetime.now().strftime("%Y%m%d-%H%M%S")}_scrape_runner.log", rotation="10 MB")
+logger.add(f"../logs/{datetime.now().strftime("%Y%m%d-%H%M%S")}_scrape_runner.log", rotation="10 MB")
 
 
 def scrape_categories(scraper: Scraper, product_categories: pd.DataFrame, shop_name: str, filepath: str, today_str: str):
+    """
+    Scrapes product categories for a given shop and saves the results to CSV files.
+
+    Args:
+        scraper (Scraper): The scraper object for the shop.
+        product_categories (pd.DataFrame): A DataFrame containing the product categories to scrape.
+        shop_name (str): The name of the shop.
+        filepath (str): The base filepath to save the CSV files.
+        today_str (str): The current date as a string in 'YYYY-MM-DD' format.
+    """
     logger.info(f'Got {len(product_categories)} product categories to scrape for shop {shop_name}.')
 
     for category in product_categories:
@@ -32,18 +39,26 @@ def scrape_categories(scraper: Scraper, product_categories: pd.DataFrame, shop_n
 
 def save_to_csv(shop_name: str, df: pd.DataFrame, filepath: str, filename: str, today_str: str):
     """
-    Saves a list of dictionaries to a CSV file inside a date-stamped folder.
+    Saves a pandas DataFrame to a CSV file in a structured directory.
+
+    The directory structure is `filepath/shop_name/today_str/filename`.
+
+    Args:
+        shop_name (str): The name of the shop, used to create a subdirectory.
+        df (pd.DataFrame): The DataFrame to be saved.
+        filepath (str): The base directory for saving the file.
+        filename (str): The name of the CSV file.
+        today_str (str): The current date in 'YYYY-MM-DD' format, used for a subdirectory.
     """
     if len(df) < 1:
         logger.info(f"No data to save for '{filename}' and '{shop_name}'.")
         return
 
-    # 1. Create the full directory path (e.g., downloads/2023-10-27/shop_name)
-    #    Pathlib is used for robust, cross-platform path handling.
+    # Create the full directory path (e.g., downloads/2023-10-27/shop_name)
+    # Pathlib is used for robust, cross-platform path handling.
     output_dir = Path(filepath) / shop_name / today_str
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # 2. Write the data to the CSV file
     try:
         df.to_csv(os.path.join(output_dir,filename), sep=';', encoding='utf-8', index=False, header=True)
     except IOError as e:
@@ -52,8 +67,15 @@ def save_to_csv(shop_name: str, df: pd.DataFrame, filepath: str, filename: str, 
 
 def combine_and_deduplicate_csvs(base_downloads_path: Path):
     """
-    Loads all CSVs from subdirectories, combines them, removes duplicates by 'id',
-    and saves the result as 'combined.csv' in the base path.
+    Combines all CSV files in a directory, removes duplicates, and saves the result.
+
+    This function recursively finds all '.csv' files in the given base path,
+    combines them into a single pandas DataFrame, removes duplicate rows based
+    on the 'id' column, and saves the cleaned DataFrame as 'combined.csv' in the
+    same directory.
+
+    Args:
+        base_downloads_path (Path): The path to the directory containing the CSV files.
     """
     # Use .rglob to recursively find all .csv files, excluding 'combined.csv' itself.
     csv_files = [f for f in base_downloads_path.rglob('*.csv') if f.name != 'combined.csv']
@@ -104,8 +126,14 @@ def combine_and_deduplicate_csvs(base_downloads_path: Path):
 
 
 def main():
-    """Main function to run the scraping process."""
-    with open('sepet_app/configs/shops.json') as f:
+    """
+    Main function to orchestrate the scraping process for all shops.
+
+    This function reads the shop configurations from a JSON file, then iterates
+    through each shop, initializing a scraper and running the scraping process.
+    After scraping, it combines and deduplicates the generated CSV files.
+    """
+    with open(os.path.join('..', 'configs', 'shops.json')) as f:
         shops = json.load(f)
     logger.info(f"Found {len(shops)} shops to scrape.")
     for shop in shops:
@@ -113,10 +141,10 @@ def main():
         base_url = shop['base_url']
         logger.info(f"Starting scraping for {shop_name}.")
         scraper = A101Scraper(shop_name=shop_name, base_url=base_url)
-        df = pd.read_csv('sepet_app/configs/food.csv', sep=';')
+        df = pd.read_csv(os.path.join('..', 'configs', 'food.csv'), sep=';')
         products_categories_to_search = df['Turkish_names']  # .tolist()  # e.g. Sucuk, Pirinc, etc.
         today_str = datetime.now().strftime('%Y-%m-%d')  # Get today's date in YYYY-MM-DD format
-        filepath = os.path.join('sepet_app', 'downloads')
+        filepath = os.path.join('..', 'downloads')
 
         scrape_categories(
             scraper=scraper,
@@ -130,11 +158,10 @@ def main():
         combine_and_deduplicate_csvs(base_downloads_path=Path(os.path.join(filepath, scraper.shop_name, today_str)))
 
 def test_job():
-    logger.info(f"Test job running at minute: {datetime.now().minute}")
+    """
+    A simple test job for the scheduler to log the current minute.
 
-if __name__ == "__main__":
-    scheduler = BlockingScheduler()
-    scheduler.add_job(main, 'cron', hour=14)
-    #scheduler.add_job(test_job, 'interval', minutes=1)
-    logger.info("Starting scheduler...")
-    scheduler.start()
+    This function is intended to be used with a scheduler to verify that it is
+    running correctly.
+    """
+    logger.info(f"Test job running at minute: {datetime.now().minute}")

@@ -13,7 +13,15 @@ from selenium.webdriver.support import expected_conditions as EC
 from loguru import logger
 
 class Scraper(ABC):
+    """An abstract base class for web scrapers."""
     def __init__(self, shop_name: str, base_url: str):
+        """
+        Initializes the Scraper with a shop name and base URL.
+
+        Args:
+            shop_name (str): The name of the shop.
+            base_url (str): The base URL of the shop's website.
+        """
         # Set up the WebDriver
         user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
         options = webdriver.ChromeOptions()
@@ -30,15 +38,50 @@ class Scraper(ABC):
 
     @abstractmethod
     def search(self, product):
+        """
+        Searches for a product on the shop's website.
+
+        This is an abstract method that must be implemented by any concrete
+        scraper subclass.
+
+        Args:
+            product (str): The name of the product to search for.
+
+        Returns:
+            list: A list of dictionaries, where each dictionary represents a
+                  scraped product.
+        """
         pass
 
 class A101Scraper(Scraper):
+    """A scraper for the A101 online shop."""
     def __init__(self, shop_name, base_url):
+        """
+        Initializes the A101Scraper.
+
+        Args:
+            shop_name (str): The name of the shop (should be 'A101').
+            base_url (str): The base URL for the A101 website.
+        """
         super().__init__(shop_name=shop_name, base_url=base_url)
         logger.info(f"Scraper for '{self.shop_name}' initialized.")
 
 
     def search(self, product):
+        """
+        Scrapes the A101 website for a given product.
+
+        This method navigates to the search results page for the specified
+        product, scrolls down to load all results, and then parses the page
+        to extract product information.
+
+        Args:
+            product (str): The product to search for.
+
+        Returns:
+            list: A list of dictionaries, each containing information about a
+                  scraped product. Returns None if an error occurs.
+        """
         search_url = f"{self.base_url}/arama?k={product}&kurumsal=1"
         scraped_data = []
 
@@ -95,8 +138,19 @@ class A101Scraper(Scraper):
     @staticmethod
     def get_prices(article_text: str) -> tuple[float, float]:
         """
-        Extracts all prices from a string, converts them to float, and sorts them.
-        The price is indicated by '₺'. It can appear anywhere in the string.
+        Extracts and returns the discount and original prices from an article's text.
+
+        This method uses a regular expression to find all prices (indicated by '₺')
+        in the given text, converts them to floats, and returns the lowest and
+        highest prices found.
+
+        Args:
+            article_text (str): The text of the product article.
+
+        Returns:
+            tuple[float, float]: A tuple containing the discount price and the
+                                 original price. Returns (0.0, 0.0) if no
+                                 prices are found.
         """
         # Find all occurrences of the price pattern (e.g., ₺12,34 or ₺1.234,56)
         prices = re.findall(r'₺\s*([\d.,]+)', article_text)
