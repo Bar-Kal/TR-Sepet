@@ -1,4 +1,5 @@
 import json
+import shutil
 import re
 import time
 from abc import ABC, abstractmethod
@@ -32,6 +33,11 @@ class Scraper(ABC):
         options.add_argument('--disable-web-security')
         options.add_argument('--allow-running-insecure-content')
         options.add_argument('--start-maximized')
+        options.add_argument("--disable-gpu")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-browser-side-navigation")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("enable-automation")
         self.options = options
         self.shop_name = shop_name
         self.base_url = base_url
@@ -64,6 +70,15 @@ class A101Scraper(Scraper):
             base_url (str): The base URL for the A101 website.
         """
         super().__init__(shop_name=shop_name, base_url=base_url)
+
+        # instantiate chromedriver
+        # For ARM. Found at: https://stackoverflow.com/questions/76857893/is-there-a-known-working-configuration-for-using-selenium-on-linux-arm64
+        chromedriver_path = shutil.which("chromedriver")
+        service = webdriver.ChromeService(executable_path=chromedriver_path)
+        driver = webdriver.Chrome(options=self.options, service=service)
+
+        self.driver = driver
+        logger.info(f"Using chromedriver version {driver.capabilities['browserVersion']} located at {chromedriver_path}.")
         logger.info(f"Scraper for '{self.shop_name}' initialized.")
 
 
@@ -85,54 +100,45 @@ class A101Scraper(Scraper):
         search_url = f"{self.base_url}/arama?k={product}&kurumsal=1"
         scraped_data = []
 
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=self.options) as driver:
-            # Load the page
-            driver.get(search_url)
-            try:
-                WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, 'article')))
-                last_height = driver.execute_script("return document.body.scrollHeight")
-                # This loop scrolls down the page until no new products are loaded.
-                last_article_count = 0
-                while True:
-                    # Get the current number of product articles on the page
-                    current_articles = driver.find_elements(By.TAG_NAME, 'article')
-                    article_count = len(current_articles)
-
-                    # If the count hasn't changed after a scroll and wait, we've reached the bottom
-                    if article_count == last_article_count:
-                        logger.info(f"Reached the end of the page. Total products found: {article_count}")
-                        break
-
-                    logger.info(f"Loaded {article_count} {product} products, scrolling for more...")
-                    last_article_count = article_count
-
-                    # Execute JavaScript to scroll to the bottom of the page
-                    # Large footer causing that auto-scrolling is not working. Solution was to set scrollHeight - 1000
-                    driver.execute_script("window.scrollTo(0, document.body.scrollHeight - 1000);")
-
-                    # Wait for a moment to allow new products to load
-                    time.sleep(2)  # This pause is crucial for the dynamic content
-
-                # Now that the page is fully loaded, get the complete page source
-                # Get the page source and parse it with BeautifulSoup
-                soup = BeautifulSoup(driver.page_source, 'html.parser')
-                articles = soup.find_all('article')
-                if articles:
-                    for art in articles:
-                        product_info = {}
-                        product_info['Scrape_Timestamp'] = datetime.now().isoformat()
-                        product_info['Display_Name'] = art.contents[0].attrs['title']
-                        product_info['Shop'] = self.shop_name
-                        product_info['Search_Term'] = product
-                        product_info['Discount_Price'], product_info['Price'] = self.get_prices(art.text)
-                        product_info['URL'] = art.contents[0].attrs['href']
-                        product_info['id'] = product_info['URL'].split("p-")[-1]
-
-                        scraped_data.append(product_info)
-
-                    return scraped_data
-            except Exception as e:
-                logger.error(f"An error occurred: {e}")
+        # Load the page
+        self.driver.get(search_url)
+        try:
+            WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, 'article')))
+            # This loop scrolls down the page until no new products are loaded.
+            last_article_count = 0
+            while True:
+                # Get the current number of product articles on the page
+                current_articles = self.driver.find_elements(By.TAG_NAME, 'article')
+                article_count = len(current_articles)
+                # If the count hasn't changed after a scroll and wait, we've reached the bottom
+                if article_count == last_article_count:
+                    logger.info(f"Reached the end of the page. Total products found: {article_count}")
+                    break
+                logger.info(f"Loaded {article_count} {product} products, scrolling for more...")
+                last_article_count = article_count
+                # Execute JavaScript to scroll to the bottom of the page
+                # Large footer causing that auto-scrolling is not working. Solution was to set scrollHeight - 1000
+                self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight - 1000);")
+                # Wait for a moment to allow new products to load
+                time.sleep(2)  # This pause is crucial for the dynamic content
+            # Now that the page is fully loaded, get the complete page source
+            # Get the page source and parse it with BeautifulSoup
+            soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+            articles = soup.find_all('article')
+            if articles:
+                for art in articles:
+                    product_info = {}
+                    product_info['Scrape_Timestamp'] = datetime.now().isoformat()
+                    product_info['Display_Name'] = art.contents[0].attrs['title']
+                    product_info['Shop'] = self.shop_name
+                    product_info['Search_Term'] = product
+                    product_info['Discount_Price'], product_info['Price'] = self.get_prices(art.text)
+                    product_info['URL'] = art.contents[0].attrs['href']
+                    product_info['id'] = product_info['URL'].split("p-")[-1]
+                    scraped_data.append(product_info)
+                return scraped_data
+        except Exception as e:
+            logger.error(f"An error occurred: {e}")
         return None
 
     @staticmethod
