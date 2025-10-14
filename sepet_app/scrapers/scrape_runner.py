@@ -157,3 +157,4 @@ def main():
         logger.info("Starting data combination process...")
         combine_and_deduplicate_csvs(base_downloads_path=Path(os.path.join(filepath, scraper.shop_name, today_str)))
         logger.info(f"--- Finished process for {shop_name} ---")
+        logger.remove()
