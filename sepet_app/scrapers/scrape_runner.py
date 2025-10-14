@@ -9,9 +9,6 @@ from loguru import logger
 from .base import BaseScraper
 from .factory import get_scraper
 
-logger.add(f"sepet_app/logs/{datetime.now().strftime("%Y%m%d-%H%M%S")}_scrape_runner.log", rotation="10 MB")
-
-
 def scrape_categories(scraper: BaseScraper, product_categories: pd.DataFrame, shop_name: str, filepath: str, today_str: str):
     """
     Scrapes product categories for a given shop and saves the results to CSV files.
@@ -136,7 +133,6 @@ def main():
     """
     with open(os.path.join('sepet_app', 'configs', 'shops.json')) as f:
         shops = json.load(f)
-    logger.info(f"Found {len(shops)} shops to scrape.")
 
     food_categories = pd.read_csv(os.path.join('sepet_app', 'configs', 'food.csv'), sep=';')
     products_categories_to_search = food_categories['Turkish_names']  # .tolist()  # e.g. Sucuk, Pirinc, etc.
@@ -144,11 +140,13 @@ def main():
     filepath = os.path.join('sepet_app', 'downloads')
 
     for shop in shops:
-        logger.info(f"--- Starting process for {shop['shop_name']} ---")
+        shop_name = shop['shop_name']
+        logger.add(f"sepet_app/logs/{datetime.now().strftime("%Y%m%d-%H%M%S")}_{shop_name}.log", rotation="10 MB")
+        logger.info(f"Found {len(shops)} shops to scrape.")
+        logger.info(f"--- Starting process for {shop_name} ---")
 
         # Use the factory to get the correct scraper
         scraper = get_scraper(shop_config=shop)
-
         scrape_categories(
             scraper=scraper,
             product_categories=products_categories_to_search,
@@ -158,4 +156,4 @@ def main():
         )
         logger.info("Starting data combination process...")
         combine_and_deduplicate_csvs(base_downloads_path=Path(os.path.join(filepath, scraper.shop_name, today_str)))
-        logger.info(f"--- Finished process for {shop['shop_name']} ---")
+        logger.info(f"--- Finished process for {shop_name} ---")
