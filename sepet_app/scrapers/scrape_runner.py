@@ -6,17 +6,18 @@ from pathlib import Path
 import json
 import pandas as pd
 from loguru import logger
-from scraper import A101Scraper, Scraper
+from .base import BaseScraper
+from .factory import get_scraper
 
-logger.add(f"../logs/{datetime.now().strftime("%Y%m%d-%H%M%S")}_scrape_runner.log", rotation="10 MB")
+logger.add(f"sepet_app/logs/{datetime.now().strftime("%Y%m%d-%H%M%S")}_scrape_runner.log", rotation="10 MB")
 
 
-def scrape_categories(scraper: Scraper, product_categories: pd.DataFrame, shop_name: str, filepath: str, today_str: str):
+def scrape_categories(scraper: BaseScraper, product_categories: pd.DataFrame, shop_name: str, filepath: str, today_str: str):
     """
     Scrapes product categories for a given shop and saves the results to CSV files.
 
     Args:
-        scraper (Scraper): The scraper object for the shop.
+        scraper (BaseScraper): The scrapers object for the shop.
         product_categories (pd.DataFrame): A DataFrame containing the product categories to scrape.
         shop_name (str): The name of the shop.
         filepath (str): The base filepath to save the CSV files.
@@ -130,21 +131,23 @@ def main():
     Main function to orchestrate the scraping process for all shops.
 
     This function reads the shop configurations from a JSON file, then iterates
-    through each shop, initializing a scraper and running the scraping process.
+    through each shop, initializing the corresponding scraper and running the scraping process.
     After scraping, it combines and deduplicates the generated CSV files.
     """
-    with open(os.path.join('..', 'configs', 'shops.json')) as f:
+    with open(os.path.join('sepet_app', 'configs', 'shops.json')) as f:
         shops = json.load(f)
     logger.info(f"Found {len(shops)} shops to scrape.")
+
+    food_categories = pd.read_csv(os.path.join('sepet_app', 'configs', 'food.csv'), sep=';')
+    products_categories_to_search = food_categories['Turkish_names']  # .tolist()  # e.g. Sucuk, Pirinc, etc.
+    today_str = datetime.now().strftime('%Y-%m-%d')  # Get today's date in YYYY-MM-DD format
+    filepath = os.path.join('sepet_app', 'downloads')
+
     for shop in shops:
-        shop_name = shop['shop_name']
-        base_url = shop['base_url']
-        logger.info(f"Starting scraping for {shop_name}.")
-        scraper = A101Scraper(shop_name=shop_name, base_url=base_url)
-        df = pd.read_csv(os.path.join('..', 'configs', 'food.csv'), sep=';')
-        products_categories_to_search = df['Turkish_names']  # .tolist()  # e.g. Sucuk, Pirinc, etc.
-        today_str = datetime.now().strftime('%Y-%m-%d')  # Get today's date in YYYY-MM-DD format
-        filepath = os.path.join('..', 'downloads')
+        logger.info(f"--- Starting process for {shop['shop_name']} ---")
+
+        # Use the factory to get the correct scraper
+        scraper = get_scraper(shop_config=shop)
 
         scrape_categories(
             scraper=scraper,
@@ -153,15 +156,6 @@ def main():
             filepath=filepath,
             today_str=today_str
         )
-
         logger.info("Starting data combination process...")
         combine_and_deduplicate_csvs(base_downloads_path=Path(os.path.join(filepath, scraper.shop_name, today_str)))
-
-def test_job():
-    """
-    A simple test job for the scheduler to log the current minute.
-
-    This function is intended to be used with a scheduler to verify that it is
-    running correctly.
-    """
-    logger.info(f"Test job running at minute: {datetime.now().minute}")
+        logger.info(f"--- Finished process for {shop['shop_name']} ---")

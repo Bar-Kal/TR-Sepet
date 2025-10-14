@@ -1,6 +1,14 @@
 [
     {
+        "shop_name": "Migros",
+        "base_url": "https://www.migros.com.tr",
+        "scraper_module": "sepet_app.scrapers.migros",
+        "scraper_class": "MigrosScraper"
+    },
+    {
         "shop_name": "A101",
-        "base_url": "https://www.a101.com.tr"
+        "base_url": "https://www.a101.com.tr",
+        "scraper_module": "sepet_app.scrapers.a101",
+        "scraper_class": "A101Scraper"
     }
 ]

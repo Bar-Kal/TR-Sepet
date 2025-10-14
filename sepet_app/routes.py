@@ -6,7 +6,7 @@ from datetime import datetime
 from flask import render_template, current_app, redirect, request
 import pandas as pd
 from pathlib import Path
-from .scraper import A101Scraper, Scraper
+from .scrapers import A101Scraper, Scraper
 
 # By using current_app, we access the application instance created by the factory.
 # This is a clean way to access the app without circular imports.

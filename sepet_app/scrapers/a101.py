@@ -1,65 +1,15 @@
-import shutil
+from .base import BaseScraper
 import re
 import time
-from abc import ABC, abstractmethod
 from datetime import datetime
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from loguru import logger
 
-class Scraper(ABC):
-    """An abstract base class for web scrapers."""
-    def __init__(self, shop_name: str, base_url: str):
-        """
-        Initializes the Scraper with a shop name and base URL.
-
-        Args:
-            shop_name (str): The name of the shop.
-            base_url (str): The base URL of the shop's website.
-        """
-        # Set up the WebDriver
-        user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
-        options = webdriver.ChromeOptions()
-        options.add_argument(f'user-agent={user_agent}')
-        options.add_argument('--disable-blink-features=AutomationControlled')
-        options.add_argument('--headless')
-        options.add_argument('--disable-plugins-discovery')
-        options.add_argument('--disable-web-security')
-        options.add_argument('--allow-running-insecure-content')
-        options.add_argument('--start-maximized')
-        options.add_argument("--disable-gpu")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-browser-side-navigation")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("enable-automation")
-        self.options = options
-        self.shop_name = shop_name
-        self.base_url = base_url
-
-    @abstractmethod
-    def search(self, product):
-        """
-        Searches for a product on the shop's website.
-
-        This is an abstract method that must be implemented by any concrete
-        scraper subclass.
-
-        Args:
-            product (str): The name of the product to search for.
-
-        Returns:
-            list: A list of dictionaries, where each dictionary represents a
-                  scraped product.
-        """
-        pass
-
-class A101Scraper(Scraper):
-    """A scraper for the A101 online shop."""
+class A101Scraper(BaseScraper):
+    """A scrapers for the A101 online shop."""
     def __init__(self, shop_name, base_url):
         """
         Initializes the A101Scraper.
@@ -69,15 +19,6 @@ class A101Scraper(Scraper):
             base_url (str): The base URL for the A101 website.
         """
         super().__init__(shop_name=shop_name, base_url=base_url)
-
-        # instantiate chromedriver
-        # For ARM. Found at: https://stackoverflow.com/questions/76857893/is-there-a-known-working-configuration-for-using-selenium-on-linux-arm64
-        chromedriver_path = shutil.which("chromedriver")
-        service = webdriver.ChromeService(executable_path=chromedriver_path)
-        driver = webdriver.Chrome(options=self.options, service=service)
-
-        self.driver = driver
-        logger.info(f"Using chromedriver version {driver.capabilities['browserVersion']} located at {chromedriver_path}.")
         logger.info(f"Scraper for '{self.shop_name}' initialized.")
 
 
