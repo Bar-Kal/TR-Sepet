@@ -10,4 +10,5 @@ sepet_app/downloads/
 
 # Logs
 sepet_app/logs/*.log
-sepet_app/scrapers/cronscraper.sh
+
+sepet_app/shell-scripts/
