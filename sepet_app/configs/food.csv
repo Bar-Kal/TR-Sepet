@@ -1,8 +1,8 @@
 Turkish_names;English_names
 Antep Fıstığı;Pistachio
 Armut;Pear
-Ay Çekirdeği;Sun flower seed
-Ayçiçek Yağı;Sun-flower oil
+Ay Çekirdeği;Sunflower seed
+Ayçiçek Yağı;Sunflower oil
 Ayran;Ayran
 Ayva;Quince
 Badem;Almond
@@ -13,9 +13,11 @@ Balık;Fresh fish
 Bebek Sütü;Formula milk
 Beyaz Lahana;Cabbage
 Beyaz Peynir;White cheese
+Biber;Pepper
 Bira;Beer
 Bisküvi;Biscuit
 Bitki ve Meyve Çayı (Poşet);Herbal tea
+Börek;Savory Pastry
 Buğday Unu;Wheat flour
 Bulgur;Bulgur wheat
 Ceviz;Walnut
@@ -27,13 +29,12 @@ Cips;Chips
 Çilek;Strawberry
 Dana Eti;Beef
 Dereotu;Dill
-Biber;Pepper
 Domates;Tomato
-Dondurma;Ice-cream
+Dondurma;Ice cream
 Ekmek;Bread
 Elma;Apple
-Fındık Ezmesi;Hazelnut butter
 Fındık;Hazelnut
+Fındık Ezmesi;Hazelnut butter
 Gazoz;Fizzy soft drinks
 Gofret;Wafer
 Havuç;Carrot
@@ -50,33 +51,37 @@ Kağıtlı Şeker;Holiday candy
 Kahve;Turkish coffee
 Kakao;Cocoa
 Karnabahar;Cauliflower
-Karpuz;Water melon
+Karpuz;Watermelon
 Kaşar Peyniri;Kashar cheese
 Kavun;Melon
+Kaymak;Clotted Cream
 Kek;Cake
 Kesme Şeker;Cube sugar
 Ketçap;Ketchup
 Kırmızı Lahana;Red cabbage
 Kırmızı Turp;Radish
 Kıvırcık;Curly lettuce
+Kıyma;Minced Meat
 Kivi;Kiwi
 Kola;Coke
 Konserve Balık;Canned fish
-Konserveler;Canned  vegetables
+Konserveler;Canned vegetables
 Kraker;Cracker
 Krem Peynir;Cream cheese
 Kuru Fasulye;Dry bean
+Kuru İncir;Dried Fig
 Kuru Kayısı;Dried apricot
 Kuru Soğan;Onion
 Kuru Üzüm;Raisin
 Kuzu Eti;Lamb
-Leblebi;Roasted chick-pea
+Leblebi;Roasted chickpea
 Limon;Lemon
 Lokum;Turkish delight
-Maden Suyu ve Sodası;Sparkling mineral water
+Maden Suyu;Sparkling mineral water
 Makarna;Pasta
-Mandalina;Tangarine
+Mandalina;Tangerine
 Mantar;Mushroom
+Mantı;Turkish Dumplings
 Margarin;Margarine
 Maydanoz;Parsley
 Mayonez;Mayonnaise
@@ -85,14 +90,18 @@ Meyve Suyu;Fruit juice
 Muz;Banana
 Nane;Spearmint
 Nar;Pomegranate
+Nar Ekşisi;Pomegranate Molasses
 Nohut;Chickpea
 Pasta;Cream-cake and patisserie
+Pastırma;Cured Beef
 Patates;Potato
 Patlıcan;Eggplant
 Pekmez;Grape molasses
+Pide;Turkish Flatbread
 Pırasa;Leek
 Pirinç;Rice
 Portakal;Orange
+Pul Biber;Red Pepper Flakes
 Rakı;Raki
 Reçel;Jam
 Roka;Rocket
@@ -102,12 +111,15 @@ Salam;Salami
 Salatalık;Cucumber
 Salça;Tomato sauce
 Sarımsak;Garlic
+Simit;Turkish Bagel
 Sirke;Vinegar
 Sivri Biber;Green pepper
-Soğuk Çay;Ice tea
+Soğuk Çay;Iced tea
+Soda;Sparkling water
 Sosis;Sausage
 Su;Water
 Sucuk;Soujouk
+Sumak;Sumac
 Süt;Milk
 Şarap;Wine
 Şeftali;Peach
@@ -127,6 +139,7 @@ Viski;Whisky
 Votka;Vodka
 Yer Fıstığı;Peanuts
 Yoğurt;Yoghurt
+Yufka;Phyllo Dough
 Yumurta;Egg
 Zeytin;Olive
 Zeytinyağı;Olive oil
