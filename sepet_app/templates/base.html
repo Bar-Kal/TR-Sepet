@@ -5,14 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- The title block can be overridden by child templates -->
     <title>{% block title %}My Flask App{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <header>
-        <nav>
-            <a href="{{ url_for('index') }}">Home</a>
-            <a href="{{ url_for('about') }}">About</a>
-        </nav>
+        <div class="container">
+            <nav>
+                <a href="{{ url_for('index') }}" class="brand">TR-Sepet</a>
+                <div class="nav-links">
+                    <a href="{{ url_for('index') }}">Home</a>
+                    <a href="{{ url_for('about') }}">About</a>
+                </div>
+            </nav>
+        </div>
     </header>
 
     <main>

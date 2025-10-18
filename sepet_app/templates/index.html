@@ -3,5 +3,150 @@
 {% block title %}{{ title }} - My Flask App{% endblock %}
 
 {% block content %}
-    <h1>Welcome to the Home Page!</h1>
+    <div class="controls-section">
+        <div class="container">
+            <form action="/index" method="post">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="shop-select">Shop</label>
+                        <select name="shop" id="shop-select">
+                            {% for shop in shop_names %}
+                                <option value="{{ shop }}" {% if shop == shop_name %}selected{% endif %}>{{ shop }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="category-select">Category</label>
+                        <select name="category" id="category-select">
+                            {% for category in food_categories %}
+                                <option value="{{ category }}" {% if category == category_name %}selected{% endif %}>{{ category }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="start-date">Start Date</label>
+                        <input type="date" id="start-date" name="start_date" value="{{ start_date }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="end-date">End Date</label>
+                        <input type="date" id="end-date" name="end_date" value="{{ end_date }}">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <input type="submit" value="Analyze Prices">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="results-section">
+        <div class="container">
+            {% if charts_data %}
+                <h2>{{ results_title }}</h2>
+                <p class="date-range">Showing data from {{ start_date }} to {{ end_date }}</p>
+
+                <div class="chart-grid">
+                    {% for chart_data in charts_data %}
+                        <div class="chart-container">
+                            <a href="{{ chart_data.url }}" target="_blank"><h3>{{ chart_data.product_name }}</h3></a>
+                            <canvas id="chart-{{ loop.index }}" width="400" height="200"></canvas>
+                            <div class="info-grid">
+                                <div class="info-box">
+                                    <span class="info-title">En Düşük Fiyat</span>
+                                    <span class="info-price">{{ chart_data.lowest_price }}</span>
+                                </div>
+                                <div class="info-box">
+                                    <span class="info-title">En Yüksek Fiyat</span>
+                                    <span class="info-price">{{ chart_data.highest_price }}</span>
+                                </div>
+                                <div class="info-box">
+                                    <span class="info-title">Şu An En Ucuz Fiyat</span>
+                                    <span class="info-price">{{ chart_data.current_cheapest_price }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% elif no_results %}
+                <div class="no-results">
+                    <h2>No Results Found</h2>
+                    <p>There is no data available for the selected criteria. Please try a different shop, category, or date range.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if charts_data %}
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            {% for chart_data in charts_data %}
+                var ctx{{ loop.index }} = document.getElementById('chart-{{ loop.index }}').getContext('2d');
+                new Chart(ctx{{ loop.index }}, {
+                    type: 'line',
+                    data: {
+                        labels: {{ chart_data.labels | tojson }},
+                        datasets: [{
+                            label: 'Price',
+                            data: {{ chart_data.prices | tojson }},
+                            backgroundColor: 'rgba(144, 238, 144, 0.2)',
+                            borderColor: 'rgba(0, 128, 0, 1)',
+                            borderWidth: 2,
+                            stepped: true,
+                            fill: true,
+                            pointRadius: 0,
+                            pointHoverRadius: 5,
+                            pointBackgroundColor: 'rgba(0, 128, 0, 1)'
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                ticks: {
+                                    maxRotation: 90,
+                                    minRotation: 80
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                beginAtZero: false,
+                                ticks: {
+                                    callback: function(value, index, values) {
+                                        return Math.round(value) + ' TL';
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(200, 200, 200, 0.5)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(context.parsed.y);
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            {% endfor %}
+        </script>
+    {% endif %}
 {% endblock %}
