@@ -6,11 +6,12 @@ from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from dataclasses import asdict
 from loguru import logger
 
 class A101Scraper(BaseScraper):
     """A scrapers for the A101 online shop."""
-    def __init__(self, shop_name, base_url):
+    def __init__(self, shop_name: str, base_url: str):
         """
         Initializes the A101Scraper.
 
@@ -22,7 +23,7 @@ class A101Scraper(BaseScraper):
         logger.info(f"Scraper for '{self.shop_name}' initialized.")
 
 
-    def search(self, product):
+    def search(self, product: str, category_id: int):
         """
         Scrapes the A101 website for a given product.
 
@@ -32,6 +33,7 @@ class A101Scraper(BaseScraper):
 
         Args:
             product (str): The product to search for.
+            category_id (int): The category id of the product (e.g. 21 for 'Meyve').
 
         Returns:
             list: A list of dictionaries, each containing information about a
@@ -67,15 +69,25 @@ class A101Scraper(BaseScraper):
             articles = soup.find_all('article')
             if articles:
                 for art in articles:
-                    product_info = {}
-                    product_info['Scrape_Timestamp'] = datetime.now().isoformat()
-                    product_info['Display_Name'] = art.contents[0].attrs['title']
-                    product_info['Shop'] = self.shop_name
-                    product_info['Search_Term'] = product
-                    product_info['Discount_Price'], product_info['Price'] = self.get_prices(art.text)
-                    product_info['URL'] = art.contents[0].attrs['href']
-                    product_info['id'] = product_info['URL'].split("p-")[-1]
-                    scraped_data.append(product_info)
+                    if self.base_url in art.contents[0].attrs['href']:
+                        if self.predict(text=str(art.contents[0].attrs['title'])):
+                            product_info = self.ScrapedProductInfo(
+                                Scrape_Timestamp=datetime.now().isoformat(),
+                                Display_Name=art.contents[0].attrs['title'],
+                                Shop=self.shop_name,
+                                category_id=category_id,
+                                Search_Term=product,
+                                Discount_Price=self.get_prices(art.text)[0],
+                                Price=self.get_prices(art.text)[1],
+                                URL=art.contents[0].attrs['href'],
+                                product_id=art.contents[0].attrs['href'].split("p-")[-1]
+                            )
+                            product_info = asdict(product_info)
+                            scraped_data.append(product_info)
+                            logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
+                        else:
+                            logger.warning(f"Non-Food product scraped but skipped: {str(art.contents[0].attrs['title'])}")
+
                 return scraped_data
         except Exception as e:
             logger.error(f"An error occurred: {e}")
@@ -108,3 +120,6 @@ class A101Scraper(BaseScraper):
             return prices[0], prices[-1] # Lowest is discount, highest is original
 
         return 0.0, 0.0
+
+
+
