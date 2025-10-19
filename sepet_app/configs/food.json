@@ -1,0 +1,1017 @@
+[
+  {
+    "TurkishName": "Antep Fıstığı",
+    "EnglishName": "Pistachio",
+    "TurkishCategory": "Kuruyemiş ve Çekirdekler",
+    "EnglishCategory": "Nuts & Seeds",
+    "category_id": 18
+  },
+  {
+    "TurkishName": "Armut",
+    "EnglishName": "Pear",
+    "TurkishCategory": "Meyve",
+    "EnglishCategory": "Fruit",
+    "category_id": 21
+  },
+  {
+    "TurkishName": "Ay Çekirdeği",
+    "EnglishName": "Sunflower seed",
+    "TurkishCategory": "Kuruyemiş ve Çekirdekler",
+    "EnglishCategory": "Nuts & Seeds",
+    "category_id": 18
+  },
+  {
+    "TurkishName": "Ayçiçek Yağı",
+    "EnglishName": "Sunflower oil",
+    "TurkishCategory": "Sıvı Yağlar",
+    "EnglishCategory": "Oils",
+    "category_id": 27
+  },
+  {
+    "TurkishName": "Ayran",
+    "EnglishName": "Ayran",
+    "TurkishCategory": "Yoğurt ve Ayran",
+    "EnglishCategory": "Yogurt & Ayran",
+    "category_id": 36
+  },
+  {
+    "TurkishName": "Ayva",
+    "EnglishName": "Quince",
+    "TurkishCategory": "Meyve",
+    "EnglishCategory": "Fruit",
+    "category_id": 21
+  },
+  {
+    "TurkishName": "Badem",
+    "EnglishName": "Almond",
+    "TurkishCategory": "Kuruyemiş ve Çekirdekler",
+    "EnglishCategory": "Nuts & Seeds",
+    "category_id": 18
+  },
+  {
+    "TurkishName": "Baharat",
+    "EnglishName": "Condiment-spices",
+    "TurkishCategory": "Baharatlar ve Çeşniler",
+    "EnglishCategory": "Spices & Seasonings",
+    "category_id": 2
+  },
+  {
+    "TurkishName": "Baklava",
+    "EnglishName": "Baklava",
+    "TurkishCategory": "Şerbetli Tatlılar",
+    "EnglishCategory": "Syrupy Desserts",
+    "category_id": 34
+  },
+  {
+    "TurkishName": "Bal",
+    "EnglishName": "Honey",
+    "TurkishCategory": "Reçel, Bal ve Sürülebilir Ürünler",
+    "EnglishCategory": "Jam, Honey & Spreads",
+    "category_id": 24
+  },
+  {
+    "TurkishName": "Balık",
+    "EnglishName": "Fresh fish",
+    "TurkishCategory": "Balık ve Deniz Ürünleri",
+    "EnglishCategory": "Fish & Seafood",
+    "category_id": 1
+  },
+  {
+    "TurkishName": "Bebek Sütü",
+    "EnglishName": "Formula milk",
+    "TurkishCategory": "Bebek Ürünleri",
+    "EnglishCategory": "Baby Products",
+    "category_id": 3
+  },
+  {
+    "TurkishName": "Beyaz Lahana",
+    "EnglishName": "Cabbage",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Beyaz Peynir",
+    "EnglishName": "White cheese",
+    "TurkishCategory": "Peynir",
+    "EnglishCategory": "Cheese",
+    "category_id": 23
+  },
+  {
+    "TurkishName": "Biber",
+    "EnglishName": "Pepper",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Bira",
+    "EnglishName": "Beer",
+    "TurkishCategory": "Alkollü İçecekler",
+    "EnglishCategory": "Alcoholic Drinks",
+    "category_id": 0
+  },
+  {
+    "TurkishName": "Bisküvi",
+    "EnglishName": "Biscuit",
+    "TurkishCategory": "Bisküvi, Kraker ve Cips",
+    "EnglishCategory": "Biscuits, Crackers & Chips",
+    "category_id": 4
+  },
+  {
+    "TurkishName": "Bitki ve Meyve Çayı (Poşet)",
+    "EnglishName": "Herbal tea",
+    "TurkishCategory": "Sıcak İçecekler",
+    "EnglishCategory": "Hot Drinks",
+    "category_id": 26
+  },
+  {
+    "TurkishName": "Börek",
+    "EnglishName": "Savory Pastry",
+    "TurkishCategory": "Unlu Mamüller ve Pastane",
+    "EnglishCategory": "Bakery & Patisserie",
+    "category_id": 32
+  },
+  {
+    "TurkishName": "Buğday Unu",
+    "EnglishName": "Wheat flour",
+    "TurkishCategory": "Un ve Hamur Malzemeleri",
+    "EnglishCategory": "Flour & Dough Supplies",
+    "category_id": 31
+  },
+  {
+    "TurkishName": "Bulgur",
+    "EnglishName": "Bulgur wheat",
+    "TurkishCategory": "Tahıl, Pirinç ve Bakliyat",
+    "EnglishCategory": "Grains, Rice & Legumes",
+    "category_id": 29
+  },
+  {
+    "TurkishName": "Ceviz",
+    "EnglishName": "Walnut",
+    "TurkishCategory": "Kuruyemiş ve Çekirdekler",
+    "EnglishCategory": "Nuts & Seeds",
+    "category_id": 18
+  },
+  {
+    "TurkishName": "Cips",
+    "EnglishName": "Chips",
+    "TurkishCategory": "Bisküvi, Kraker ve Cips",
+    "EnglishCategory": "Biscuits, Crackers & Chips",
+    "category_id": 4
+  },
+  {
+    "TurkishName": "Çarliston Biber",
+    "EnglishName": "Sweet green pepper",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Çay",
+    "EnglishName": "Tea",
+    "TurkishCategory": "Sıcak İçecekler",
+    "EnglishCategory": "Hot Drinks",
+    "category_id": 26
+  },
+  {
+    "TurkishName": "Çikolata Krem",
+    "EnglishName": "Chocolate cream",
+    "TurkishCategory": "Reçel, Bal ve Sürülebilir Ürünler",
+    "EnglishCategory": "Jam, Honey & Spreads",
+    "category_id": 24
+  },
+  {
+    "TurkishName": "Çikolata Tablet",
+    "EnglishName": "Tablet of chocolate",
+    "TurkishCategory": "Çikolata ve Şekerleme",
+    "EnglishCategory": "Chocolate & Candy",
+    "category_id": 7
+  },
+  {
+    "TurkishName": "Çilek",
+    "EnglishName": "Strawberry",
+    "TurkishCategory": "Meyve",
+    "EnglishCategory": "Fruit",
+    "category_id": 21
+  },
+  {
+    "TurkishName": "Dana Eti",
+    "EnglishName": "Beef",
+    "TurkishCategory": "Kırmızı Et",
+    "EnglishCategory": "Red Meat",
+    "category_id": 17
+  },
+  {
+    "TurkishName": "Dereotu",
+    "EnglishName": "Dill",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Domates",
+    "EnglishName": "Tomato",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Dondurma",
+    "EnglishName": "Ice cream",
+    "TurkishCategory": "Dondurma",
+    "EnglishCategory": "Ice Cream",
+    "category_id": 8
+  },
+  {
+    "TurkishName": "Ekmek",
+    "EnglishName": "Bread",
+    "TurkishCategory": "Unlu Mamüller ve Pastane",
+    "EnglishCategory": "Bakery & Patisserie",
+    "category_id": 32
+  },
+  {
+    "TurkishName": "Elma",
+    "EnglishName": "Apple",
+    "TurkishCategory": "Meyve",
+    "EnglishCategory": "Fruit",
+    "category_id": 21
+  },
+  {
+    "TurkishName": "Fındık",
+    "EnglishName": "Hazelnut",
+    "TurkishCategory": "Kuruyemiş ve Çekirdekler",
+    "EnglishCategory": "Nuts & Seeds",
+    "category_id": 18
+  },
+  {
+    "TurkishName": "Fındık Ezmesi",
+    "EnglishName": "Hazelnut butter",
+    "TurkishCategory": "Reçel, Bal ve Sürülebilir Ürünler",
+    "EnglishCategory": "Jam, Honey & Spreads",
+    "category_id": 24
+  },
+  {
+    "TurkishName": "Gazoz",
+    "EnglishName": "Fizzy soft drinks",
+    "TurkishCategory": "Gazlı İçecekler",
+    "EnglishCategory": "Soft Drinks",
+    "category_id": 9
+  },
+  {
+    "TurkishName": "Gofret",
+    "EnglishName": "Wafer",
+    "TurkishCategory": "Çikolata ve Şekerleme",
+    "EnglishCategory": "Chocolate & Candy",
+    "category_id": 7
+  },
+  {
+    "TurkishName": "Havuç",
+    "EnglishName": "Carrot",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Hazır Çorba",
+    "EnglishName": "Instant soup",
+    "TurkishCategory": "Hazır Yemekler ve Çorbalar",
+    "EnglishCategory": "Ready Meals & Soups",
+    "category_id": 11
+  },
+  {
+    "TurkishName": "Hazır Et Yemekleri",
+    "EnglishName": "Ready to eat meat dishes",
+    "TurkishCategory": "Hazır Yemekler ve Çorbalar",
+    "EnglishCategory": "Ready Meals & Soups",
+    "category_id": 11
+  },
+  {
+    "TurkishName": "Hazır Kahve",
+    "EnglishName": "Instant coffee",
+    "TurkishCategory": "Sıcak İçecekler",
+    "EnglishCategory": "Hot Drinks",
+    "category_id": 26
+  },
+  {
+    "TurkishName": "Hazır Pakette Toz Tatlılar (Puding)",
+    "EnglishName": "Pudding",
+    "TurkishCategory": "Puding ve Sütlü Tatlılar",
+    "EnglishCategory": "Pudding & Milk Desserts",
+    "category_id": 22
+  },
+  {
+    "TurkishName": "Hazır Sütlü Tatlılar",
+    "EnglishName": "Milk desserts",
+    "TurkishCategory": "Puding ve Sütlü Tatlılar",
+    "EnglishCategory": "Pudding & Milk Desserts",
+    "category_id": 22
+  },
+  {
+    "TurkishName": "Ispanak",
+    "EnglishName": "Spinach",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Kabak",
+    "EnglishName": "Zucchini",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Kabak Çekirdeği",
+    "EnglishName": "Pumpkin seed",
+    "TurkishCategory": "Kuruyemiş ve Çekirdekler",
+    "EnglishCategory": "Nuts & Seeds",
+    "category_id": 18
+  },
+  {
+    "TurkishName": "Kabartma Maddeleri",
+    "EnglishName": "Baking powder",
+    "TurkishCategory": "Pişirme Malzemeleri",
+    "EnglishCategory": "Baking Supplies",
+    "category_id": 20
+  },
+  {
+    "TurkishName": "Kağıtlı Şeker",
+    "EnglishName": "Holiday candy",
+    "TurkishCategory": "Çikolata ve Şekerleme",
+    "EnglishCategory": "Chocolate & Candy",
+    "category_id": 7
+  },
+  {
+    "TurkishName": "Kahve",
+    "EnglishName": "Turkish coffee",
+    "TurkishCategory": "Sıcak İçecekler",
+    "EnglishCategory": "Hot Drinks",
+    "category_id": 26
+  },
+  {
+    "TurkishName": "Kakao",
+    "EnglishName": "Cocoa",
+    "TurkishCategory": "Pişirme Malzemeleri",
+    "EnglishCategory": "Baking Supplies",
+    "category_id": 20
+  },
+  {
+    "TurkishName": "Karnabahar",
+    "EnglishName": "Cauliflower",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Karpuz",
+    "EnglishName": "Watermelon",
+    "TurkishCategory": "Meyve",
+    "EnglishCategory": "Fruit",
+    "category_id": 21
+  },
+  {
+    "TurkishName": "Kaşar Peyniri",
+    "EnglishName": "Kashar cheese",
+    "TurkishCategory": "Peynir",
+    "EnglishCategory": "Cheese",
+    "category_id": 23
+  },
+  {
+    "TurkishName": "Kavun",
+    "EnglishName": "Melon",
+    "TurkishCategory": "Meyve",
+    "EnglishCategory": "Fruit",
+    "category_id": 21
+  },
+  {
+    "TurkishName": "Kaymak",
+    "EnglishName": "Clotted Cream",
+    "TurkishCategory": "Tereyağı, Krema ve Margarin",
+    "EnglishCategory": "Butter, Cream & Margarine",
+    "category_id": 30
+  },
+  {
+    "TurkishName": "Kek",
+    "EnglishName": "Cake",
+    "TurkishCategory": "Unlu Mamüller ve Pastane",
+    "EnglishCategory": "Bakery & Patisserie",
+    "category_id": 32
+  },
+  {
+    "TurkishName": "Kesme Şeker",
+    "EnglishName": "Cube sugar",
+    "TurkishCategory": "Şeker ve Tatlandırıcılar",
+    "EnglishCategory": "Sugar & Sweeteners",
+    "category_id": 35
+  },
+  {
+    "TurkishName": "Ketçap",
+    "EnglishName": "Ketchup",
+    "TurkishCategory": "Soslar ve Sirkeler",
+    "EnglishCategory": "Sauces & Vinegars",
+    "category_id": 28
+  },
+  {
+    "TurkishName": "Kırmızı Lahana",
+    "EnglishName": "Red cabbage",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Kırmızı Turp",
+    "EnglishName": "Radish",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Kıvırcık",
+    "EnglishName": "Curly lettuce",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Kıyma",
+    "EnglishName": "Minced Meat",
+    "TurkishCategory": "Kırmızı Et",
+    "EnglishCategory": "Red Meat",
+    "category_id": 17
+  },
+  {
+    "TurkishName": "Kivi",
+    "EnglishName": "Kiwi",
+    "TurkishCategory": "Meyve",
+    "EnglishCategory": "Fruit",
+    "category_id": 21
+  },
+  {
+    "TurkishName": "Kola",
+    "EnglishName": "Coke",
+    "TurkishCategory": "Gazlı İçecekler",
+    "EnglishCategory": "Soft Drinks",
+    "category_id": 9
+  },
+  {
+    "TurkishName": "Konserve Balık",
+    "EnglishName": "Canned fish",
+    "TurkishCategory": "Balık ve Deniz Ürünleri",
+    "EnglishCategory": "Fish & Seafood",
+    "category_id": 1
+  },
+  {
+    "TurkishName": "Konserveler",
+    "EnglishName": "Canned vegetables",
+    "TurkishCategory": "Konserve ve Turşu",
+    "EnglishCategory": "Canned Goods & Pickles",
+    "category_id": 15
+  },
+  {
+    "TurkishName": "Kraker",
+    "EnglishName": "Cracker",
+    "TurkishCategory": "Bisküvi, Kraker ve Cips",
+    "EnglishCategory": "Biscuits, Crackers & Chips",
+    "category_id": 4
+  },
+  {
+    "TurkishName": "Krem Peynir",
+    "EnglishName": "Cream cheese",
+    "TurkishCategory": "Peynir",
+    "EnglishCategory": "Cheese",
+    "category_id": 23
+  },
+  {
+    "TurkishName": "Kuru Fasulye",
+    "EnglishName": "Dry bean",
+    "TurkishCategory": "Tahıl, Pirinç ve Bakliyat",
+    "EnglishCategory": "Grains, Rice & Legumes",
+    "category_id": 29
+  },
+  {
+    "TurkishName": "Kuru İncir",
+    "EnglishName": "Dried Fig",
+    "TurkishCategory": "Kuru Meyveler",
+    "EnglishCategory": "Dried Fruits",
+    "category_id": 16
+  },
+  {
+    "TurkishName": "Kuru Kayısı",
+    "EnglishName": "Dried apricot",
+    "TurkishCategory": "Kuru Meyveler",
+    "EnglishCategory": "Dried Fruits",
+    "category_id": 16
+  },
+  {
+    "TurkishName": "Kuru Soğan",
+    "EnglishName": "Onion",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Kuru Üzüm",
+    "EnglishName": "Raisin",
+    "TurkishCategory": "Kuru Meyveler",
+    "EnglishCategory": "Dried Fruits",
+    "category_id": 16
+  },
+  {
+    "TurkishName": "Kuzu Eti",
+    "EnglishName": "Lamb",
+    "TurkishCategory": "Kırmızı Et",
+    "EnglishCategory": "Red Meat",
+    "category_id": 17
+  },
+  {
+    "TurkishName": "Leblebi",
+    "EnglishName": "Roasted chickpea",
+    "TurkishCategory": "Kuruyemiş ve Çekirdekler",
+    "EnglishCategory": "Nuts & Seeds",
+    "category_id": 18
+  },
+  {
+    "TurkishName": "Limon",
+    "EnglishName": "Lemon",
+    "TurkishCategory": "Meyve",
+    "EnglishCategory": "Fruit",
+    "category_id": 21
+  },
+  {
+    "TurkishName": "Lokum",
+    "EnglishName": "Turkish delight",
+    "TurkishCategory": "Çikolata ve Şekerleme",
+    "EnglishCategory": "Chocolate & Candy",
+    "category_id": 7
+  },
+  {
+    "TurkishName": "Maden Suyu",
+    "EnglishName": "Sparkling mineral water",
+    "TurkishCategory": "Su ve Maden Suyu",
+    "EnglishCategory": "Water & Mineral Water",
+    "category_id": 29
+  },
+  {
+    "TurkishName": "Makarna",
+    "EnglishName": "Pasta",
+    "TurkishCategory": "Makarna ve Erişte",
+    "EnglishCategory": "Pasta & Noodles",
+    "category_id": 19
+  },
+  {
+    "TurkishName": "Mandalina",
+    "EnglishName": "Tangerine",
+    "TurkishCategory": "Meyve",
+    "EnglishCategory": "Fruit",
+    "category_id": 21
+  },
+  {
+    "TurkishName": "Mantar",
+    "EnglishName": "Mushroom",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Mantı",
+    "EnglishName": "Turkish Dumplings",
+    "TurkishCategory": "Hazır Yemekler ve Çorbalar",
+    "EnglishCategory": "Ready Meals & Soups",
+    "category_id": 11
+  },
+  {
+    "TurkishName": "Margarin",
+    "EnglishName": "Margarine",
+    "TurkishCategory": "Tereyağı, Krema ve Margarin",
+    "EnglishCategory": "Butter, Cream & Margarine",
+    "category_id": 30
+  },
+  {
+    "TurkishName": "Maydanoz",
+    "EnglishName": "Parsley",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Mayonez",
+    "EnglishName": "Mayonnaise",
+    "TurkishCategory": "Soslar ve Sirkeler",
+    "EnglishCategory": "Sauces & Vinegars",
+    "category_id": 28
+  },
+  {
+    "TurkishName": "Mercimek",
+    "EnglishName": "Lentils",
+    "TurkishCategory": "Tahıl, Pirinç ve Bakliyat",
+    "EnglishCategory": "Grains, Rice & Legumes",
+    "category_id": 29
+  },
+  {
+    "TurkishName": "Meyve Suyu",
+    "EnglishName": "Fruit juice",
+    "TurkishCategory": "Meyve Suları ve Soğuk Çay",
+    "EnglishCategory": "Juices & Iced Tea",
+    "category_id": 20
+  },
+  {
+    "TurkishName": "Muz",
+    "EnglishName": "Banana",
+    "TurkishCategory": "Meyve",
+    "EnglishCategory": "Fruit",
+    "category_id": 21
+  },
+  {
+    "TurkishName": "Nane",
+    "EnglishName": "Spearmint",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Nar",
+    "EnglishName": "Pomegranate",
+    "TurkishCategory": "Meyve",
+    "EnglishCategory": "Fruit",
+    "category_id": 21
+  },
+  {
+    "TurkishName": "Nar Ekşisi",
+    "EnglishName": "Pomegranate Molasses",
+    "TurkishCategory": "Soslar ve Sirkeler",
+    "EnglishCategory": "Sauces & Vinegars",
+    "category_id": 28
+  },
+  {
+    "TurkishName": "Nohut",
+    "EnglishName": "Chickpea",
+    "TurkishCategory": "Tahıl, Pirinç ve Bakliyat",
+    "EnglishCategory": "Grains, Rice & Legumes",
+    "category_id": 29
+  },
+  {
+    "TurkishName": "Pasta",
+    "EnglishName": "Cream-cake and patisserie",
+    "TurkishCategory": "Unlu Mamüller ve Pastane",
+    "EnglishCategory": "Bakery & Patisserie",
+    "category_id": 32
+  },
+  {
+    "TurkishName": "Pastırma",
+    "EnglishName": "Cured Beef",
+    "TurkishCategory": "Şarküteri",
+    "EnglishCategory": "Processed & Cured Meats",
+    "category_id": 33
+  },
+  {
+    "TurkishName": "Patates",
+    "EnglishName": "Potato",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Patlıcan",
+    "EnglishName": "Eggplant",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Pekmez",
+    "EnglishName": "Grape molasses",
+    "TurkishCategory": "Reçel, Bal ve Sürülebilir Ürünler",
+    "EnglishCategory": "Jam, Honey & Spreads",
+    "category_id": 24
+  },
+  {
+    "TurkishName": "Pide",
+    "EnglishName": "Turkish Flatbread",
+    "TurkishCategory": "Unlu Mamüller ve Pastane",
+    "EnglishCategory": "Bakery & Patisserie",
+    "category_id": 32
+  },
+  {
+    "TurkishName": "Pırasa",
+    "EnglishName": "Leek",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Pirinç",
+    "EnglishName": "Rice",
+    "TurkishCategory": "Tahıl, Pirinç ve Bakliyat",
+    "EnglishCategory": "Grains, Rice & Legumes",
+    "category_id": 29
+  },
+  {
+    "TurkishName": "Portakal",
+    "EnglishName": "Orange",
+    "TurkishCategory": "Meyve",
+    "EnglishCategory": "Fruit",
+    "category_id": 21
+  },
+  {
+    "TurkishName": "Pul Biber",
+    "EnglishName": "Red Pepper Flakes",
+    "TurkishCategory": "Baharatlar ve Çeşniler",
+    "EnglishCategory": "Spices & Seasonings",
+    "category_id": 2
+  },
+  {
+    "TurkishName": "Rakı",
+    "EnglishName": "Raki",
+    "TurkishCategory": "Alkollü İçecekler",
+    "EnglishCategory": "Alcoholic Drinks",
+    "category_id": 0
+  },
+  {
+    "TurkishName": "Reçel",
+    "EnglishName": "Jam",
+    "TurkishCategory": "Reçel, Bal ve Sürülebilir Ürünler",
+    "EnglishCategory": "Jam, Honey & Spreads",
+    "category_id": 24
+  },
+  {
+    "TurkishName": "Roka",
+    "EnglishName": "Rocket",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Sakatat",
+    "EnglishName": "Offal",
+    "TurkishCategory": "Sakatat",
+    "EnglishCategory": "Offal",
+    "category_id": 24
+  },
+  {
+    "TurkishName": "Sakız",
+    "EnglishName": "Chewing gum",
+    "TurkishCategory": "Çikolata ve Şekerleme",
+    "EnglishCategory": "Chocolate & Candy",
+    "category_id": 7
+  },
+  {
+    "TurkishName": "Salam",
+    "EnglishName": "Salami",
+    "TurkishCategory": "Şarküteri",
+    "EnglishCategory": "Processed & Cured Meats",
+    "category_id": 33
+  },
+  {
+    "TurkishName": "Salatalık",
+    "EnglishName": "Cucumber",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Salça",
+    "EnglishName": "Tomato sauce",
+    "TurkishCategory": "Soslar ve Sirkeler",
+    "EnglishCategory": "Sauces & Vinegars",
+    "category_id": 28
+  },
+  {
+    "TurkishName": "Sarımsak",
+    "EnglishName": "Garlic",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Simit",
+    "EnglishName": "Turkish Bagel",
+    "TurkishCategory": "Unlu Mamüller ve Pastane",
+    "EnglishCategory": "Bakery & Patisserie",
+    "category_id": 32
+  },
+  {
+    "TurkishName": "Sirke",
+    "EnglishName": "Vinegar",
+    "TurkishCategory": "Soslar ve Sirkeler",
+    "EnglishCategory": "Sauces & Vinegars",
+    "category_id": 28
+  },
+  {
+    "TurkishName": "Sivri Biber",
+    "EnglishName": "Green pepper",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Soğuk Çay",
+    "EnglishName": "Iced tea",
+    "TurkishCategory": "Meyve Suları ve Soğuk Çay",
+    "EnglishCategory": "Juices & Iced Tea",
+    "category_id": 20
+  },
+  {
+    "TurkishName": "Soda",
+    "EnglishName": "Sparkling water",
+    "TurkishCategory": "Su ve Maden Suyu",
+    "EnglishCategory": "Water & Mineral Water",
+    "category_id": 29
+  },
+  {
+    "TurkishName": "Sosis",
+    "EnglishName": "Sausage",
+    "TurkishCategory": "Şarküteri",
+    "EnglishCategory": "Processed & Cured Meats",
+    "category_id": 33
+  },
+  {
+    "TurkishName": "Su",
+    "EnglishName": "Water",
+    "TurkishCategory": "Su ve Maden Suyu",
+    "EnglishCategory": "Water & Mineral Water",
+    "category_id": 29
+  },
+  {
+    "TurkishName": "Sucuk",
+    "EnglishName": "Soujouk",
+    "TurkishCategory": "Şarküteri",
+    "EnglishCategory": "Processed & Cured Meats",
+    "category_id": 33
+  },
+  {
+    "TurkishName": "Sumak",
+    "EnglishName": "Sumac",
+    "TurkishCategory": "Baharatlar ve Çeşniler",
+    "EnglishCategory": "Spices & Seasonings",
+    "category_id": 2
+  },
+  {
+    "TurkishName": "Süt",
+    "EnglishName": "Milk",
+    "TurkishCategory": "Süt",
+    "EnglishCategory": "Milk",
+    "category_id": 28
+  },
+  {
+    "TurkishName": "Şarap",
+    "EnglishName": "Wine",
+    "TurkishCategory": "Alkollü İçecekler",
+    "EnglishCategory": "Alcoholic Drinks",
+    "category_id": 0
+  },
+  {
+    "TurkishName": "Şeftali",
+    "EnglishName": "Peach",
+    "TurkishCategory": "Meyve",
+    "EnglishCategory": "Fruit",
+    "category_id": 21
+  },
+  {
+    "TurkishName": "Şehriye",
+    "EnglishName": "Orzo pasta",
+    "TurkishCategory": "Makarna ve Erişte",
+    "EnglishCategory": "Pasta & Noodles",
+    "category_id": 19
+  },
+  {
+    "TurkishName": "Soğan",
+    "EnglishName": "Onion",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Tahin",
+    "EnglishName": "Sesame oil",
+    "TurkishCategory": "Sıvı Yağlar",
+    "EnglishCategory": "Oils",
+    "category_id": 27
+  },
+  {
+    "TurkishName": "Tahin Helvası",
+    "EnglishName": "Halvah",
+    "TurkishCategory": "Helva ve Geleneksel Tatlılar",
+    "EnglishCategory": "Halva & Traditional Sweets",
+    "category_id": 12
+  },
+  {
+    "TurkishName": "Tahıl Gevreği",
+    "EnglishName": "Cereal",
+    "TurkishCategory": "Tahıl, Pirinç ve Bakliyat",
+    "EnglishCategory": "Grains, Rice & Legumes",
+    "category_id": 29
+  },
+  {
+    "TurkishName": "Tavuk Eti",
+    "EnglishName": "Poultry",
+    "TurkishCategory": "Beyaz Et",
+    "EnglishCategory": "Poultry",
+    "category_id": 5
+  },
+  {
+    "TurkishName": "Taze Fasulye",
+    "EnglishName": "Green bean",
+    "TurkishCategory": "Sebze",
+    "EnglishCategory": "Vegetable",
+    "category_id": 25
+  },
+  {
+    "TurkishName": "Tereyağı",
+    "EnglishName": "Butter",
+    "TurkishCategory": "Tereyağı, Krema ve Margarin",
+    "EnglishCategory": "Butter, Cream & Margarine",
+    "category_id": 30
+  },
+  {
+    "TurkishName": "Toz Şeker",
+    "EnglishName": "Granulated sugar",
+    "TurkishCategory": "Şeker ve Tatlandırıcılar",
+    "EnglishCategory": "Sugar & Sweeteners",
+    "category_id": 35
+  },
+  {
+    "TurkishName": "Tulum Peyniri",
+    "EnglishName": "Tulum cheese",
+    "TurkishCategory": "Peynir",
+    "EnglishCategory": "Cheese",
+    "category_id": 23
+  },
+  {
+    "TurkishName": "Turşu",
+    "EnglishName": "Pickle",
+    "TurkishCategory": "Konserve ve Turşu",
+    "EnglishCategory": "Canned Goods & Pickles",
+    "category_id": 15
+  },
+  {
+    "TurkishName": "Tuz",
+    "EnglishName": "Salt",
+    "TurkishCategory": "Baharatlar ve Çeşniler",
+    "EnglishCategory": "Spices & Seasonings",
+    "category_id": 2
+  },
+  {
+    "TurkishName": "Üzüm",
+    "EnglishName": "Grape",
+    "TurkishCategory": "Meyve",
+    "EnglishCategory": "Fruit",
+    "category_id": 21
+  },
+  {
+    "TurkishName": "Viski",
+    "EnglishName": "Whisky",
+    "TurkishCategory": "Alkollü İçecekler",
+    "EnglishCategory": "Alcoholic Drinks",
+    "category_id": 0
+  },
+  {
+    "TurkishName": "Votka",
+    "EnglishName": "Vodka",
+    "TurkishCategory": "Alkollü İçecekler",
+    "EnglishCategory": "Alcoholic Drinks",
+    "category_id": 0
+  },
+  {
+    "TurkishName": "Yer Fıstığı",
+    "EnglishName": "Peanuts",
+    "TurkishCategory": "Kuruyemiş ve Çekirdekler",
+    "EnglishCategory": "Nuts & Seeds",
+    "category_id": 18
+  },
+  {
+    "TurkishName": "Yoğurt",
+    "EnglishName": "Yoghurt",
+    "TurkishCategory": "Yoğurt ve Ayran",
+    "EnglishCategory": "Yogurt & Ayran",
+    "category_id": 36
+  },
+  {
+    "TurkishName": "Yufka",
+    "EnglishName": "Phyllo Dough",
+    "TurkishCategory": "Un ve Hamur Malzemeleri",
+    "EnglishCategory": "Flour & Dough Supplies",
+    "category_id": 31
+  },
+  {
+    "TurkishName": "Yumurta",
+    "EnglishName": "Egg",
+    "TurkishCategory": "Yumurta",
+    "EnglishCategory": "Eggs",
+    "category_id": 37
+  },
+  {
+    "TurkishName": "Zeytin",
+    "EnglishName": "Olive",
+    "TurkishCategory": "Konserve ve Turşu",
+    "EnglishCategory": "Canned Goods & Pickles",
+    "category_id": 15
+  },
+  {
+    "TurkishName": "Zeytinyağı",
+    "EnglishName": "Olive oil",
+    "TurkishCategory": "Sıvı Yağlar",
+    "EnglishCategory": "Oils",
+    "category_id": 27
+  }
+]

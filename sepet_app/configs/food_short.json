@@ -1,0 +1,16 @@
+[
+  {
+    "TurkishName": "Bal",
+    "EnglishName": "Honey",
+    "TurkishCategory": "Reçel, Bal ve Sürülebilir Ürünler",
+    "EnglishCategory": "Jam, Honey & Spreads",
+    "category_id": 24
+  },
+  {
+    "TurkishName": "Zeytinyağı",
+    "EnglishName": "Olive oil",
+    "TurkishCategory": "Sıvı Yağlar",
+    "EnglishCategory": "Oils",
+    "category_id": 27
+  }
+]
