@@ -1,14 +1,10 @@
-# Python bytecode
 __pycache__/
 *.pyc
 
-# IDE configuration
 .idea/
 
-# Downloaded data
 sepet_app/downloads/
 
-# Logs
 sepet_app/logs/*.log
 
 sepet_app/shell-scripts/
