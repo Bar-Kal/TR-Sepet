@@ -1,4 +1,5 @@
 import os
+import json
 import random
 import time
 from datetime import datetime
@@ -9,30 +10,31 @@ from loguru import logger
 from .base import BaseScraper
 from .factory import get_scraper
 
-def scrape_categories(scraper: BaseScraper, product_categories: pd.DataFrame, shop_name: str, filepath: str, today_str: str):
+def scrape_categories(scraper: BaseScraper, products_categories: json, shop_name: str, filepath: str, today_str: str):
     """
     Scrapes product categories for a given shop and saves the results to CSV files.
 
     Args:
         scraper (BaseScraper): The scrapers object for the shop.
-        product_categories (pd.DataFrame): A DataFrame containing the product categories to scrape.
+        products_categories (json): JSON containing the products and categories to scrape. (food.json)
         shop_name (str): The name of the shop.
         filepath (str): The base filepath to save the CSV files.
         today_str (str): The current date as a string in 'YYYY-MM-DD' format.
     """
-    logger.info(f'Got {len(product_categories)} product categories to scrape for shop {shop_name}.')
+    logger.info(f'Got {len(products_categories)} product categories to scrape for shop {shop_name}.')
 
-    for category in product_categories:
+    for product in products_categories: # List of products, Sucuk, Pirinc, etc.
+        product_name = product['TurkishName']
         try:
-            wait = random.randint(5, 20)
-            logger.info(f"Waiting {wait} seconds before scraping {category} for shop {scraper.shop_name}")
+            wait = random.randint(2, 10)
+            logger.info(f"Waiting {wait} seconds before scraping {product_name} in shop {scraper.shop_name}")
             time.sleep(wait)  # Wait, to not create too much traffic to the server.
-            retrieved_products = scraper.search(category)
+            retrieved_products = scraper.search(product=product['TurkishName'], category_id=product['category_id'])
             df = pd.DataFrame(retrieved_products)
-            save_to_csv(shop_name=scraper.shop_name, df=df, filepath=filepath, filename=category + '.csv',today_str=today_str)
-            logger.info(f'File for category {category} created successfully for shop {scraper.shop_name}.')
+            save_to_csv(shop_name=scraper.shop_name, df=df, filepath=filepath, filename=product_name + '.csv',today_str=today_str)
+            logger.info(f'File for product {product_name} created successfully for shop {scraper.shop_name}.')
         except Exception as e:
-            raise Exception(f'Exception occurred while working on {category}: {e}')
+            raise Exception(f'Exception occurred while working on {product_name}: {e}')
 
 
 def save_to_csv(shop_name: str, df: pd.DataFrame, filepath: str, filename: str, today_str: str):
@@ -103,14 +105,14 @@ def combine_and_deduplicate_csvs(base_downloads_path: Path):
     combined_df = pd.concat(df_list, ignore_index=True)
     logger.info(f"Combined {len(combined_df)} total rows from all files.")
 
-    # Drop duplicates based on the 'id' column, keeping the first entry
-    if 'id' in combined_df.columns:
+    # Drop duplicates based on the 'product_id' column, keeping the first entry
+    if 'product_id' in combined_df.columns:
         initial_rows = len(combined_df)
-        # Ensure 'id' column is of a consistent type to avoid issues with mixed types
-        combined_df['id'] = combined_df['id'].astype(str)
-        combined_df.drop_duplicates(subset=['id'], keep='first', inplace=True)
+        # Ensure 'product_id' column is of a consistent type to avoid issues with mixed types
+        combined_df['product_id'] = combined_df['product_id'].astype(str)
+        combined_df.drop_duplicates(subset=['product_id'], keep='first', inplace=True)
         final_rows = len(combined_df)
-        logger.info(f"Removed {initial_rows - final_rows} duplicate rows based on unique 'id'.")
+        logger.info(f"Removed {initial_rows - final_rows} duplicate rows based on unique 'product_id'.")
     else:
         logger.warning("Warning: 'id' column not found. Cannot remove duplicates.")
 
@@ -134,8 +136,9 @@ def main():
     with open(os.path.join('sepet_app', 'configs', 'shops.json')) as f:
         shops = json.load(f)
 
-    food_categories = pd.read_csv(os.path.join('sepet_app', 'configs', 'food.csv'), sep=';')
-    products_categories_to_search = food_categories['Turkish_names']  # .tolist()  # e.g. Sucuk, Pirinc, etc.
+    with open(os.path.join('sepet_app', 'configs', 'food.json'), 'r', encoding='utf-8') as f:
+        products_and_categories = json.load(f)
+
     today_str = datetime.now().strftime('%Y-%m-%d')  # Get today's date in YYYY-MM-DD format
     filepath = os.path.join('sepet_app', 'downloads')
 
@@ -149,7 +152,7 @@ def main():
         scraper = get_scraper(shop_config=shop)
         scrape_categories(
             scraper=scraper,
-            product_categories=products_categories_to_search,
+            products_categories=products_and_categories,
             shop_name=scraper.shop_name,
             filepath=filepath,
             today_str=today_str
@@ -157,4 +160,5 @@ def main():
         logger.info("Starting data combination process...")
         combine_and_deduplicate_csvs(base_downloads_path=Path(os.path.join(filepath, scraper.shop_name, today_str)))
         logger.info(f"--- Finished process for {shop_name} ---")
+        del scraper
         logger.remove()
