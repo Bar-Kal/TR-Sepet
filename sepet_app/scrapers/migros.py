@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from loguru import logger
+from dataclasses import asdict
 
 class MigrosScraper(BaseScraper):
     """A scrapers for the A101 online shop."""
@@ -21,7 +22,7 @@ class MigrosScraper(BaseScraper):
         logger.info(f"Scraper for '{self.shop_name}' initialized.")
 
 
-    def search(self, product):
+    def search(self, product: str, category_id: int):
         """
         Scrapes the Migros website for a given product.
 
@@ -31,6 +32,7 @@ class MigrosScraper(BaseScraper):
 
         Args:
             product (str): The product to search for.
+            category_id (int): The category id of the product (e.g. 21 for 'Meyve').
 
         Returns:
             list: A list of dictionaries, each containing information about a
@@ -56,17 +58,23 @@ class MigrosScraper(BaseScraper):
                     product_name_element = article.find(id='product-name')
                     product_price_element = article.find("div", {"class": "price-container"})
 
-                    product_info = {}
-                    product_info['Scrape_Timestamp'] = datetime.now().isoformat()
-                    product_info['Display_Name'] = product_name_element.text.strip()
-                    product_info['Shop'] = self.shop_name
-                    product_info['Search_Term'] = product
-                    product_info['Price'], product_info['Discount_Price'] = self.get_prices(product_price_element.text)
-                    product_info['URL'] = self.base_url + str(product_name_element.attrs['href'])
-                    product_info['id'] = product_info['URL'].split("p-")[-1]
-                    scraped_data.append(product_info)
-
-                    logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
+                    if self.predict(text=product_name_element.text.strip()):
+                        product_info = self.ScrapedProductInfo(
+                            Scrape_Timestamp=datetime.now().isoformat(),
+                            Display_Name=product_name_element.text.strip(),
+                            Shop=self.shop_name,
+                            category_id=category_id,
+                            Search_Term=product,
+                            Discount_Price=self.get_prices(product_price_element.text)[0],
+                            Price=self.get_prices(product_price_element.text)[1],
+                            URL=self.base_url + str(product_name_element.attrs['href']),
+                            product_id=product_name_element.attrs['href'].split("p-")[-1]
+                        )
+                        product_info = asdict(product_info)
+                        scraped_data.append(product_info)
+                        logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
+                    else:
+                        logger.warning(f"Non-Food product scraped but skipped: {product_name_element}")
 
                 try:
                     next_button = WebDriverWait(self.driver, 5).until(
@@ -109,7 +117,7 @@ class MigrosScraper(BaseScraper):
                 dummy_prices = dummy_prices.split(' ')
                 price = float(dummy_prices[0])
                 discount = float(dummy_prices[1])
-                return price, discount
+                return discount, price
 
             # No discount price available for article
             price = float(product_price_element.replace("TL", "").strip().replace(",", "."))
