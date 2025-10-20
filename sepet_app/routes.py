@@ -1,3 +1,4 @@
+import os
 from flask import render_template, current_app, redirect, request
 from datetime import datetime, timedelta
 import pandas as pd
@@ -29,11 +30,10 @@ def index():
     shop_names.sort()
 
     # Load food categories from food.csv
-    food_path = Path(current_app.root_path) / 'configs' / 'food.csv'
-    food_categories = []
+    food_path = Path(current_app.root_path) / 'configs' / 'food.json'
     with open(food_path, 'r', encoding='utf-8') as f:
-        reader = pd.read_csv(f, delimiter=';')
-        food_categories = reader['Turkish_names'].tolist()
+        food_file = pd.read_json(f)
+        food_categories = food_file['TurkishName'].tolist()
     food_categories.sort()
 
     charts_data = None
