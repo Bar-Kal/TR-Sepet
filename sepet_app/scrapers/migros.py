@@ -9,14 +9,14 @@ from loguru import logger
 from dataclasses import asdict
 
 class MigrosScraper(BaseScraper):
-    """A scrapers for the A101 online shop."""
+    """A scrapers for the Migros online shop."""
     def __init__(self, shop_name, base_url):
         """
-        Initializes the A101Scraper.
+        Initializes the MigrosScraper.
 
         Args:
-            shop_name (str): The name of the shop (should be 'A101').
-            base_url (str): The base URL for the A101 website.
+            shop_name (str): The name of the shop (should be 'Migros').
+            base_url (str): The base URL for the Migros website.
         """
         super().__init__(shop_name=shop_name, base_url=base_url)
         logger.info(f"Scraper for '{self.shop_name}' initialized.")
