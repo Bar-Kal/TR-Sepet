@@ -196,7 +196,7 @@
     "category_id": 21
   },
   {
-    "TurkishName": "Dana Eti",
+    "TurkishName": "Dana",
     "EnglishName": "Beef",
     "TurkishCategory": "Kırmızı Et",
     "EnglishCategory": "Red Meat",
@@ -518,7 +518,7 @@
     "category_id": 16
   },
   {
-    "TurkishName": "Kuzu Eti",
+    "TurkishName": "Kuzu",
     "EnglishName": "Lamb",
     "TurkishCategory": "Kırmızı Et",
     "EnglishCategory": "Red Meat",
@@ -903,7 +903,7 @@
     "category_id": 29
   },
   {
-    "TurkishName": "Tavuk Eti",
+    "TurkishName": "Tavuk",
     "EnglishName": "Poultry",
     "TurkishCategory": "Beyaz Et",
     "EnglishCategory": "Poultry",
