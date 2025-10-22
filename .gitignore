@@ -8,3 +8,5 @@ sepet_app/downloads/
 sepet_app/logs/*.log
 
 sepet_app/shell-scripts/
+
+sepet_app/fasttext/trained_model/
