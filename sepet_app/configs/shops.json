@@ -1,5 +1,11 @@
 [
     {
+        "shop_name": "Onurmarket",
+        "base_url": "https://www.onurmarket.com",
+        "scraper_module": "sepet_app.scrapers.onurmarket",
+        "scraper_class": "OnurmarketScraper"
+    },
+    {
         "shop_name": "A101",
         "base_url": "https://www.a101.com.tr",
         "scraper_module": "sepet_app.scrapers.a101",

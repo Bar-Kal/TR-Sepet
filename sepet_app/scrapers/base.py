@@ -10,6 +10,10 @@ from gensim.models import FastText
 from loguru import logger
 from selenium import webdriver
 
+from selenium.webdriver import Remote, ChromeOptions as Options
+from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection as Connection
+
+
 def get_document_vector(doc_tokens, model):
     valid_tokens = [word for word in doc_tokens if word in model.wv]
     if not valid_tokens:
