@@ -43,8 +43,6 @@ class OnurmarketScraper(BaseScraper):
 
         search_url = f"{self.base_url}/Arama?1&kelime={product}"
         scraped_data = []
-        page_num = 1
-        print(search_url)
         # Load the page
         self.driver.get(search_url)
         try:
@@ -53,7 +51,7 @@ class OnurmarketScraper(BaseScraper):
                 page_source = self.driver.page_source
                 soup = BeautifulSoup(page_source, 'html.parser')
                 articles = soup.find_all("div", {"class": "productItem"})
-                logger.info(f"Found {len(articles)} {product} articles on page {page_num}.")
+                logger.info(f"Found {len(articles)} {product} articles.")
 
                 if articles:
                     for article in articles:
