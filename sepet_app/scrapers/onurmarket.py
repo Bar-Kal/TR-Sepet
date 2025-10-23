@@ -1,7 +1,8 @@
-from .base import BaseScraper
 import time
-from datetime import datetime
+import bs4
 from bs4 import BeautifulSoup
+from .base import BaseScraper
+from datetime import datetime
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -47,15 +48,29 @@ class OnurmarketScraper(BaseScraper):
         # Load the page
         self.driver.get(search_url)
         try:
-            WebDriverWait(self.driver, 15)#.until(EC.presence_of_element_located((By.ID, "ProductPageProductList")))
+            WebDriverWait(self.driver, 15).until(EC.presence_of_element_located((By.ID, "ProductPageProductList")))
             while True:
                 page_source = self.driver.page_source
                 soup = BeautifulSoup(page_source, 'html.parser')
                 articles = soup.find_all("div", {"class": "productItem"})
                 logger.info(f"Found {len(articles)} {product} articles on page {page_num}.")
 
-                for article in articles:
-                    dummy = article.find(id='product-name')
+                if articles:
+                    for article in articles:
+                        product_info = self.ScrapedProductInfo(
+                            Scrape_Timestamp=datetime.now().isoformat(),
+                            Display_Name=article.find_all("div",{"class": "productName"})[0].text,
+                            Shop=self.shop_name,
+                            category_id=category_id,
+                            Search_Term=product,
+                            Discount_Price=self.get_prices(article.find_all("div",{"class": "productPrice"})[0])[0],
+                            Price=self.get_prices(article.find_all("div",{"class": "productPrice"})[0])[1],
+                            URL=self.base_url + article.find_all("a",{"class": "detailUrl"})[0].attrs['href'],
+                            product_id=article.find_all("a",{"class": "detailUrl"})[0].attrs['data-id']
+                        )
+                        product_info = asdict(product_info)
+                        scraped_data.append(product_info)
+                        logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
 
                 return scraped_data
         except Exception as e:
@@ -63,17 +78,41 @@ class OnurmarketScraper(BaseScraper):
             return None
 
     @staticmethod
-    def get_prices(product_price_element: str) -> tuple[float, float]:
+    def get_prices(price_tag: bs4.element.Tag) -> tuple[float, float]:
         """
         Extracts and returns the discount and original prices from an article's text.
 
         Args:
-            product_price_element (str): The text of the product article.
+            price_tag (bs4.element.Tag): The price tag which has the original and discount prices.
+                                         price_tag example:
+                                         <div class="discountPrice">
+                                        <span class="discountPriceSpan">₺108,00</span>
+                                        <span class="discountKdv">KDV Dahil</span>
+                                        </div>
+                                        <div class="regularPrice">
+                                        <span class="regularPriceSpan">₺180,00</span>
 
         Returns:
             tuple[float, float]: A tuple containing the original price and the
                                  discount price. Returns (0.0, 0.0) if no
                                  prices are found.
         """
+        regular_price = 0.0
 
-        return 0.0, 0.0
+        # In the HTML, the discountPriceSpan is always available independent of the regular price
+        # If discountPriceSpan is available alon, then it is the regular price
+        discount_price = price_tag.find_all("span", {"class": "discountPriceSpan"})[0]
+        discount_price = discount_price.text.strip().replace('₺', '')
+        discount_price = discount_price.replace('.', '')
+        discount_price = float(discount_price.replace(',', '.'))
+
+        regular_price = discount_price
+
+        # Regular price is only available if there is really a discount on the article
+        if price_tag.find_all("span",{"class": "regularPriceSpan"}):
+            regular_price = price_tag.find_all("span",{"class": "regularPriceSpan"})[0]
+            regular_price = regular_price.text.strip().replace('₺', '')
+            regular_price = regular_price.replace('.', '')
+            regular_price = float(regular_price.replace(',', '.'))
+
+        return discount_price, regular_price
