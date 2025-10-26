@@ -1,5 +1,6 @@
 [
   {
+    "product_id": 1,
     "TurkishName": "Antep Fıstığı",
     "EnglishName": "Pistachio",
     "TurkishCategory": "Kuruyemiş ve Çekirdekler",
@@ -7,6 +8,7 @@
     "category_id": 18
   },
   {
+    "product_id": 2,
     "TurkishName": "Armut",
     "EnglishName": "Pear",
     "TurkishCategory": "Meyve",
@@ -14,6 +16,7 @@
     "category_id": 21
   },
   {
+    "product_id": 3,
     "TurkishName": "Ay Çekirdeği",
     "EnglishName": "Sunflower seed",
     "TurkishCategory": "Kuruyemiş ve Çekirdekler",
@@ -21,6 +24,7 @@
     "category_id": 18
   },
   {
+    "product_id": 4,
     "TurkishName": "Ayçiçek Yağı",
     "EnglishName": "Sunflower oil",
     "TurkishCategory": "Sıvı Yağlar",
@@ -28,6 +32,7 @@
     "category_id": 27
   },
   {
+    "product_id": 5,
     "TurkishName": "Ayran",
     "EnglishName": "Ayran",
     "TurkishCategory": "Yoğurt ve Ayran",
@@ -35,6 +40,7 @@
     "category_id": 36
   },
   {
+    "product_id": 6,
     "TurkishName": "Ayva",
     "EnglishName": "Quince",
     "TurkishCategory": "Meyve",
@@ -42,6 +48,7 @@
     "category_id": 21
   },
   {
+    "product_id": 7,
     "TurkishName": "Badem",
     "EnglishName": "Almond",
     "TurkishCategory": "Kuruyemiş ve Çekirdekler",
@@ -49,6 +56,7 @@
     "category_id": 18
   },
   {
+    "product_id": 8,
     "TurkishName": "Baharat",
     "EnglishName": "Condiment-spices",
     "TurkishCategory": "Baharatlar ve Çeşniler",
@@ -56,13 +64,15 @@
     "category_id": 2
   },
   {
+    "product_id": 9,
     "TurkishName": "Baklava",
     "EnglishName": "Baklava",
-    "TurkishCategory": "Şerbetli Tatlılar",
-    "EnglishCategory": "Syrupy Desserts",
-    "category_id": 34
+    "TurkishCategory": "Geleneksel Tatlılar",
+    "EnglishCategory": "Traditional Sweets",
+    "category_id": 12
   },
   {
+    "product_id": 10,
     "TurkishName": "Bal",
     "EnglishName": "Honey",
     "TurkishCategory": "Reçel, Bal ve Sürülebilir Ürünler",
@@ -70,6 +80,7 @@
     "category_id": 24
   },
   {
+    "product_id": 11,
     "TurkishName": "Balık",
     "EnglishName": "Fresh fish",
     "TurkishCategory": "Balık ve Deniz Ürünleri",
@@ -77,6 +88,7 @@
     "category_id": 1
   },
   {
+    "product_id": 12,
     "TurkishName": "Bebek Sütü",
     "EnglishName": "Formula milk",
     "TurkishCategory": "Bebek Ürünleri",
@@ -84,6 +96,7 @@
     "category_id": 3
   },
   {
+    "product_id": 13,
     "TurkishName": "Beyaz Lahana",
     "EnglishName": "Cabbage",
     "TurkishCategory": "Sebze",
@@ -91,6 +104,7 @@
     "category_id": 25
   },
   {
+    "product_id": 14,
     "TurkishName": "Beyaz Peynir",
     "EnglishName": "White cheese",
     "TurkishCategory": "Peynir",
@@ -98,6 +112,7 @@
     "category_id": 23
   },
   {
+    "product_id": 15,
     "TurkishName": "Biber",
     "EnglishName": "Pepper",
     "TurkishCategory": "Sebze",
@@ -105,6 +120,7 @@
     "category_id": 25
   },
   {
+    "product_id": 16,
     "TurkishName": "Bira",
     "EnglishName": "Beer",
     "TurkishCategory": "Alkollü İçecekler",
@@ -112,6 +128,7 @@
     "category_id": 0
   },
   {
+    "product_id": 17,
     "TurkishName": "Bisküvi",
     "EnglishName": "Biscuit",
     "TurkishCategory": "Bisküvi, Kraker ve Cips",
@@ -119,13 +136,15 @@
     "category_id": 4
   },
   {
-    "TurkishName": "Bitki ve Meyve Çayı (Poşet)",
+    "product_id": 18,
+    "TurkishName": "Bitki Çayı",
     "EnglishName": "Herbal tea",
     "TurkishCategory": "Sıcak İçecekler",
     "EnglishCategory": "Hot Drinks",
     "category_id": 26
   },
   {
+    "product_id": 19,
     "TurkishName": "Börek",
     "EnglishName": "Savory Pastry",
     "TurkishCategory": "Unlu Mamüller ve Pastane",
@@ -133,6 +152,7 @@
     "category_id": 32
   },
   {
+    "product_id": 20,
     "TurkishName": "Buğday Unu",
     "EnglishName": "Wheat flour",
     "TurkishCategory": "Un ve Hamur Malzemeleri",
@@ -140,6 +160,7 @@
     "category_id": 31
   },
   {
+    "product_id": 21,
     "TurkishName": "Bulgur",
     "EnglishName": "Bulgur wheat",
     "TurkishCategory": "Tahıl, Pirinç ve Bakliyat",
@@ -147,6 +168,7 @@
     "category_id": 29
   },
   {
+    "product_id": 22,
     "TurkishName": "Ceviz",
     "EnglishName": "Walnut",
     "TurkishCategory": "Kuruyemiş ve Çekirdekler",
@@ -154,6 +176,7 @@
     "category_id": 18
   },
   {
+    "product_id": 23,
     "TurkishName": "Cips",
     "EnglishName": "Chips",
     "TurkishCategory": "Bisküvi, Kraker ve Cips",
@@ -161,6 +184,7 @@
     "category_id": 4
   },
   {
+    "product_id": 24,
     "TurkishName": "Çarliston Biber",
     "EnglishName": "Sweet green pepper",
     "TurkishCategory": "Sebze",
@@ -168,6 +192,7 @@
     "category_id": 25
   },
   {
+    "product_id": 25,
     "TurkishName": "Çay",
     "EnglishName": "Tea",
     "TurkishCategory": "Sıcak İçecekler",
@@ -175,6 +200,7 @@
     "category_id": 26
   },
   {
+    "product_id": 26,
     "TurkishName": "Çikolata Krem",
     "EnglishName": "Chocolate cream",
     "TurkishCategory": "Reçel, Bal ve Sürülebilir Ürünler",
@@ -182,13 +208,15 @@
     "category_id": 24
   },
   {
-    "TurkishName": "Çikolata Tablet",
-    "EnglishName": "Tablet of chocolate",
+    "product_id": 27,
+    "TurkishName": "Çikolata",
+    "EnglishName": "Chocolate",
     "TurkishCategory": "Çikolata ve Şekerleme",
     "EnglishCategory": "Chocolate & Candy",
     "category_id": 7
   },
   {
+    "product_id": 28,
     "TurkishName": "Çilek",
     "EnglishName": "Strawberry",
     "TurkishCategory": "Meyve",
@@ -196,6 +224,7 @@
     "category_id": 21
   },
   {
+    "product_id": 29,
     "TurkishName": "Dana",
     "EnglishName": "Beef",
     "TurkishCategory": "Kırmızı Et",
@@ -203,6 +232,7 @@
     "category_id": 17
   },
   {
+    "product_id": 30,
     "TurkishName": "Dereotu",
     "EnglishName": "Dill",
     "TurkishCategory": "Sebze",
@@ -210,6 +240,7 @@
     "category_id": 25
   },
   {
+    "product_id": 31,
     "TurkishName": "Domates",
     "EnglishName": "Tomato",
     "TurkishCategory": "Sebze",
@@ -217,6 +248,7 @@
     "category_id": 25
   },
   {
+    "product_id": 32,
     "TurkishName": "Dondurma",
     "EnglishName": "Ice cream",
     "TurkishCategory": "Dondurma",
@@ -224,6 +256,7 @@
     "category_id": 8
   },
   {
+    "product_id": 33,
     "TurkishName": "Ekmek",
     "EnglishName": "Bread",
     "TurkishCategory": "Unlu Mamüller ve Pastane",
@@ -231,6 +264,7 @@
     "category_id": 32
   },
   {
+    "product_id": 34,
     "TurkishName": "Elma",
     "EnglishName": "Apple",
     "TurkishCategory": "Meyve",
@@ -238,6 +272,7 @@
     "category_id": 21
   },
   {
+    "product_id": 35,
     "TurkishName": "Fındık",
     "EnglishName": "Hazelnut",
     "TurkishCategory": "Kuruyemiş ve Çekirdekler",
@@ -245,6 +280,7 @@
     "category_id": 18
   },
   {
+    "product_id": 36,
     "TurkishName": "Fındık Ezmesi",
     "EnglishName": "Hazelnut butter",
     "TurkishCategory": "Reçel, Bal ve Sürülebilir Ürünler",
@@ -252,6 +288,7 @@
     "category_id": 24
   },
   {
+    "product_id": 37,
     "TurkishName": "Gazoz",
     "EnglishName": "Fizzy soft drinks",
     "TurkishCategory": "Gazlı İçecekler",
@@ -259,6 +296,7 @@
     "category_id": 9
   },
   {
+    "product_id": 38,
     "TurkishName": "Gofret",
     "EnglishName": "Wafer",
     "TurkishCategory": "Çikolata ve Şekerleme",
@@ -266,6 +304,7 @@
     "category_id": 7
   },
   {
+    "product_id": 39,
     "TurkishName": "Havuç",
     "EnglishName": "Carrot",
     "TurkishCategory": "Sebze",
@@ -273,6 +312,7 @@
     "category_id": 25
   },
   {
+    "product_id": 40,
     "TurkishName": "Hazır Çorba",
     "EnglishName": "Instant soup",
     "TurkishCategory": "Hazır Yemekler ve Çorbalar",
@@ -280,6 +320,7 @@
     "category_id": 11
   },
   {
+    "product_id": 41,
     "TurkishName": "Hazır Et Yemekleri",
     "EnglishName": "Ready to eat meat dishes",
     "TurkishCategory": "Hazır Yemekler ve Çorbalar",
@@ -287,6 +328,7 @@
     "category_id": 11
   },
   {
+    "product_id": 42,
     "TurkishName": "Hazır Kahve",
     "EnglishName": "Instant coffee",
     "TurkishCategory": "Sıcak İçecekler",
@@ -294,6 +336,7 @@
     "category_id": 26
   },
   {
+    "product_id": 43,
     "TurkishName": "Hazır Pakette Toz Tatlılar (Puding)",
     "EnglishName": "Pudding",
     "TurkishCategory": "Puding ve Sütlü Tatlılar",
@@ -301,6 +344,7 @@
     "category_id": 22
   },
   {
+    "product_id": 44,
     "TurkishName": "Hazır Sütlü Tatlılar",
     "EnglishName": "Milk desserts",
     "TurkishCategory": "Puding ve Sütlü Tatlılar",
@@ -308,6 +352,7 @@
     "category_id": 22
   },
   {
+    "product_id": 45,
     "TurkishName": "Ispanak",
     "EnglishName": "Spinach",
     "TurkishCategory": "Sebze",
@@ -315,6 +360,7 @@
     "category_id": 25
   },
   {
+    "product_id": 46,
     "TurkishName": "Kabak",
     "EnglishName": "Zucchini",
     "TurkishCategory": "Sebze",
@@ -322,6 +368,7 @@
     "category_id": 25
   },
   {
+    "product_id": 47,
     "TurkishName": "Kabak Çekirdeği",
     "EnglishName": "Pumpkin seed",
     "TurkishCategory": "Kuruyemiş ve Çekirdekler",
@@ -329,13 +376,7 @@
     "category_id": 18
   },
   {
-    "TurkishName": "Kabartma Maddeleri",
-    "EnglishName": "Baking powder",
-    "TurkishCategory": "Pişirme Malzemeleri",
-    "EnglishCategory": "Baking Supplies",
-    "category_id": 20
-  },
-  {
+    "product_id": 49,
     "TurkishName": "Kağıtlı Şeker",
     "EnglishName": "Holiday candy",
     "TurkishCategory": "Çikolata ve Şekerleme",
@@ -343,6 +384,7 @@
     "category_id": 7
   },
   {
+    "product_id": 50,
     "TurkishName": "Kahve",
     "EnglishName": "Turkish coffee",
     "TurkishCategory": "Sıcak İçecekler",
@@ -350,13 +392,7 @@
     "category_id": 26
   },
   {
-    "TurkishName": "Kakao",
-    "EnglishName": "Cocoa",
-    "TurkishCategory": "Pişirme Malzemeleri",
-    "EnglishCategory": "Baking Supplies",
-    "category_id": 20
-  },
-  {
+    "product_id": 52,
     "TurkishName": "Karnabahar",
     "EnglishName": "Cauliflower",
     "TurkishCategory": "Sebze",
@@ -364,6 +400,7 @@
     "category_id": 25
   },
   {
+    "product_id": 53,
     "TurkishName": "Karpuz",
     "EnglishName": "Watermelon",
     "TurkishCategory": "Meyve",
@@ -371,6 +408,7 @@
     "category_id": 21
   },
   {
+    "product_id": 54,
     "TurkishName": "Kaşar Peyniri",
     "EnglishName": "Kashar cheese",
     "TurkishCategory": "Peynir",
@@ -378,6 +416,7 @@
     "category_id": 23
   },
   {
+    "product_id": 55,
     "TurkishName": "Kavun",
     "EnglishName": "Melon",
     "TurkishCategory": "Meyve",
@@ -385,13 +424,15 @@
     "category_id": 21
   },
   {
+    "product_id": 56,
     "TurkishName": "Kaymak",
     "EnglishName": "Clotted Cream",
-    "TurkishCategory": "Tereyağı, Krema ve Margarin",
-    "EnglishCategory": "Butter, Cream & Margarine",
-    "category_id": 30
+    "TurkishCategory": "Reçel, Bal ve Sürülebilir Ürünler",
+    "EnglishCategory": "Jam, Honey & Spreads",
+    "category_id": 24
   },
   {
+    "product_id": 57,
     "TurkishName": "Kek",
     "EnglishName": "Cake",
     "TurkishCategory": "Unlu Mamüller ve Pastane",
@@ -399,6 +440,7 @@
     "category_id": 32
   },
   {
+    "product_id": 58,
     "TurkishName": "Kesme Şeker",
     "EnglishName": "Cube sugar",
     "TurkishCategory": "Şeker ve Tatlandırıcılar",
@@ -406,6 +448,7 @@
     "category_id": 35
   },
   {
+    "product_id": 59,
     "TurkishName": "Ketçap",
     "EnglishName": "Ketchup",
     "TurkishCategory": "Soslar ve Sirkeler",
@@ -413,6 +456,7 @@
     "category_id": 28
   },
   {
+    "product_id": 60,
     "TurkishName": "Kırmızı Lahana",
     "EnglishName": "Red cabbage",
     "TurkishCategory": "Sebze",
@@ -420,6 +464,7 @@
     "category_id": 25
   },
   {
+    "product_id": 61,
     "TurkishName": "Kırmızı Turp",
     "EnglishName": "Radish",
     "TurkishCategory": "Sebze",
@@ -427,6 +472,7 @@
     "category_id": 25
   },
   {
+    "product_id": 62,
     "TurkishName": "Kıvırcık",
     "EnglishName": "Curly lettuce",
     "TurkishCategory": "Sebze",
@@ -434,6 +480,7 @@
     "category_id": 25
   },
   {
+    "product_id": 63,
     "TurkishName": "Kıyma",
     "EnglishName": "Minced Meat",
     "TurkishCategory": "Kırmızı Et",
@@ -441,6 +488,7 @@
     "category_id": 17
   },
   {
+    "product_id": 64,
     "TurkishName": "Kivi",
     "EnglishName": "Kiwi",
     "TurkishCategory": "Meyve",
@@ -448,6 +496,7 @@
     "category_id": 21
   },
   {
+    "product_id": 65,
     "TurkishName": "Kola",
     "EnglishName": "Coke",
     "TurkishCategory": "Gazlı İçecekler",
@@ -455,6 +504,7 @@
     "category_id": 9
   },
   {
+    "product_id": 66,
     "TurkishName": "Konserve Balık",
     "EnglishName": "Canned fish",
     "TurkishCategory": "Balık ve Deniz Ürünleri",
@@ -462,6 +512,7 @@
     "category_id": 1
   },
   {
+    "product_id": 67,
     "TurkishName": "Konserveler",
     "EnglishName": "Canned vegetables",
     "TurkishCategory": "Konserve ve Turşu",
@@ -469,6 +520,7 @@
     "category_id": 15
   },
   {
+    "product_id": 68,
     "TurkishName": "Kraker",
     "EnglishName": "Cracker",
     "TurkishCategory": "Bisküvi, Kraker ve Cips",
@@ -476,6 +528,7 @@
     "category_id": 4
   },
   {
+    "product_id": 69,
     "TurkishName": "Krem Peynir",
     "EnglishName": "Cream cheese",
     "TurkishCategory": "Peynir",
@@ -483,6 +536,7 @@
     "category_id": 23
   },
   {
+    "product_id": 70,
     "TurkishName": "Kuru Fasulye",
     "EnglishName": "Dry bean",
     "TurkishCategory": "Tahıl, Pirinç ve Bakliyat",
@@ -490,6 +544,7 @@
     "category_id": 29
   },
   {
+    "product_id": 71,
     "TurkishName": "Kuru İncir",
     "EnglishName": "Dried Fig",
     "TurkishCategory": "Kuru Meyveler",
@@ -497,6 +552,7 @@
     "category_id": 16
   },
   {
+    "product_id": 72,
     "TurkishName": "Kuru Kayısı",
     "EnglishName": "Dried apricot",
     "TurkishCategory": "Kuru Meyveler",
@@ -504,6 +560,7 @@
     "category_id": 16
   },
   {
+    "product_id": 73,
     "TurkishName": "Kuru Soğan",
     "EnglishName": "Onion",
     "TurkishCategory": "Sebze",
@@ -511,6 +568,7 @@
     "category_id": 25
   },
   {
+    "product_id": 74,
     "TurkishName": "Kuru Üzüm",
     "EnglishName": "Raisin",
     "TurkishCategory": "Kuru Meyveler",
@@ -518,6 +576,7 @@
     "category_id": 16
   },
   {
+    "product_id": 75,
     "TurkishName": "Kuzu",
     "EnglishName": "Lamb",
     "TurkishCategory": "Kırmızı Et",
@@ -525,6 +584,7 @@
     "category_id": 17
   },
   {
+    "product_id": 76,
     "TurkishName": "Leblebi",
     "EnglishName": "Roasted chickpea",
     "TurkishCategory": "Kuruyemiş ve Çekirdekler",
@@ -532,6 +592,7 @@
     "category_id": 18
   },
   {
+    "product_id": 77,
     "TurkishName": "Limon",
     "EnglishName": "Lemon",
     "TurkishCategory": "Meyve",
@@ -539,6 +600,7 @@
     "category_id": 21
   },
   {
+    "product_id": 78,
     "TurkishName": "Lokum",
     "EnglishName": "Turkish delight",
     "TurkishCategory": "Çikolata ve Şekerleme",
@@ -546,13 +608,15 @@
     "category_id": 7
   },
   {
+    "product_id": 79,
     "TurkishName": "Maden Suyu",
     "EnglishName": "Sparkling mineral water",
     "TurkishCategory": "Su ve Maden Suyu",
     "EnglishCategory": "Water & Mineral Water",
-    "category_id": 29
+    "category_id": 38
   },
   {
+    "product_id": 80,
     "TurkishName": "Makarna",
     "EnglishName": "Pasta",
     "TurkishCategory": "Makarna ve Erişte",
@@ -560,6 +624,7 @@
     "category_id": 19
   },
   {
+    "product_id": 81,
     "TurkishName": "Mandalina",
     "EnglishName": "Tangerine",
     "TurkishCategory": "Meyve",
@@ -567,6 +632,7 @@
     "category_id": 21
   },
   {
+    "product_id": 82,
     "TurkishName": "Mantar",
     "EnglishName": "Mushroom",
     "TurkishCategory": "Sebze",
@@ -574,6 +640,7 @@
     "category_id": 25
   },
   {
+    "product_id": 83,
     "TurkishName": "Mantı",
     "EnglishName": "Turkish Dumplings",
     "TurkishCategory": "Hazır Yemekler ve Çorbalar",
@@ -581,6 +648,7 @@
     "category_id": 11
   },
   {
+    "product_id": 84,
     "TurkishName": "Margarin",
     "EnglishName": "Margarine",
     "TurkishCategory": "Tereyağı, Krema ve Margarin",
@@ -588,6 +656,7 @@
     "category_id": 30
   },
   {
+    "product_id": 85,
     "TurkishName": "Maydanoz",
     "EnglishName": "Parsley",
     "TurkishCategory": "Sebze",
@@ -595,6 +664,7 @@
     "category_id": 25
   },
   {
+    "product_id": 86,
     "TurkishName": "Mayonez",
     "EnglishName": "Mayonnaise",
     "TurkishCategory": "Soslar ve Sirkeler",
@@ -602,6 +672,7 @@
     "category_id": 28
   },
   {
+    "product_id": 87,
     "TurkishName": "Mercimek",
     "EnglishName": "Lentils",
     "TurkishCategory": "Tahıl, Pirinç ve Bakliyat",
@@ -609,13 +680,15 @@
     "category_id": 29
   },
   {
+    "product_id": 88,
     "TurkishName": "Meyve Suyu",
     "EnglishName": "Fruit juice",
     "TurkishCategory": "Meyve Suları ve Soğuk Çay",
     "EnglishCategory": "Juices & Iced Tea",
-    "category_id": 20
+    "category_id": 39
   },
   {
+    "product_id": 89,
     "TurkishName": "Muz",
     "EnglishName": "Banana",
     "TurkishCategory": "Meyve",
@@ -623,6 +696,7 @@
     "category_id": 21
   },
   {
+    "product_id": 90,
     "TurkishName": "Nane",
     "EnglishName": "Spearmint",
     "TurkishCategory": "Sebze",
@@ -630,6 +704,7 @@
     "category_id": 25
   },
   {
+    "product_id": 91,
     "TurkishName": "Nar",
     "EnglishName": "Pomegranate",
     "TurkishCategory": "Meyve",
@@ -637,6 +712,7 @@
     "category_id": 21
   },
   {
+    "product_id": 92,
     "TurkishName": "Nar Ekşisi",
     "EnglishName": "Pomegranate Molasses",
     "TurkishCategory": "Soslar ve Sirkeler",
@@ -644,6 +720,7 @@
     "category_id": 28
   },
   {
+    "product_id": 93,
     "TurkishName": "Nohut",
     "EnglishName": "Chickpea",
     "TurkishCategory": "Tahıl, Pirinç ve Bakliyat",
@@ -651,6 +728,7 @@
     "category_id": 29
   },
   {
+    "product_id": 94,
     "TurkishName": "Pasta",
     "EnglishName": "Cream-cake and patisserie",
     "TurkishCategory": "Unlu Mamüller ve Pastane",
@@ -658,6 +736,7 @@
     "category_id": 32
   },
   {
+    "product_id": 95,
     "TurkishName": "Pastırma",
     "EnglishName": "Cured Beef",
     "TurkishCategory": "Şarküteri",
@@ -665,6 +744,7 @@
     "category_id": 33
   },
   {
+    "product_id": 96,
     "TurkishName": "Patates",
     "EnglishName": "Potato",
     "TurkishCategory": "Sebze",
@@ -672,6 +752,7 @@
     "category_id": 25
   },
   {
+    "product_id": 97,
     "TurkishName": "Patlıcan",
     "EnglishName": "Eggplant",
     "TurkishCategory": "Sebze",
@@ -679,6 +760,7 @@
     "category_id": 25
   },
   {
+    "product_id": 98,
     "TurkishName": "Pekmez",
     "EnglishName": "Grape molasses",
     "TurkishCategory": "Reçel, Bal ve Sürülebilir Ürünler",
@@ -686,6 +768,7 @@
     "category_id": 24
   },
   {
+    "product_id": 99,
     "TurkishName": "Pide",
     "EnglishName": "Turkish Flatbread",
     "TurkishCategory": "Unlu Mamüller ve Pastane",
@@ -693,6 +776,7 @@
     "category_id": 32
   },
   {
+    "product_id": 100,
     "TurkishName": "Pırasa",
     "EnglishName": "Leek",
     "TurkishCategory": "Sebze",
@@ -700,6 +784,7 @@
     "category_id": 25
   },
   {
+    "product_id": 101,
     "TurkishName": "Pirinç",
     "EnglishName": "Rice",
     "TurkishCategory": "Tahıl, Pirinç ve Bakliyat",
@@ -707,6 +792,7 @@
     "category_id": 29
   },
   {
+    "product_id": 102,
     "TurkishName": "Portakal",
     "EnglishName": "Orange",
     "TurkishCategory": "Meyve",
@@ -714,6 +800,7 @@
     "category_id": 21
   },
   {
+    "product_id": 103,
     "TurkishName": "Pul Biber",
     "EnglishName": "Red Pepper Flakes",
     "TurkishCategory": "Baharatlar ve Çeşniler",
@@ -721,6 +808,7 @@
     "category_id": 2
   },
   {
+    "product_id": 104,
     "TurkishName": "Rakı",
     "EnglishName": "Raki",
     "TurkishCategory": "Alkollü İçecekler",
@@ -728,6 +816,7 @@
     "category_id": 0
   },
   {
+    "product_id": 105,
     "TurkishName": "Reçel",
     "EnglishName": "Jam",
     "TurkishCategory": "Reçel, Bal ve Sürülebilir Ürünler",
@@ -735,6 +824,7 @@
     "category_id": 24
   },
   {
+    "product_id": 106,
     "TurkishName": "Roka",
     "EnglishName": "Rocket",
     "TurkishCategory": "Sebze",
@@ -742,13 +832,15 @@
     "category_id": 25
   },
   {
+    "product_id": 107,
     "TurkishName": "Sakatat",
     "EnglishName": "Offal",
     "TurkishCategory": "Sakatat",
     "EnglishCategory": "Offal",
-    "category_id": 24
+    "category_id": 40
   },
   {
+    "product_id": 108,
     "TurkishName": "Sakız",
     "EnglishName": "Chewing gum",
     "TurkishCategory": "Çikolata ve Şekerleme",
@@ -756,6 +848,7 @@
     "category_id": 7
   },
   {
+    "product_id": 109,
     "TurkishName": "Salam",
     "EnglishName": "Salami",
     "TurkishCategory": "Şarküteri",
@@ -763,6 +856,7 @@
     "category_id": 33
   },
   {
+    "product_id": 110,
     "TurkishName": "Salatalık",
     "EnglishName": "Cucumber",
     "TurkishCategory": "Sebze",
@@ -770,6 +864,7 @@
     "category_id": 25
   },
   {
+    "product_id": 111,
     "TurkishName": "Salça",
     "EnglishName": "Tomato sauce",
     "TurkishCategory": "Soslar ve Sirkeler",
@@ -777,6 +872,7 @@
     "category_id": 28
   },
   {
+    "product_id": 112,
     "TurkishName": "Sarımsak",
     "EnglishName": "Garlic",
     "TurkishCategory": "Sebze",
@@ -784,6 +880,7 @@
     "category_id": 25
   },
   {
+    "product_id": 113,
     "TurkishName": "Simit",
     "EnglishName": "Turkish Bagel",
     "TurkishCategory": "Unlu Mamüller ve Pastane",
@@ -791,6 +888,7 @@
     "category_id": 32
   },
   {
+    "product_id": 114,
     "TurkishName": "Sirke",
     "EnglishName": "Vinegar",
     "TurkishCategory": "Soslar ve Sirkeler",
@@ -798,6 +896,7 @@
     "category_id": 28
   },
   {
+    "product_id": 115,
     "TurkishName": "Sivri Biber",
     "EnglishName": "Green pepper",
     "TurkishCategory": "Sebze",
@@ -805,20 +904,23 @@
     "category_id": 25
   },
   {
+    "product_id": 116,
     "TurkishName": "Soğuk Çay",
     "EnglishName": "Iced tea",
     "TurkishCategory": "Meyve Suları ve Soğuk Çay",
     "EnglishCategory": "Juices & Iced Tea",
-    "category_id": 20
+    "category_id": 39
   },
   {
+    "product_id": 117,
     "TurkishName": "Soda",
     "EnglishName": "Sparkling water",
     "TurkishCategory": "Su ve Maden Suyu",
     "EnglishCategory": "Water & Mineral Water",
-    "category_id": 29
+    "category_id": 38
   },
   {
+    "product_id": 118,
     "TurkishName": "Sosis",
     "EnglishName": "Sausage",
     "TurkishCategory": "Şarküteri",
@@ -826,13 +928,15 @@
     "category_id": 33
   },
   {
+    "product_id": 119,
     "TurkishName": "Su",
     "EnglishName": "Water",
     "TurkishCategory": "Su ve Maden Suyu",
     "EnglishCategory": "Water & Mineral Water",
-    "category_id": 29
+    "category_id": 38
   },
   {
+    "product_id": 120,
     "TurkishName": "Sucuk",
     "EnglishName": "Soujouk",
     "TurkishCategory": "Şarküteri",
@@ -840,6 +944,7 @@
     "category_id": 33
   },
   {
+    "product_id": 121,
     "TurkishName": "Sumak",
     "EnglishName": "Sumac",
     "TurkishCategory": "Baharatlar ve Çeşniler",
@@ -847,13 +952,15 @@
     "category_id": 2
   },
   {
+    "product_id": 122,
     "TurkishName": "Süt",
     "EnglishName": "Milk",
     "TurkishCategory": "Süt",
     "EnglishCategory": "Milk",
-    "category_id": 28
+    "category_id": 41
   },
   {
+    "product_id": 123,
     "TurkishName": "Şarap",
     "EnglishName": "Wine",
     "TurkishCategory": "Alkollü İçecekler",
@@ -861,6 +968,7 @@
     "category_id": 0
   },
   {
+    "product_id": 124,
     "TurkishName": "Şeftali",
     "EnglishName": "Peach",
     "TurkishCategory": "Meyve",
@@ -868,6 +976,7 @@
     "category_id": 21
   },
   {
+    "product_id": 125,
     "TurkishName": "Şehriye",
     "EnglishName": "Orzo pasta",
     "TurkishCategory": "Makarna ve Erişte",
@@ -875,6 +984,7 @@
     "category_id": 19
   },
   {
+    "product_id": 126,
     "TurkishName": "Soğan",
     "EnglishName": "Onion",
     "TurkishCategory": "Sebze",
@@ -882,6 +992,7 @@
     "category_id": 25
   },
   {
+    "product_id": 127,
     "TurkishName": "Tahin",
     "EnglishName": "Sesame oil",
     "TurkishCategory": "Sıvı Yağlar",
@@ -889,13 +1000,15 @@
     "category_id": 27
   },
   {
+    "product_id": 128,
     "TurkishName": "Tahin Helvası",
     "EnglishName": "Halvah",
-    "TurkishCategory": "Helva ve Geleneksel Tatlılar",
-    "EnglishCategory": "Halva & Traditional Sweets",
+    "TurkishCategory": "Geleneksel Tatlılar",
+    "EnglishCategory": "Traditional Sweets",
     "category_id": 12
   },
   {
+    "product_id": 129,
     "TurkishName": "Tahıl Gevreği",
     "EnglishName": "Cereal",
     "TurkishCategory": "Tahıl, Pirinç ve Bakliyat",
@@ -903,6 +1016,7 @@
     "category_id": 29
   },
   {
+    "product_id": 130,
     "TurkishName": "Tavuk",
     "EnglishName": "Poultry",
     "TurkishCategory": "Beyaz Et",
@@ -910,6 +1024,7 @@
     "category_id": 5
   },
   {
+    "product_id": 131,
     "TurkishName": "Taze Fasulye",
     "EnglishName": "Green bean",
     "TurkishCategory": "Sebze",
@@ -917,6 +1032,7 @@
     "category_id": 25
   },
   {
+    "product_id": 132,
     "TurkishName": "Tereyağı",
     "EnglishName": "Butter",
     "TurkishCategory": "Tereyağı, Krema ve Margarin",
@@ -924,6 +1040,7 @@
     "category_id": 30
   },
   {
+    "product_id": 133,
     "TurkishName": "Toz Şeker",
     "EnglishName": "Granulated sugar",
     "TurkishCategory": "Şeker ve Tatlandırıcılar",
@@ -931,6 +1048,7 @@
     "category_id": 35
   },
   {
+    "product_id": 134,
     "TurkishName": "Tulum Peyniri",
     "EnglishName": "Tulum cheese",
     "TurkishCategory": "Peynir",
@@ -938,6 +1056,7 @@
     "category_id": 23
   },
   {
+    "product_id": 135,
     "TurkishName": "Turşu",
     "EnglishName": "Pickle",
     "TurkishCategory": "Konserve ve Turşu",
@@ -945,6 +1064,7 @@
     "category_id": 15
   },
   {
+    "product_id": 136,
     "TurkishName": "Tuz",
     "EnglishName": "Salt",
     "TurkishCategory": "Baharatlar ve Çeşniler",
@@ -952,6 +1072,7 @@
     "category_id": 2
   },
   {
+    "product_id": 137,
     "TurkishName": "Üzüm",
     "EnglishName": "Grape",
     "TurkishCategory": "Meyve",
@@ -959,6 +1080,7 @@
     "category_id": 21
   },
   {
+    "product_id": 138,
     "TurkishName": "Viski",
     "EnglishName": "Whisky",
     "TurkishCategory": "Alkollü İçecekler",
@@ -966,6 +1088,7 @@
     "category_id": 0
   },
   {
+    "product_id": 139,
     "TurkishName": "Votka",
     "EnglishName": "Vodka",
     "TurkishCategory": "Alkollü İçecekler",
@@ -973,6 +1096,7 @@
     "category_id": 0
   },
   {
+    "product_id": 140,
     "TurkishName": "Yer Fıstığı",
     "EnglishName": "Peanuts",
     "TurkishCategory": "Kuruyemiş ve Çekirdekler",
@@ -980,6 +1104,7 @@
     "category_id": 18
   },
   {
+    "product_id": 141,
     "TurkishName": "Yoğurt",
     "EnglishName": "Yoghurt",
     "TurkishCategory": "Yoğurt ve Ayran",
@@ -987,6 +1112,7 @@
     "category_id": 36
   },
   {
+    "product_id": 142,
     "TurkishName": "Yufka",
     "EnglishName": "Phyllo Dough",
     "TurkishCategory": "Un ve Hamur Malzemeleri",
@@ -994,6 +1120,7 @@
     "category_id": 31
   },
   {
+    "product_id": 143,
     "TurkishName": "Yumurta",
     "EnglishName": "Egg",
     "TurkishCategory": "Yumurta",
@@ -1001,6 +1128,7 @@
     "category_id": 37
   },
   {
+    "product_id": 144,
     "TurkishName": "Zeytin",
     "EnglishName": "Olive",
     "TurkishCategory": "Konserve ve Turşu",
@@ -1008,6 +1136,7 @@
     "category_id": 15
   },
   {
+    "product_id": 145,
     "TurkishName": "Zeytinyağı",
     "EnglishName": "Olive oil",
     "TurkishCategory": "Sıvı Yağlar",
