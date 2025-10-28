@@ -1,5 +1,11 @@
 [
     {
+        "shop_name": "Cagri",
+        "base_url": "https://www.cagri.com/",
+        "scraper_module": "sepet_app.scrapers.cagrimarket",
+        "scraper_class": "CagriScraper"
+    },
+    {
         "shop_name": "Onurmarket",
         "base_url": "https://www.onurmarket.com",
         "scraper_module": "sepet_app.scrapers.onurmarket",

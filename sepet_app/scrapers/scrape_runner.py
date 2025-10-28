@@ -34,7 +34,7 @@ def scrape_categories(scraper: BaseScraper, products_categories: json, shop_name
             save_to_csv(shop_name=scraper.shop_name, df=df, filepath=filepath, filename=product_name + '.csv',today_str=today_str)
             logger.info(f'File for product {product_name} created successfully for shop {scraper.shop_name}.')
         except Exception as e:
-            raise Exception(f'Exception occurred while working on {product_name}: {e}')
+            logger.error(f'Exception occurred while working on {product_name}: {e}')
 
 
 def save_to_csv(shop_name: str, df: pd.DataFrame, filepath: str, filename: str, today_str: str):
