@@ -12,7 +12,7 @@ class OnurmarketScraper(AdvancedBaseScraper):
     """A scrapers for the Onurmarket online shop."""
     def __init__(self, shop_name, base_url):
         """
-        Initializes the CarrefourScraper.
+        Initializes the OnurmarketScraper.
 
         Args:
             shop_name (str): The name of the shop (should be 'Onurmarket').
