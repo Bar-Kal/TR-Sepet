@@ -51,10 +51,6 @@ class SimpleBaseScraper(ScraperCore, ABC):
             service = webdriver.ChromeService(executable_path=chromedriver_path)
             driver = webdriver.Chrome(options=options, service=service)
 
-            #browserWSEndpoint = 'https://brd-customer-hl_985a7e37-zone-scraping_browser2:p72shsb8x418@brd.superproxy.io:9515'
-            #connection = Connection(browserWSEndpoint, 'goog', 'chrome')
-            #driver = Remote(connection, options=Options())
-
             logger.info(
                 f"Using chromedriver version {driver.capabilities['browserVersion']} located at {chromedriver_path}.")
 
