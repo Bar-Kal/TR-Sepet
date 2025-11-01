@@ -1,4 +1,4 @@
-from .base import BaseScraper
+from .simple_base import SimpleBaseScraper
 import time
 from datetime import datetime
 from bs4 import BeautifulSoup
@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from loguru import logger
 from dataclasses import asdict
 
-class MigrosScraper(BaseScraper):
+class MigrosScraper(SimpleBaseScraper):
     """A scrapers for the Migros online shop."""
     def __init__(self, shop_name, base_url):
         """
@@ -19,6 +19,8 @@ class MigrosScraper(BaseScraper):
             base_url (str): The base URL for the Migros website.
         """
         super().__init__(shop_name=shop_name, base_url=base_url)
+        self.search_string = "/arama?q="
+        self.search_url = f"{self.base_url}{self.search_string}%s"
         logger.info(f"Scraper for '{self.shop_name}' initialized.")
 
 
@@ -39,7 +41,7 @@ class MigrosScraper(BaseScraper):
                   scraped product. Returns None if an error occurs.
         """
         logger.info(f"Starting to scrape product {product} in {self.shop_name}.")
-        search_url = f"{self.base_url}/arama?q={product}"
+        search_url = self.search_string % product
         scraped_data = []
         page_num = 1
 

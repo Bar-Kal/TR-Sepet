@@ -1,15 +1,14 @@
-import time
 import bs4
+import urllib.request
+import urllib.parse
+import ssl
 from bs4 import BeautifulSoup
-from .base import BaseScraper
+from .advanced_base import AdvancedBaseScraper
 from datetime import datetime
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from loguru import logger
 from dataclasses import asdict
 
-class OnurmarketScraper(BaseScraper):
+class OnurmarketScraper(AdvancedBaseScraper):
     """A scrapers for the Onurmarket online shop."""
     def __init__(self, shop_name, base_url):
         """
@@ -20,6 +19,8 @@ class OnurmarketScraper(BaseScraper):
             base_url (str): The base URL for the Onurmarket website.
         """
         super().__init__(shop_name=shop_name, base_url=base_url)
+        self.search_string = "/Arama?1&kelime="
+        self.search_url = f"{self.base_url}{self.search_string}%s"
         logger.info(f"Scraper for '{self.shop_name}' initialized.")
 
 
@@ -41,36 +42,41 @@ class OnurmarketScraper(BaseScraper):
         """
         logger.info(f"Starting to scrape product {product} in {self.shop_name}.")
 
-        search_url = f"{self.base_url}/Arama?1&kelime={product}"
+        search_url = self.search_url % urllib.parse.quote(product)
         scraped_data = []
-        # Load the page
-        self.driver.get(search_url)
+
+        opener = urllib.request.build_opener(
+            urllib.request.ProxyHandler({'https': self.proxy, 'http': self.proxy}),
+            urllib.request.HTTPSHandler(context=ssl._create_unverified_context())
+        )
+
         try:
-            WebDriverWait(self.driver, 15).until(EC.presence_of_element_located((By.ID, "ProductPageProductList")))
-            while True:
-                page_source = self.driver.page_source
-                soup = BeautifulSoup(page_source, 'html.parser')
-                articles = soup.find_all("div", {"class": "productItem"})
-                logger.info(f"Found {len(articles)} {product} articles.")
+            page_source = opener.open(search_url).read().decode()
+            soup = BeautifulSoup(page_source, 'html.parser')
+            articles = soup.find_all("div", {"class": "productItem"})
+            logger.info(f"Found {len(articles)} {product} articles.")
 
-                if articles:
-                    for article in articles:
-                        product_info = self.ScrapedProductInfo(
-                            Scrape_Timestamp=datetime.now().isoformat(),
-                            Display_Name=article.find_all("div",{"class": "productName"})[0].text,
-                            Shop=self.shop_name,
-                            category_id=category_id,
-                            Search_Term=product,
-                            Discount_Price=self.get_prices(article.find_all("div",{"class": "productPrice"})[0])[0],
-                            Price=self.get_prices(article.find_all("div",{"class": "productPrice"})[0])[1],
-                            URL=self.base_url + article.find_all("a",{"class": "detailUrl"})[0].attrs['href'],
-                            product_id=article.find_all("a",{"class": "detailUrl"})[0].attrs['data-id']
-                        )
-                        product_info = asdict(product_info)
-                        scraped_data.append(product_info)
-                        logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
+            for article in articles:
+                display_name = article.find_all("div",{"class": "productName"})[0].text.strip()
+                if self.predict(text=display_name):
+                    product_info = self.ScrapedProductInfo(
+                        Scrape_Timestamp=datetime.now().isoformat(),
+                        Display_Name=display_name,
+                        Shop=self.shop_name,
+                        category_id=category_id,
+                        Search_Term=product,
+                        Discount_Price=self.get_prices(article.find_all("div",{"class": "productPrice"})[0])[0],
+                        Price=self.get_prices(article.find_all("div",{"class": "productPrice"})[0])[1],
+                        URL=self.base_url + article.find_all("a",{"class": "detailUrl"})[0].attrs['href'],
+                        product_id=article.find_all("a",{"class": "detailUrl"})[0].attrs['data-id']
+                    )
+                    product_info = asdict(product_info)
+                    scraped_data.append(product_info)
+                    logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
+                else:
+                    logger.warning(f"Non-Food product scraped but skipped: {display_name}")
+            return scraped_data
 
-                return scraped_data
         except Exception as e:
             logger.error(f"An error occurred: {e}")
             return None

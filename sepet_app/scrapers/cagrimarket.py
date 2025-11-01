@@ -1,7 +1,7 @@
 import time
 import bs4
 from bs4 import BeautifulSoup
-from .base import BaseScraper
+from .simple_base import SimpleBaseScraper
 from datetime import datetime
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from loguru import logger
 from dataclasses import asdict
 
-class CagriScraper(BaseScraper):
+class CagriScraper(SimpleBaseScraper):
     """A scrapers for the Cagri online shop."""
     def __init__(self, shop_name, base_url):
         """
@@ -20,6 +20,8 @@ class CagriScraper(BaseScraper):
             base_url (str): The base URL for the Cagri website.
         """
         super().__init__(shop_name=shop_name, base_url=base_url)
+        self.search_string = "/arama?isim="
+        self.search_url = f"{self.base_url}{self.search_string}%s"
         logger.info(f"Scraper for '{self.shop_name}' initialized.")
 
 
@@ -41,7 +43,7 @@ class CagriScraper(BaseScraper):
         """
         logger.info(f"Starting to scrape product {product} in {self.shop_name}.")
 
-        search_url = f"{self.base_url}/arama?isim={product}"
+        search_url = self.search_string % product
         scraped_data = []
 
         # Load the page

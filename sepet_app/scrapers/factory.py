@@ -1,8 +1,8 @@
 import importlib
 from typing import Dict, Any
-from .base import BaseScraper
+from .simple_base import SimpleBaseScraper
 
-def get_scraper(shop_config: Dict[str, Any]) -> BaseScraper:
+def get_scraper(shop_config: Dict[str, Any]) -> SimpleBaseScraper:
     """
     Factory function to dynamically get a scraper instance from its configuration.
 
@@ -16,7 +16,7 @@ def get_scraper(shop_config: Dict[str, Any]) -> BaseScraper:
                                       'shop_name', and 'base_url'.
 
     Returns:
-        An instance of a BaseScraper subclass.
+        An instance of a SimpleBaseScraper subclass.
 
     Raises:
         ValueError: If the required configuration keys are missing.

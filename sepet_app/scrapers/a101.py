@@ -1,4 +1,4 @@
-from .base import BaseScraper
+from .simple_base import SimpleBaseScraper
 import re
 import time
 from datetime import datetime
@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from dataclasses import asdict
 from loguru import logger
 
-class A101Scraper(BaseScraper):
+class A101Scraper(SimpleBaseScraper):
     """A scrapers for the A101 online shop."""
     def __init__(self, shop_name: str, base_url: str):
         """
@@ -20,6 +20,8 @@ class A101Scraper(BaseScraper):
             base_url (str): The base URL for the A101 website.
         """
         super().__init__(shop_name=shop_name, base_url=base_url)
+        self.search_string = "/arama?k=%s&kurumsal=1"
+        self.search_url = f"{self.base_url}{self.search_string}"
         logger.info(f"Scraper for '{self.shop_name}' initialized.")
 
 
@@ -39,7 +41,7 @@ class A101Scraper(BaseScraper):
             list: A list of dictionaries, each containing information about a
                   scraped product. Returns None if an error occurs.
         """
-        search_url = f"{self.base_url}/arama?k={product}&kurumsal=1"
+        search_url = self.search_string % product
         scraped_data = []
 
         # Load the page

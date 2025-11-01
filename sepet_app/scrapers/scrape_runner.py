@@ -7,15 +7,15 @@ from pathlib import Path
 import json
 import pandas as pd
 from loguru import logger
-from .base import BaseScraper
+from .simple_base import SimpleBaseScraper
 from .factory import get_scraper
 
-def scrape_categories(scraper: BaseScraper, products_categories: json, shop_name: str, filepath: str, today_str: str):
+def scrape_categories(scraper: SimpleBaseScraper, products_categories: json, shop_name: str, filepath: str, today_str: str):
     """
     Scrapes product categories for a given shop and saves the results to CSV files.
 
     Args:
-        scraper (BaseScraper): The scrapers object for the shop.
+        scraper (SimpleBaseScraper): The scrapers object for the shop.
         products_categories (json): JSON containing the products and categories to scrape. (food.json)
         shop_name (str): The name of the shop.
         filepath (str): The base filepath to save the CSV files.
