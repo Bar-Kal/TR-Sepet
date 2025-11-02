@@ -72,7 +72,7 @@ class A101Scraper(SimpleBaseScraper):
             if articles:
                 for art in articles:
                     if self.base_url in art.contents[0].attrs['href']:
-                        if self.predict(text=str(art.contents[0].attrs['title'])):
+                        if not self.ignore_nonfood or self.predict(text=str(art.contents[0].attrs['title'])):
                             product_info = self.ScrapedProductInfo(
                                 Scrape_Timestamp=datetime.now().isoformat(),
                                 Display_Name=art.contents[0].attrs['title'],

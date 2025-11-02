@@ -133,6 +133,8 @@ def main():
     through each shop, initializing the corresponding scraper and running the scraping process.
     After scraping, it combines and deduplicates the generated CSV files.
     """
+    IGNORE_NONFOOD = False
+
     with open(os.path.join('sepet_app', 'configs', 'shops.json')) as f:
         shops = json.load(f)
 
@@ -149,7 +151,7 @@ def main():
         logger.info(f"--- Starting process for {shop_name} ---")
 
         # Use the factory to get the correct scraper
-        scraper = get_scraper(shop_config=shop)
+        scraper = get_scraper(shop_config=shop, ignore_nonfood=IGNORE_NONFOOD)
         scrape_categories(
             scraper=scraper,
             products_categories=products_and_categories,

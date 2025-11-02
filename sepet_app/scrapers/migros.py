@@ -60,7 +60,7 @@ class MigrosScraper(SimpleBaseScraper):
                     product_name_element = article.find(id='product-name')
                     product_price_element = article.find("div", {"class": "price-container"})
 
-                    if self.predict(text=product_name_element.text.strip()):
+                    if not self.ignore_nonfood or self.predict(text=product_name_element.text.strip()):
                         product_info = self.ScrapedProductInfo(
                             Scrape_Timestamp=datetime.now().isoformat(),
                             Display_Name=product_name_element.text.strip(),

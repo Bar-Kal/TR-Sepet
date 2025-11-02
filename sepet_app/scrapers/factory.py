@@ -2,7 +2,7 @@ import importlib
 from typing import Dict, Any
 from .simple_base import SimpleBaseScraper
 
-def get_scraper(shop_config: Dict[str, Any]) -> SimpleBaseScraper:
+def get_scraper(shop_config: Dict[str, Any], ignore_nonfood: bool) -> SimpleBaseScraper:
     """
     Factory function to dynamically get a scraper instance from its configuration.
 
@@ -14,6 +14,8 @@ def get_scraper(shop_config: Dict[str, Any]) -> SimpleBaseScraper:
         shop_config (Dict[str, Any]): A dictionary containing the shop's configuration,
                                       including 'scraper_module', 'scraper_class',
                                       'shop_name', and 'base_url'.
+
+        ignore_nonfood (bool): Whether to ignore non-food products.
 
     Returns:
         An instance of a SimpleBaseScraper subclass.
@@ -45,4 +47,4 @@ def get_scraper(shop_config: Dict[str, Any]) -> SimpleBaseScraper:
         raise AttributeError(f"Class '{class_name}' not found in module '{module_path}'")
 
     # Create and return an instance of the correct scraper class
-    return scraper_class(shop_name=shop_name, base_url=base_url)
+    return scraper_class(shop_name=shop_name, base_url=base_url, ignore_nonfood=ignore_nonfood)

@@ -10,7 +10,7 @@ class AdvancedBaseScraper(ScraperCore, ABC):
     sophisticated techniques to bypass anti-scraping mechanisms.
     """
 
-    def __init__(self, shop_name: str, base_url: str):
+    def __init__(self, shop_name: str, base_url: str, ignore_nonfood: bool = True):
         """
         Initializes the AdvancedBaseScraper for pages which need an unlocker API.
         """
@@ -19,6 +19,7 @@ class AdvancedBaseScraper(ScraperCore, ABC):
         if self.proxy is not None:
             self.shop_name = shop_name
             self.base_url = base_url
+            self.ignore_nonfood = ignore_nonfood
             logger.info(f"Initialized AdvancedBaseScraper for {self.shop_name}")
         else:
             logger.error(f"Could not initialized AdvancedBaseScraper for {self.shop_name} because environment variable CUSTOM_PROXY is None")

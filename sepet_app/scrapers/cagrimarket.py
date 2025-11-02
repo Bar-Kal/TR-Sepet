@@ -59,7 +59,7 @@ class CagriScraper(SimpleBaseScraper):
 
                 for article in articles:
                     display_name = article.find("a",{"class": "text-slate-700"}).text
-                    if self.predict(text=display_name):
+                    if not self.ignore_nonfood or self.predict(text=display_name):
                         product_info = self.ScrapedProductInfo(
                             Scrape_Timestamp=datetime.now().isoformat(),
                             Display_Name=display_name,

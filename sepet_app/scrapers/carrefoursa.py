@@ -60,7 +60,7 @@ class CarrefoursaScraper(AdvancedBaseScraper):
 
             for article in articles:
                 display_name = article.find_all("h3",{"class": "item-name"})[0].text.strip()
-                if self.predict(text=display_name):
+                if not self.ignore_nonfood or self.predict(text=display_name):
                     product_info = self.ScrapedProductInfo(
                         Scrape_Timestamp=datetime.now().isoformat(),
                         Display_Name=display_name,

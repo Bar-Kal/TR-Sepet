@@ -17,7 +17,7 @@ class SimpleBaseScraper(ScraperCore, ABC):
     concrete scraper must implement.
     """
 
-    def __init__(self, shop_name: str, base_url: str):
+    def __init__(self, shop_name: str, base_url: str, ignore_nonfood: bool = True):
         super().__init__()
         # Set up the WebDriver
         user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36'
@@ -58,6 +58,7 @@ class SimpleBaseScraper(ScraperCore, ABC):
             self.shop_name = shop_name
             self.base_url = base_url
             self.driver = driver
+            self.ignore_nonfood = ignore_nonfood
         except Exception as e:
             logger.error("Could not instantiate chromedriver." + str(e))
 
