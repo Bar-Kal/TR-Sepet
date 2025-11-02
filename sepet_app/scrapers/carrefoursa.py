@@ -19,7 +19,7 @@ class CarrefoursaScraper(AdvancedBaseScraper):
             base_url (str): The base URL for the Carrefoursa website.
         """
         super().__init__(shop_name=shop_name, base_url=base_url)
-        # We put page=5 as Carrefoursa loads all available products --> no infinite scroll needed to load all products
+        # We put page=10 as Carrefoursa loads all available products --> no infinite scroll needed to load all products
         self.search_string = "/search?q=%s:relevance&page=10"
         self.search_url = f"{self.base_url}{self.search_string}"
         logger.info(f"Scraper for '{self.shop_name}' initialized.")
