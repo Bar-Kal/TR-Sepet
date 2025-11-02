@@ -8,25 +8,26 @@ from datetime import datetime
 from loguru import logger
 from dataclasses import asdict
 
-class OnurmarketScraper(AdvancedBaseScraper):
-    """A scrapers for the Onurmarket online shop."""
+class CarrefoursaScraper(AdvancedBaseScraper):
+    """A scrapers for the Carrefoursa online shop."""
     def __init__(self, shop_name, base_url):
         """
-        Initializes the OnurmarketScraper.
+        Initializes the CarrefoursaScraper.
 
         Args:
-            shop_name (str): The name of the shop (should be 'Onurmarket').
-            base_url (str): The base URL for the Onurmarket website.
+            shop_name (str): The name of the shop (should be 'Carrefoursa').
+            base_url (str): The base URL for the Carrefoursa website.
         """
         super().__init__(shop_name=shop_name, base_url=base_url)
-        self.search_string = "/Arama?1&kelime="
-        self.search_url = f"{self.base_url}{self.search_string}%s"
+        # We put page=5 as Carrefoursa loads all available products --> no infinite scroll needed to load all products
+        self.search_string = "/search?q=%s:relevance&page=10"
+        self.search_url = f"{self.base_url}{self.search_string}"
         logger.info(f"Scraper for '{self.shop_name}' initialized.")
 
 
     def search(self, product: str, category_id: int):
         """
-        Scrapes the Onurmarket website for a given product.
+        Scrapes the Carrefoursa website for a given product.
 
         This method navigates to the search results page for the specified
         product, clicks through the pages, and then parses the page
@@ -41,9 +42,10 @@ class OnurmarketScraper(AdvancedBaseScraper):
                   scraped product. Returns None if an error occurs.
         """
         logger.info(f"Starting to scrape product {product} in {self.shop_name}.")
-
-        search_url = self.search_url % urllib.parse.quote(product)
         scraped_data = []
+
+        # For Carrefoursa blank spaces in product names must be replaced by plus symbol (+)
+        search_url = self.search_url % urllib.parse.quote(product.replace(' ', '+'))
 
         opener = urllib.request.build_opener(
             urllib.request.ProxyHandler({'https': self.proxy, 'http': self.proxy}),
@@ -53,11 +55,11 @@ class OnurmarketScraper(AdvancedBaseScraper):
         try:
             page_source = opener.open(search_url).read().decode()
             soup = BeautifulSoup(page_source, 'html.parser')
-            articles = soup.find_all("div", {"class": "productItem"})
+            articles = soup.find_all("div", {"class": "product-card"})
             logger.info(f"Found {len(articles)} {product} articles.")
 
             for article in articles:
-                display_name = article.find_all("div",{"class": "productName"})[0].text.strip()
+                display_name = article.find_all("h3",{"class": "item-name"})[0].text.strip()
                 if self.predict(text=display_name):
                     product_info = self.ScrapedProductInfo(
                         Scrape_Timestamp=datetime.now().isoformat(),
@@ -65,10 +67,10 @@ class OnurmarketScraper(AdvancedBaseScraper):
                         Shop=self.shop_name,
                         category_id=category_id,
                         Search_Term=product,
-                        Discount_Price=self.get_prices(article.find_all("div",{"class": "productPrice"})[0])[0],
-                        Price=self.get_prices(article.find_all("div",{"class": "productPrice"})[0])[1],
-                        URL=self.base_url + article.find_all("a",{"class": "detailUrl"})[0].attrs['href'],
-                        product_id=article.find_all("a",{"class": "detailUrl"})[0].attrs['data-id']
+                        Discount_Price=self.get_prices(article.find_all("div",{"class": "item-price-contain"})[0])[0],
+                        Price=self.get_prices(article.find_all("div",{"class": "item-price-contain"})[0])[1],
+                        URL=self.base_url + article.find_all("a",{"class": "product-return"})[0].attrs['href'],
+                        product_id=article.find_all("h3",{"class": "item-name"})[0].attrs['content']
                     )
                     product_info = asdict(product_info)
                     scraped_data.append(product_info)
@@ -89,12 +91,16 @@ class OnurmarketScraper(AdvancedBaseScraper):
         Args:
             price_tag (bs4.element.Tag): The price tag which has the original and discount prices.
                                          price_tag example:
-                                         <div class="discountPrice">
-                                        <span class="discountPriceSpan">₺108,00</span>
-                                        <span class="discountKdv">KDV Dahil</span>
-                                        </div>
-                                        <div class="regularPrice">
-                                        <span class="regularPriceSpan">₺180,00</span>
+                                         <span class="price-cont" content="TRY" itemprop="priceCurrency">
+                                            <div class="item-price-contain">
+                                               <span class="hidden" content="InStock" itemprop="availability">InStock</span>
+                                               <span class="priceLineThrough js-variant-price">899,<span class="formatted-price">90 TL</span>
+                                            </span>
+                                                <span class="item-price js-variant-discounted-price  " content="849.9" itemprop="price">849,<span class="formatted-price">90 TL</span>
+                                            </span>
+                                            </div>
+                                            <p class="item-price-unit"></p>
+                                        </span>
 
         Returns:
             tuple[float, float]: A tuple containing the original price and the
@@ -103,19 +109,16 @@ class OnurmarketScraper(AdvancedBaseScraper):
         """
         regular_price = 0.0
 
-        # In the HTML, the discountPriceSpan is always available independent of the regular price
-        # If discountPriceSpan is available alone, then it is the regular price
-        discount_price = price_tag.find_all("span", {"class": "discountPriceSpan"})[0]
-        discount_price = discount_price.text.strip().replace('₺', '')
-        discount_price = discount_price.replace('.', '')
-        discount_price = float(discount_price.replace(',', '.'))
-
+        # In the HTML, the item-price span is always available independent of the regular price
+        # If item-price span is available alone, then it is the regular price. Otherwise, it is the discount price
+        discount_price = price_tag.find_all("span", {"class": "item-price"})[0].attrs['content']
+        discount_price = float(discount_price)
         regular_price = discount_price
 
         # Regular price is only available if there is really a discount on the article
-        if price_tag.find_all("span",{"class": "regularPriceSpan"}):
-            regular_price = price_tag.find_all("span",{"class": "regularPriceSpan"})[0]
-            regular_price = regular_price.text.strip().replace('₺', '')
+        if price_tag.find_all("span", {"class": "priceLineThrough"}):
+            regular_price = price_tag.find_all("span", {"class": "priceLineThrough"})[0].text
+            regular_price = regular_price.replace("TL", "").strip()
             regular_price = regular_price.replace('.', '')
             regular_price = float(regular_price.replace(',', '.'))
 

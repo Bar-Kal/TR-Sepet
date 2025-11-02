@@ -1,5 +1,11 @@
 [
     {
+        "shop_name": "Carrefoursa",
+        "base_url": "https://www.carrefoursa.com",
+        "scraper_module": "sepet_app.scrapers.carrefoursa",
+        "scraper_class": "CarrefoursaScraper"
+    },
+    {
         "shop_name": "Onurmarket",
         "base_url": "https://www.onurmarket.com",
         "scraper_module": "sepet_app.scrapers.onurmarket",
