@@ -147,6 +147,7 @@ def main():
     for shop in shops:
         shop_name = shop['shop_name']
         logger.add(f"sepet_app/logs/{datetime.now().strftime("%Y%m%d-%H%M%S")}_{shop_name}.log", rotation="10 MB")
+        logger.info(f"Ignoring non-food products: {IGNORE_NONFOOD}")
         logger.info(f"Found {len(shops)} shops to scrape.")
         logger.info(f"--- Starting process for {shop_name} ---")
 

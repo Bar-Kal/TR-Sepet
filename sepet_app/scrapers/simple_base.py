@@ -17,7 +17,7 @@ class SimpleBaseScraper(ScraperCore, ABC):
     concrete scraper must implement.
     """
 
-    def __init__(self, shop_name: str, base_url: str, ignore_nonfood: bool = True):
+    def __init__(self, shop_name: str, base_url: str, ignore_nonfood: bool = False):
         super().__init__()
         # Set up the WebDriver
         user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36'

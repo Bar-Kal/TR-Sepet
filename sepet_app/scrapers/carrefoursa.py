@@ -10,15 +10,16 @@ from dataclasses import asdict
 
 class CarrefoursaScraper(AdvancedBaseScraper):
     """A scrapers for the Carrefoursa online shop."""
-    def __init__(self, shop_name, base_url):
+    def __init__(self, shop_name: str, base_url: str, ignore_nonfood=False):
         """
         Initializes the CarrefoursaScraper.
 
         Args:
             shop_name (str): The name of the shop (should be 'Carrefoursa').
             base_url (str): The base URL for the Carrefoursa website.
+            ignore_nonfood (bool): Whether to ignore non-food products.
         """
-        super().__init__(shop_name=shop_name, base_url=base_url)
+        super().__init__(shop_name=shop_name, base_url=base_url, ignore_nonfood=ignore_nonfood)
         # We put page=10 as Carrefoursa loads all available products --> no infinite scroll needed to load all products
         self.search_string = "/search?q=%s:relevance&page=10"
         self.search_url = f"{self.base_url}{self.search_string}"

@@ -10,7 +10,7 @@ class AdvancedBaseScraper(ScraperCore, ABC):
     sophisticated techniques to bypass anti-scraping mechanisms.
     """
 
-    def __init__(self, shop_name: str, base_url: str, ignore_nonfood: bool = True):
+    def __init__(self, shop_name: str, base_url: str, ignore_nonfood: bool = False):
         """
         Initializes the AdvancedBaseScraper for pages which need an unlocker API.
         """

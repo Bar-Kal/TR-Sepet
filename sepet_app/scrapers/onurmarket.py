@@ -10,15 +10,16 @@ from dataclasses import asdict
 
 class OnurmarketScraper(AdvancedBaseScraper):
     """A scrapers for the Onurmarket online shop."""
-    def __init__(self, shop_name, base_url):
+    def __init__(self, shop_name: str, base_url: str, ignore_nonfood=False):
         """
         Initializes the OnurmarketScraper.
 
         Args:
             shop_name (str): The name of the shop (should be 'Onurmarket').
             base_url (str): The base URL for the Onurmarket website.
+            ignore_nonfood (bool): Whether to ignore non-food products.
         """
-        super().__init__(shop_name=shop_name, base_url=base_url)
+        super().__init__(shop_name=shop_name, base_url=base_url, ignore_nonfood=ignore_nonfood)
         self.search_string = "/Arama?1&kelime="
         self.search_url = f"{self.base_url}{self.search_string}%s"
         logger.info(f"Scraper for '{self.shop_name}' initialized.")

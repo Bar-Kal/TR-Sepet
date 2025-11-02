@@ -11,15 +11,16 @@ from dataclasses import asdict
 
 class CagriScraper(SimpleBaseScraper):
     """A scrapers for the Cagri online shop."""
-    def __init__(self, shop_name, base_url):
+    def __init__(self, shop_name: str, base_url: str, ignore_nonfood=False):
         """
         Initializes the CarrefourScraper.
 
         Args:
             shop_name (str): The name of the shop (should be 'Cagri').
             base_url (str): The base URL for the Cagri website.
+            ignore_nonfood (bool):
         """
-        super().__init__(shop_name=shop_name, base_url=base_url)
+        super().__init__(shop_name=shop_name, base_url=base_url, ignore_nonfood=ignore_nonfood)
         self.search_string = "/arama?isim="
         self.search_url = f"{self.base_url}{self.search_string}%s"
         logger.info(f"Scraper for '{self.shop_name}' initialized.")

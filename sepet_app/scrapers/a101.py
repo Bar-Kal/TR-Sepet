@@ -11,15 +11,16 @@ from loguru import logger
 
 class A101Scraper(SimpleBaseScraper):
     """A scrapers for the A101 online shop."""
-    def __init__(self, shop_name: str, base_url: str):
+    def __init__(self, shop_name: str, base_url: str, ignore_nonfood=False):
         """
         Initializes the A101Scraper.
 
         Args:
             shop_name (str): The name of the shop (should be 'A101').
             base_url (str): The base URL for the A101 website.
+            ignore_nonfood (bool): Whether to ignore non-food products.
         """
-        super().__init__(shop_name=shop_name, base_url=base_url)
+        super().__init__(shop_name=shop_name, base_url=base_url, ignore_nonfood=ignore_nonfood)
         self.search_string = "/arama?k=%s&kurumsal=1"
         self.search_url = f"{self.base_url}{self.search_string}"
         logger.info(f"Scraper for '{self.shop_name}' initialized.")
