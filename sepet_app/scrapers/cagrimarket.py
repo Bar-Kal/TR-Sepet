@@ -44,7 +44,7 @@ class CagriScraper(SimpleBaseScraper):
         """
         logger.info(f"Starting to scrape product {product} in {self.shop_name}.")
 
-        search_url = self.search_string % product
+        search_url = self.search_url % product
         scraped_data = []
 
         # Load the page

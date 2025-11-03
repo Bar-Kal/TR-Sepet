@@ -42,7 +42,7 @@ class A101Scraper(SimpleBaseScraper):
             list: A list of dictionaries, each containing information about a
                   scraped product. Returns None if an error occurs.
         """
-        search_url = self.search_string % product
+        search_url = self.search_url % product
         scraped_data = []
 
         # Load the page
