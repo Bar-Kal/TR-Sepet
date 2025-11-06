@@ -3,30 +3,40 @@
         "shop_name": "Carrefoursa",
         "base_url": "https://www.carrefoursa.com",
         "scraper_module": "sepet_app.scrapers.carrefoursa",
-        "scraper_class": "CarrefoursaScraper"
-    },
-    {
-        "shop_name": "Onurmarket",
-        "base_url": "https://www.onurmarket.com",
-        "scraper_module": "sepet_app.scrapers.onurmarket",
-        "scraper_class": "OnurmarketScraper"
+        "scraper_class": "CarrefoursaScraper",
+        "driver": "firefox",
+        "scraper_type": "basic"
     },
     {
         "shop_name": "Cagri",
         "base_url": "https://www.cagri.com/",
         "scraper_module": "sepet_app.scrapers.cagrimarket",
-        "scraper_class": "CagriScraper"
+        "scraper_class": "CagriScraper",
+        "driver": "chrome",
+        "scraper_type": "basic"
+    },
+    {
+        "shop_name": "Onurmarket",
+        "base_url": "https://www.onurmarket.com",
+        "scraper_module": "sepet_app.scrapers.onurmarket",
+        "scraper_class": "OnurmarketScraper",
+        "driver": "",
+        "scraper_type": "advanced"
     },
     {
         "shop_name": "A101",
         "base_url": "https://www.a101.com.tr",
         "scraper_module": "sepet_app.scrapers.a101",
-        "scraper_class": "A101Scraper"
+        "scraper_class": "A101Scraper",
+        "driver": "chrome",
+        "scraper_type": "basic"
     },
     {
         "shop_name": "Migros",
         "base_url": "https://www.migros.com.tr",
         "scraper_module": "sepet_app.scrapers.migros",
-        "scraper_class": "MigrosScraper"
+        "scraper_class": "MigrosScraper",
+        "driver": "chrome",
+        "scraper_type": "basic"
     }
 ]

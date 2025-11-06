@@ -1,7 +1,7 @@
 import time
 import bs4
 from bs4 import BeautifulSoup
-from .simple_base import SimpleBaseScraper
+from .base_scraper import BaseScraper
 from datetime import datetime
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -9,18 +9,19 @@ from selenium.webdriver.support import expected_conditions as EC
 from loguru import logger
 from dataclasses import asdict
 
-class CagriScraper(SimpleBaseScraper):
+class CagriScraper(BaseScraper):
     """A scrapers for the Cagri online shop."""
-    def __init__(self, shop_name: str, base_url: str, ignore_nonfood=False):
+    def __init__(self, shop_name: str, base_url: str, driver_name: str, ignore_nonfood=False):
         """
         Initializes the CarrefourScraper.
 
         Args:
             shop_name (str): The name of the shop (should be 'Cagri').
             base_url (str): The base URL for the Cagri website.
+            driver_name (str): The name of the driver to use.
             ignore_nonfood (bool):
         """
-        super().__init__(shop_name=shop_name, base_url=base_url, ignore_nonfood=ignore_nonfood)
+        super().__init__(shop_name=shop_name, base_url=base_url, driver_name=driver_name, ignore_nonfood=ignore_nonfood)
         self.search_string = "/arama?isim="
         self.search_url = f"{self.base_url}{self.search_string}%s"
         logger.info(f"Scraper for '{self.shop_name}' initialized.")

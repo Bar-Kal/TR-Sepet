@@ -1,4 +1,4 @@
-from .simple_base import SimpleBaseScraper
+from .base_scraper import BaseScraper
 import re
 import time
 from datetime import datetime
@@ -9,18 +9,19 @@ from selenium.webdriver.support import expected_conditions as EC
 from dataclasses import asdict
 from loguru import logger
 
-class A101Scraper(SimpleBaseScraper):
+class A101Scraper(BaseScraper):
     """A scrapers for the A101 online shop."""
-    def __init__(self, shop_name: str, base_url: str, ignore_nonfood=False):
+    def __init__(self, shop_name: str, base_url: str, driver_name: str, ignore_nonfood=False):
         """
         Initializes the A101Scraper.
 
         Args:
             shop_name (str): The name of the shop (should be 'A101').
             base_url (str): The base URL for the A101 website.
+            driver_name (str): The name of the driver to use.
             ignore_nonfood (bool): Whether to ignore non-food products.
         """
-        super().__init__(shop_name=shop_name, base_url=base_url, ignore_nonfood=ignore_nonfood)
+        super().__init__(shop_name=shop_name, base_url=base_url, driver_name=driver_name, ignore_nonfood=ignore_nonfood)
         self.search_string = "/arama?k=%s&kurumsal=1"
         self.search_url = f"{self.base_url}{self.search_string}"
         logger.info(f"Scraper for '{self.shop_name}' initialized.")

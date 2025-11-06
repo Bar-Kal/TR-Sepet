@@ -1,27 +1,27 @@
 import importlib
 from typing import Dict, Any
-from .simple_base import SimpleBaseScraper
 
-def get_scraper(shop_config: Dict[str, Any], ignore_nonfood: bool) -> SimpleBaseScraper:
+from .base_scraper import BaseScraper
+
+def get_scraper(shop_config: Dict[str, Any], ignore_nonfood: bool) -> BaseScraper:
     """
     Factory function to dynamically get a scraper instance from its configuration.
 
     This function reads the module and class names from the config dictionary,
     dynamically imports the module, retrieves the class, and returns an
-    instantiated object.
+n    instantiated object.
 
     Args:
         shop_config (Dict[str, Any]): A dictionary containing the shop's configuration,
                                       including 'scraper_module', 'scraper_class',
                                       'shop_name', and 'base_url'.
-
         ignore_nonfood (bool): Whether to ignore non-food products.
 
     Returns:
-        An instance of a SimpleBaseScraper subclass.
+        An instance of a BaseScraper subclass.
 
     Raises:
-        ValueError: If the required configuration keys are missing.
+        ValueError: If the required configuration keys are missing or the browser is not supported.
         ImportError: If the specified module cannot be found.
         AttributeError: If the specified class does not exist in the module.
     """
@@ -30,6 +30,8 @@ def get_scraper(shop_config: Dict[str, Any], ignore_nonfood: bool) -> SimpleBase
         class_name = shop_config['scraper_class']
         shop_name = shop_config['shop_name']
         base_url = shop_config['base_url']
+        driver_name = shop_config['driver']
+        scraper_type = shop_config['scraper_type']
     except KeyError as e:
         raise ValueError(f"Configuration for shop is missing required key: {e}")
 
@@ -47,4 +49,6 @@ def get_scraper(shop_config: Dict[str, Any], ignore_nonfood: bool) -> SimpleBase
         raise AttributeError(f"Class '{class_name}' not found in module '{module_path}'")
 
     # Create and return an instance of the correct scraper class
+    if scraper_type == 'basic':
+        return scraper_class(shop_name=shop_name, base_url=base_url, driver_name=driver_name, ignore_nonfood=ignore_nonfood)
     return scraper_class(shop_name=shop_name, base_url=base_url, ignore_nonfood=ignore_nonfood)

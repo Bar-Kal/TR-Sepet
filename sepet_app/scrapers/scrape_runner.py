@@ -2,15 +2,17 @@ import os
 import json
 import random
 import time
-from datetime import datetime
-from pathlib import Path
 import json
 import pandas as pd
+from datetime import datetime
+from pathlib import Path
 from loguru import logger
-from .simple_base import SimpleBaseScraper
+from typing import Union
+from .advanced_base import AdvancedBaseScraper
+from .base_scraper import BaseScraper
 from .factory import get_scraper
 
-def scrape_categories(scraper: SimpleBaseScraper, products_categories: json, shop_name: str, filepath: str, today_str: str):
+def scrape_categories(scraper: Union[BaseScraper, AdvancedBaseScraper], products_categories: json, shop_name: str, filepath: str, today_str: str):
     """
     Scrapes product categories for a given shop and saves the results to CSV files.
 
@@ -138,7 +140,7 @@ def main():
     with open(os.path.join('sepet_app', 'configs', 'shops.json')) as f:
         shops = json.load(f)
 
-    with open(os.path.join('sepet_app', 'configs', 'food.json'), 'r', encoding='utf-8') as f:
+    with open(os.path.join('sepet_app', 'configs', 'food_short.json'), 'r', encoding='utf-8') as f:
         products_and_categories = json.load(f)
 
     today_str = datetime.now().strftime('%Y-%m-%d')  # Get today's date in YYYY-MM-DD format
@@ -146,10 +148,10 @@ def main():
 
     for shop in shops:
         shop_name = shop['shop_name']
-        logger.add(f"sepet_app/logs/{datetime.now().strftime("%Y%m%d-%H%M%S")}_{shop_name}.log", rotation="10 MB")
+        log_sink_id = logger.add(f"sepet_app/logs/{datetime.now().strftime("%Y%m%d-%H%M%S")}_{shop_name}.log", rotation="10 MB")
+        logger.info(f"--- Starting process for {shop_name} ---")
         logger.info(f"Ignoring non-food products: {IGNORE_NONFOOD}")
         logger.info(f"Found {len(shops)} shops to scrape.")
-        logger.info(f"--- Starting process for {shop_name} ---")
 
         # Use the factory to get the correct scraper
         scraper = get_scraper(shop_config=shop, ignore_nonfood=IGNORE_NONFOOD)
@@ -164,4 +166,4 @@ def main():
         combine_and_deduplicate_csvs(base_downloads_path=Path(os.path.join(filepath, scraper.shop_name, today_str)))
         logger.info(f"--- Finished process for {shop_name} ---")
         del scraper
-        logger.remove()
+        logger.remove(log_sink_id)
