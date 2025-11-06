@@ -3,25 +3,30 @@ import urllib.request
 import urllib.parse
 import ssl
 from bs4 import BeautifulSoup
-from .advanced_base import AdvancedBaseScraper
+from .base_scraper import BaseScraper
 from datetime import datetime
 from loguru import logger
 from dataclasses import asdict
 
-class CarrefoursaScraper(AdvancedBaseScraper):
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+class CarrefoursaScraper(BaseScraper):
     """A scrapers for the Carrefoursa online shop."""
-    def __init__(self, shop_name: str, base_url: str, ignore_nonfood=False):
+    def __init__(self, shop_name: str, base_url: str, driver_name: str, ignore_nonfood=False):
         """
         Initializes the CarrefoursaScraper.
 
         Args:
             shop_name (str): The name of the shop (should be 'Carrefoursa').
             base_url (str): The base URL for the Carrefoursa website.
+            driver_name (str): The name of the driver to use.
             ignore_nonfood (bool): Whether to ignore non-food products.
         """
-        super().__init__(shop_name=shop_name, base_url=base_url, ignore_nonfood=ignore_nonfood)
+        super().__init__(shop_name=shop_name, base_url=base_url, driver_name=driver_name, ignore_nonfood=ignore_nonfood)
         # We put page=10 as Carrefoursa loads all available products --> no infinite scroll needed to load all products
-        self.search_string = "/search?q=%s:relevance&page=10"
+        self.search_string = "/search?q=%s:relevance&page=1"
         self.search_url = f"{self.base_url}{self.search_string}"
         logger.info(f"Scraper for '{self.shop_name}' initialized.")
 
@@ -48,36 +53,37 @@ class CarrefoursaScraper(AdvancedBaseScraper):
         # For Carrefoursa blank spaces in product names must be replaced by plus symbol (+)
         search_url = self.search_url % urllib.parse.quote(product.replace(' ', '+'))
 
-        opener = urllib.request.build_opener(
-            urllib.request.ProxyHandler({'https': self.proxy, 'http': self.proxy}),
-            urllib.request.HTTPSHandler(context=ssl._create_unverified_context())
-        )
+        # Load the page
+        self.driver.get(search_url)
 
         try:
-            page_source = opener.open(search_url).read().decode()
-            soup = BeautifulSoup(page_source, 'html.parser')
+            WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'product-listing-item')))
+            soup = BeautifulSoup(self.driver.page_source, 'html.parser')
             articles = soup.find_all("div", {"class": "product-card"})
             logger.info(f"Found {len(articles)} {product} articles.")
 
             for article in articles:
-                display_name = article.find_all("h3",{"class": "item-name"})[0].text.strip()
-                if not self.ignore_nonfood or self.predict(text=display_name):
-                    product_info = self.ScrapedProductInfo(
-                        Scrape_Timestamp=datetime.now().isoformat(),
-                        Display_Name=display_name,
-                        Shop=self.shop_name,
-                        category_id=category_id,
-                        Search_Term=product,
-                        Discount_Price=self.get_prices(article.find_all("div",{"class": "item-price-contain"})[0])[0],
-                        Price=self.get_prices(article.find_all("div",{"class": "item-price-contain"})[0])[1],
-                        URL=self.base_url + article.find_all("a",{"class": "product-return"})[0].attrs['href'],
-                        product_id=article.find_all("h3",{"class": "item-name"})[0].attrs['content']
-                    )
-                    product_info = asdict(product_info)
-                    scraped_data.append(product_info)
-                    logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
+                if article.find_all("div",{"class": "advice"}):
+                    logger.info(f"Skipping advice element")
                 else:
-                    logger.warning(f"Non-Food product scraped but skipped: {display_name}")
+                    display_name = article.find_all("h3", {"class": "item-name"})[0].text.strip()
+                    if not self.ignore_nonfood or self.predict(text=display_name):
+                        product_info = self.ScrapedProductInfo(
+                            Scrape_Timestamp=datetime.now().isoformat(),
+                            Display_Name=display_name,
+                            Shop=self.shop_name,
+                            category_id=category_id,
+                            Search_Term=product,
+                            Discount_Price=self.get_prices(article.find_all("div",{"class": "item-price-contain"})[0])[0],
+                            Price=self.get_prices(article.find_all("div",{"class": "item-price-contain"})[0])[1],
+                            URL=self.base_url + article.find_all("a",{"class": "product-return"})[0].attrs['href'],
+                            product_id=article.find_all("h3",{"class": "item-name"})[0].attrs['content']
+                        )
+                        product_info = asdict(product_info)
+                        scraped_data.append(product_info)
+                        logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
+                    else:
+                        logger.warning(f"Non-Food product scraped but skipped: {display_name}")
             return scraped_data
 
         except Exception as e:
