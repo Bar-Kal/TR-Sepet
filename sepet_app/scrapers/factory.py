@@ -26,12 +26,15 @@ n    instantiated object.
         AttributeError: If the specified class does not exist in the module.
     """
     try:
-        module_path = shop_config['scraper_module']
-        class_name = shop_config['scraper_class']
         shop_name = shop_config['shop_name']
         base_url = shop_config['base_url']
-        driver_name = shop_config['driver']
-        scraper_type = shop_config['scraper_type']
+        module_path = shop_config['scraper']['module']
+        class_name = shop_config['scraper']['class']
+        scraper_type = shop_config['scraper']['type']
+
+        if scraper_type == 'basic':
+            driver_name = shop_config['scraper']['driver']
+
     except KeyError as e:
         raise ValueError(f"Configuration for shop is missing required key: {e}")
 
