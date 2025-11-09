@@ -74,7 +74,7 @@ def train_model(run_hyperparameter: int = 0):
             logger.info("Classifier training complete.")
 
         else:
-            classifier = SVC(probability=True, C=100, gamma=10, kernel='rbf') # Best parameters from last run
+            classifier = SVC(probability=True, C=100, gamma=1, kernel='rbf') # Best parameters from last run
             classifier.fit(X_train, train_labels)
             logger.info("Classifier training without hyperparameter tuning completed.")
 
