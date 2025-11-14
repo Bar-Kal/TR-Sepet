@@ -9,7 +9,6 @@ import argparse
 
 def preprocess(text):
     text = text.lower()
-    text = re.sub(r'[^a-z\s]', '', text)
     return text.split()
 
 def get_document_vector(doc_tokens, model):
@@ -47,13 +46,17 @@ def train_model(run_hyperparameter: int = 0):
             window=5,
             min_count=1,
             workers=4,
-            sg=1  # Use skip-gram
+            sg=1  # Use skip-gram algorithm to train
         )
         logger.info("FastText model training complete.")
 
         # Create Document Vectors
         X_train = np.array([get_document_vector(text, ft_model) for text in train_texts])
         X_test = np.array([get_document_vector(text, ft_model) for text in test_texts])
+
+        logger.info(f"X_train shape: {X_train.shape}")
+        logger.info(f"X_test shape: {X_test.shape}")
+
 
         if run_hyperparameter == 1:
             # Hyperparameter search for SVC
@@ -74,7 +77,7 @@ def train_model(run_hyperparameter: int = 0):
             logger.info("Classifier training complete.")
 
         else:
-            classifier = SVC(probability=True, C=100, gamma=1, kernel='rbf') # Best parameters from last run
+            classifier = SVC(probability=True, C=10, gamma=1, kernel='rbf') # Best parameters from last run
             classifier.fit(X_train, train_labels)
             logger.info("Classifier training without hyperparameter tuning completed.")
 
@@ -97,7 +100,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Script to train a model for classifying products."
     )
-    parser.add_argument("--hyper", required=True, type=int)
+    parser.add_argument("--hyper", required=False, type=int, default=1)
     args = parser.parse_args()
     param1 = args.hyper
 
