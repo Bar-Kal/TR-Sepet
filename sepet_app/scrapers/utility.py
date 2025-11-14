@@ -43,8 +43,7 @@ class ProductClassifier:
         try:
             # Create a document vector for the input text
             text = text.lower()
-            processed_text = re.sub(r'[^a-z\s]', '', text)
-            vector = _get_document_vector(processed_text, self.ft_model).reshape(1, -1)
+            vector = _get_document_vector(text, self.ft_model).reshape(1, -1)
 
             # Predict the category
             prediction = self.classifier.predict_proba(vector)
