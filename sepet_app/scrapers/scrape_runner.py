@@ -1,5 +1,4 @@
 import os
-import json
 import random
 import time
 import json
@@ -11,6 +10,9 @@ from typing import Union
 from .advanced_base import AdvancedBaseScraper
 from .base_scraper import BaseScraper
 from .factory import get_scraper
+from .utility import ProductClassifier
+
+IGNORE_NONFOOD = False
 
 def scrape_categories(scraper: Union[BaseScraper, AdvancedBaseScraper], products_categories: json, shop_name: str, filepath: str, today_str: str):
     """
@@ -67,14 +69,13 @@ def save_to_csv(shop_name: str, df: pd.DataFrame, filepath: str, filename: str, 
         logger.error(f"Error writing to file '{filepath}' for {shop_name}: {e}")
 
 
-def combine_and_deduplicate_csvs(base_downloads_path: Path):
+def combine_and_filter_csvs(base_downloads_path: Path):
     """
     Combines all CSV files in a directory, removes duplicates, and saves the result.
 
     This function recursively finds all '.csv' files in the given base path,
-    combines them into a single pandas DataFrame, removes duplicate rows based
-    on the 'id' column, and saves the cleaned DataFrame as 'combined.csv' in the
-    same directory.
+    combines them into a single pandas DataFrame, and filters out products with fasttext models.
+    It then saves the cleaned DataFrame as 'combined.csv' in the same directory.
 
     Args:
         base_downloads_path (Path): The path to the directory containing the CSV files.
@@ -107,24 +108,26 @@ def combine_and_deduplicate_csvs(base_downloads_path: Path):
     combined_df = pd.concat(df_list, ignore_index=True)
     logger.info(f"Combined {len(combined_df)} total rows from all files.")
 
-    # Drop duplicates based on the 'product_id' column, keeping the first entry
-    if 'product_id' in combined_df.columns:
-        initial_rows = len(combined_df)
-        # Ensure 'product_id' column is of a consistent type to avoid issues with mixed types
-        combined_df['product_id'] = combined_df['product_id'].astype(str)
-        combined_df.drop_duplicates(subset=['product_id'], keep='first', inplace=True)
-        final_rows = len(combined_df)
-        logger.info(f"Removed {initial_rows - final_rows} duplicate rows based on unique 'product_id'.")
-    else:
-        logger.warning("Warning: 'id' column not found. Cannot remove duplicates.")
+    if IGNORE_NONFOOD:
+        product_classifier = ProductClassifier()
+        product_names = combined_df['Display_Name'].tolist()
+        nonfood_products = []
+        for product in product_names:
+            if not product_classifier.predict(text=product):
+                nonfood_products.append(product)
+                logger.warning(f"Non-Food product scraped but skipped: {product}")
+
+        combined_df = combined_df[~combined_df['Display_Name'].isin(nonfood_products)]
+
 
     # Save the final, clean DataFrame
-    output_file = base_downloads_path / 'combined.csv'
+    output_filepath = os.path.join(base_downloads_path, 'combined.csv')
+
     try:
-        combined_df.to_csv(output_file, sep=';', index=False, encoding='utf-8')
-        logger.info(f"Successfully saved combined data with {len(combined_df)} unique rows to '{output_file}'")
+        combined_df.to_csv(output_filepath, sep=';', index=False, encoding='utf-8')
+        logger.info(f"Successfully saved combined data with {len(combined_df)} unique rows to '{output_filepath}'")
     except IOError as e:
-        logger.error(f"Error writing to final file '{output_file}': {e}")
+        logger.error(f"Error writing to final file '{output_filepath}': {e}")
 
 
 def main():
@@ -135,7 +138,6 @@ def main():
     through each shop, initializing the corresponding scraper and running the scraping process.
     After scraping, it combines and deduplicates the generated CSV files.
     """
-    IGNORE_NONFOOD = False
 
     with open(os.path.join('sepet_app', 'configs', 'shops.json')) as f:
         shops = json.load(f)
@@ -163,7 +165,7 @@ def main():
             today_str=today_str
         )
         logger.info("Starting data combination process...")
-        combine_and_deduplicate_csvs(base_downloads_path=Path(os.path.join(filepath, scraper.shop_name, today_str)))
+        combine_and_filter_csvs(base_downloads_path=Path(os.path.join(filepath, scraper.shop_name, today_str)))
         logger.info(f"--- Finished process for {shop_name} ---")
         del scraper
         logger.remove(log_sink_id)
