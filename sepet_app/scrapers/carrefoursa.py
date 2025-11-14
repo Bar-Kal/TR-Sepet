@@ -67,23 +67,20 @@ class CarrefoursaScraper(BaseScraper):
                         logger.info(f"Skipping advice element")
                     else:
                         display_name = article.find_all("h3", {"class": "item-name"})[0].text.strip()
-                        if not self.ignore_nonfood or self.predict(text=display_name):
-                            product_info = self.ScrapedProductInfo(
-                                Scrape_Timestamp=datetime.now().isoformat(),
-                                Display_Name=display_name,
-                                Shop=self.shop_name,
-                                category_id=category_id,
-                                Search_Term=product,
-                                Discount_Price=self.get_prices(article.find_all("div",{"class": "item-price-contain"})[0])[0],
-                                Price=self.get_prices(article.find_all("div",{"class": "item-price-contain"})[0])[1],
-                                URL=self.base_url + article.find_all("a",{"class": "product-return"})[0].attrs['href'],
-                                product_id=article.find_all("h3",{"class": "item-name"})[0].attrs['content']
-                            )
-                            product_info = asdict(product_info)
-                            scraped_data.append(product_info)
-                            logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
-                        else:
-                            logger.warning(f"Non-Food product scraped but skipped: {display_name}")
+                        product_info = self.ScrapedProductInfo(
+                            Scrape_Timestamp=datetime.now().isoformat(),
+                            Display_Name=display_name,
+                            Shop=self.shop_name,
+                            category_id=category_id,
+                            Search_Term=product,
+                            Discount_Price=self.get_prices(article.find_all("div",{"class": "item-price-contain"})[0])[0],
+                            Price=self.get_prices(article.find_all("div",{"class": "item-price-contain"})[0])[1],
+                            URL=self.base_url + article.find_all("a",{"class": "product-return"})[0].attrs['href'],
+                            product_id=article.find_all("h3",{"class": "item-name"})[0].attrs['content']
+                        )
+                        product_info = asdict(product_info)
+                        scraped_data.append(product_info)
+                        logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
 
             return scraped_data
 

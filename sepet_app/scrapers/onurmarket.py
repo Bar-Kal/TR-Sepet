@@ -59,23 +59,21 @@ class OnurmarketScraper(AdvancedBaseScraper):
 
             for article in articles:
                 display_name = article.find_all("div",{"class": "productName"})[0].text.strip()
-                if not self.ignore_nonfood or self.predict(text=display_name):
-                    product_info = self.ScrapedProductInfo(
-                        Scrape_Timestamp=datetime.now().isoformat(),
-                        Display_Name=display_name,
-                        Shop=self.shop_name,
-                        category_id=category_id,
-                        Search_Term=product,
-                        Discount_Price=self.get_prices(article.find_all("div",{"class": "productPrice"})[0])[0],
-                        Price=self.get_prices(article.find_all("div",{"class": "productPrice"})[0])[1],
-                        URL=self.base_url + article.find_all("a",{"class": "detailUrl"})[0].attrs['href'],
-                        product_id=article.find_all("a",{"class": "detailUrl"})[0].attrs['data-id']
-                    )
-                    product_info = asdict(product_info)
-                    scraped_data.append(product_info)
-                    logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
-                else:
-                    logger.warning(f"Non-Food product scraped but skipped: {display_name}")
+                product_info = self.ScrapedProductInfo(
+                    Scrape_Timestamp=datetime.now().isoformat(),
+                    Display_Name=display_name,
+                    Shop=self.shop_name,
+                    category_id=category_id,
+                    Search_Term=product,
+                    Discount_Price=self.get_prices(article.find_all("div",{"class": "productPrice"})[0])[0],
+                    Price=self.get_prices(article.find_all("div",{"class": "productPrice"})[0])[1],
+                    URL=self.base_url + article.find_all("a",{"class": "detailUrl"})[0].attrs['href'],
+                    product_id=article.find_all("a",{"class": "detailUrl"})[0].attrs['data-id']
+                )
+                product_info = asdict(product_info)
+                scraped_data.append(product_info)
+                logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
+
             return scraped_data
 
         except Exception as e:

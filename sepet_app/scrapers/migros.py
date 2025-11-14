@@ -62,23 +62,20 @@ class MigrosScraper(BaseScraper):
                     product_name_element = article.find(id='product-name')
                     product_price_element = article.find("div", {"class": "price-container"})
 
-                    if not self.ignore_nonfood or self.predict(text=product_name_element.text.strip()):
-                        product_info = self.ScrapedProductInfo(
-                            Scrape_Timestamp=datetime.now().isoformat(),
-                            Display_Name=product_name_element.text.strip(),
-                            Shop=self.shop_name,
-                            category_id=category_id,
-                            Search_Term=product,
-                            Discount_Price=self.get_prices(product_price_element.text)[0],
-                            Price=self.get_prices(product_price_element.text)[1],
-                            URL=self.base_url + str(product_name_element.attrs['href']),
-                            product_id=product_name_element.attrs['href'].split("p-")[-1]
-                        )
-                        product_info = asdict(product_info)
-                        scraped_data.append(product_info)
-                        logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
-                    else:
-                        logger.warning(f"Non-Food product scraped but skipped: {product_name_element}")
+                    product_info = self.ScrapedProductInfo(
+                        Scrape_Timestamp=datetime.now().isoformat(),
+                        Display_Name=product_name_element.text.strip(),
+                        Shop=self.shop_name,
+                        category_id=category_id,
+                        Search_Term=product,
+                        Discount_Price=self.get_prices(product_price_element.text)[0],
+                        Price=self.get_prices(product_price_element.text)[1],
+                        URL=self.base_url + str(product_name_element.attrs['href']),
+                        product_id=product_name_element.attrs['href'].split("p-")[-1]
+                    )
+                    product_info = asdict(product_info)
+                    scraped_data.append(product_info)
+                    logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
 
                 try:
                     next_button = WebDriverWait(self.driver, 5).until(

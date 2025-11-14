@@ -74,23 +74,20 @@ class A101Scraper(BaseScraper):
             if articles:
                 for art in articles:
                     if self.base_url in art.contents[0].attrs['href']:
-                        if not self.ignore_nonfood or self.predict(text=str(art.contents[0].attrs['title'])):
-                            product_info = self.ScrapedProductInfo(
-                                Scrape_Timestamp=datetime.now().isoformat(),
-                                Display_Name=art.contents[0].attrs['title'],
-                                Shop=self.shop_name,
-                                category_id=category_id,
-                                Search_Term=product,
-                                Discount_Price=self.get_prices(art.text)[0],
-                                Price=self.get_prices(art.text)[1],
-                                URL=art.contents[0].attrs['href'],
-                                product_id=art.contents[0].attrs['href'].split("p-")[-1]
-                            )
-                            product_info = asdict(product_info)
-                            scraped_data.append(product_info)
-                            logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
-                        else:
-                            logger.warning(f"Non-Food product scraped but skipped: {str(art.contents[0].attrs['title'])}")
+                        product_info = self.ScrapedProductInfo(
+                            Scrape_Timestamp=datetime.now().isoformat(),
+                            Display_Name=art.contents[0].attrs['title'],
+                            Shop=self.shop_name,
+                            category_id=category_id,
+                            Search_Term=product,
+                            Discount_Price=self.get_prices(art.text)[0],
+                            Price=self.get_prices(art.text)[1],
+                            URL=art.contents[0].attrs['href'],
+                            product_id=art.contents[0].attrs['href'].split("p-")[-1]
+                        )
+                        product_info = asdict(product_info)
+                        scraped_data.append(product_info)
+                        logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
 
                 return scraped_data
         except Exception as e:
