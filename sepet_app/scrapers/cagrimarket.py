@@ -62,7 +62,7 @@ class CagriScraper(BaseScraper):
                 for article in articles:
                     display_name = article.find("a",{"class": "text-slate-700"}).text
                     product_info = self.ScrapedProductInfo(
-                        Scrape_Timestamp=datetime.now().isoformat(),
+                        Scrape_Timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                         Display_Name=display_name,
                         Shop=self.shop_name,
                         category_id=category_id,

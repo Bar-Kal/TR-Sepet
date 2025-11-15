@@ -63,7 +63,7 @@ class MigrosScraper(BaseScraper):
                     product_price_element = article.find("div", {"class": "price-container"})
 
                     product_info = self.ScrapedProductInfo(
-                        Scrape_Timestamp=datetime.now().isoformat(),
+                        Scrape_Timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                         Display_Name=product_name_element.text.strip(),
                         Shop=self.shop_name,
                         category_id=category_id,

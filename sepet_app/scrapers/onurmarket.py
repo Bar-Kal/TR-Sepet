@@ -60,7 +60,7 @@ class OnurmarketScraper(AdvancedBaseScraper):
             for article in articles:
                 display_name = article.find_all("div",{"class": "productName"})[0].text.strip()
                 product_info = self.ScrapedProductInfo(
-                    Scrape_Timestamp=datetime.now().isoformat(),
+                    Scrape_Timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     Display_Name=display_name,
                     Shop=self.shop_name,
                     category_id=category_id,

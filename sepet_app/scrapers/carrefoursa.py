@@ -68,7 +68,7 @@ class CarrefoursaScraper(BaseScraper):
                     else:
                         display_name = article.find_all("h3", {"class": "item-name"})[0].text.strip()
                         product_info = self.ScrapedProductInfo(
-                            Scrape_Timestamp=datetime.now().isoformat(),
+                            Scrape_Timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                             Display_Name=display_name,
                             Shop=self.shop_name,
                             category_id=category_id,

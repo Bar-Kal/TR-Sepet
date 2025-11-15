@@ -75,7 +75,7 @@ class A101Scraper(BaseScraper):
                 for art in articles:
                     if self.base_url in art.contents[0].attrs['href']:
                         product_info = self.ScrapedProductInfo(
-                            Scrape_Timestamp=datetime.now().isoformat(),
+                            Scrape_Timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                             Display_Name=art.contents[0].attrs['title'],
                             Shop=self.shop_name,
                             category_id=category_id,
