@@ -1,6 +1,6 @@
-from .base_scraper import BaseScraper
-import re
 import time
+import bs4
+from .base_scraper import BaseScraper
 from datetime import datetime
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
@@ -72,18 +72,19 @@ class A101Scraper(BaseScraper):
             soup = BeautifulSoup(self.driver.page_source, 'html.parser')
             articles = soup.find_all('article')
             if articles:
-                for art in articles:
-                    if self.base_url in art.contents[0].attrs['href']:
+                for article in articles:
+                    if self.base_url in article.contents[0].attrs['href']:
+                        display_name = article.contents[0].attrs['title']
                         product_info = self.ScrapedProductInfo(
                             Scrape_Timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                            Display_Name=art.contents[0].attrs['title'],
+                            Display_Name=display_name,
                             Shop=self.shop_name,
                             category_id=category_id,
                             Search_Term=product,
-                            Discount_Price=self.get_prices(art.text)[0],
-                            Price=self.get_prices(art.text)[1],
-                            URL=art.contents[0].attrs['href'],
-                            product_id=art.contents[0].attrs['href'].split("p-")[-1]
+                            Discount_Price=self.get_prices(article.find_all("section", {"class": "mt-2.5 h-full flex flex-col justify-end mb-3"})[0])[0],
+                            Price=self.get_prices(article.find_all("section", {"class": "mt-2.5 h-full flex flex-col justify-end mb-3"})[0])[1],
+                            URL=article.contents[0].attrs['href'],
+                            product_id=article.contents[0].attrs['href'].split("p-")[-1]
                         )
                         product_info = asdict(product_info)
                         scraped_data.append(product_info)
@@ -95,7 +96,7 @@ class A101Scraper(BaseScraper):
         return None
 
     @staticmethod
-    def get_prices(article_text: str) -> tuple[float, float]:
+    def get_prices(price_tag: bs4.element.Tag) -> tuple[float, float]:
         """
         Extracts and returns the discount and original prices from an article's text.
 
@@ -104,23 +105,42 @@ class A101Scraper(BaseScraper):
         highest prices found.
 
         Args:
-            article_text (str): The text of the product article.
+            price_tag (bs4.element.Tag): The price tag which has the original and discount prices.
+                                         price_tag example:
+                                         <section class="mt-2.5 h-full flex flex-col justify-end mb-3">
+                                         <span class="text-xs text-[#333] h-[17px] line-through cursor-pointer" style="line-height: initial;"></span>
+                                         <span class="text-base text-[#333]  not-italic font-medium leading-normal cursor-pointer">₺33,00</span>
+                                         </section>
 
         Returns:
             tuple[float, float]: A tuple containing the discount price and the
                                  original price. Returns (0.0, 0.0) if no
                                  prices are found.
-        """
-        # Find all occurrences of the price pattern (e.g., ₺12,34 or ₺1.234,56)
-        prices = re.findall(r'₺\s*([\d.,]+)', article_text)
-        if len(prices) > 0:
-            prices = [price.replace('.', '') for price in prices]
-            prices = [price.replace(',', '.') for price in prices]
-            prices = [float(i) for i in prices]
-            prices.sort()
-            return prices[0], prices[-1] # Lowest is discount, highest is original
 
-        return 0.0, 0.0
+        """
+
+        regular_price = 0.0
+
+        try:
+            # In the HTML, the section with class "mt-2.5 h-full flex flex-col justify-end mb-3" is always available for the prices.
+            # The text of this class has the regular price IF the next element is empty. Otherwise, it is the discount price
+            discount_price = price_tag.contents[1].text.strip().replace('₺', '')
+            discount_price = discount_price.replace('.', '')
+            discount_price = float(discount_price.replace(',', '.'))
+            regular_price = discount_price
+
+            # A discount is available if the text of the next element is not empty.
+            # Which means that the next element would be the regular price in such cases.
+            if len(price_tag.next.contents) > 0:
+                regular_price = price_tag.next.text.strip().replace('₺', '')
+                regular_price = regular_price.replace('.', '')
+                regular_price = float(regular_price.replace(',', '.'))
+
+            return discount_price, regular_price
+
+        except Exception as e:
+            logger.error(f"An error occurred while fetching the prices." + str(e))
+            return 0.0, 0.0
 
 
 
