@@ -1,5 +1,17 @@
 [
     {
+        "shop_name": "Koop",
+        "base_url": "https://www.tkkoop.com.tr",
+        "logo": "https://www.tkkoop.com.tr/assets/image/tk_koop_logo.png",
+        "scraper":
+            {
+                "module": "sepet_app.scrapers.koop",
+                "class": "KoopScraper",
+                "type": "basic",
+                "driver": "firefox"
+            }
+    },
+    {
         "shop_name": "Carrefoursa",
         "base_url": "https://www.carrefoursa.com",
         "logo": "https://kurumsal.carrefoursa.com/images/logo.svg",
