@@ -101,20 +101,25 @@ class CagriScraper(BaseScraper):
         """
         regular_price = 0.0
 
-        # If there is a discount, the discounted price is in place of the regular price tag
-        # If a single price is available, then it is the regular price
-        discount_price = str(price_tag.next.contents[0])
-        discount_price = discount_price.replace("TL", "").strip()
-        discount_price = discount_price.replace('.', '')
-        discount_price = float(discount_price.replace(',', '.'))
+        try:
+            # If there is a discount, the discounted price is in place of the regular price tag
+            # If a single price is available, then it is the regular price
+            discount_price = str(price_tag.next.contents[0])
+            discount_price = discount_price.replace("TL", "").strip()
+            discount_price = discount_price.replace('.', '')
+            discount_price = float(discount_price.replace(',', '.'))
 
-        regular_price = discount_price
+            regular_price = discount_price
 
-        # Regular price is only available if there is really a discount on the article
-        if price_tag.next.nextSibling is not None:
-            regular_price = price_tag.next.nextSibling.next
-            regular_price = regular_price.replace("TL", "").strip()
-            regular_price = regular_price.replace('.', '')
-            regular_price = float(regular_price.replace(',', '.'))
+            # Regular price is only available if there is really a discount on the article
+            if price_tag.next.nextSibling is not None:
+                regular_price = price_tag.next.nextSibling.next
+                regular_price = regular_price.replace("TL", "").strip()
+                regular_price = regular_price.replace('.', '')
+                regular_price = float(regular_price.replace(',', '.'))
 
-        return discount_price, regular_price
+            return discount_price, regular_price
+
+        except Exception as e:
+            logger.error(f"An error occurred while fetching the prices." + str(e))
+            return 0.0, 0.0

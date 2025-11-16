@@ -102,20 +102,25 @@ class OnurmarketScraper(AdvancedBaseScraper):
         """
         regular_price = 0.0
 
-        # In the HTML, the discountPriceSpan is always available independent of the regular price
-        # If discountPriceSpan is available alone, then it is the regular price
-        discount_price = price_tag.find_all("span", {"class": "discountPriceSpan"})[0]
-        discount_price = discount_price.text.strip().replace('₺', '')
-        discount_price = discount_price.replace('.', '')
-        discount_price = float(discount_price.replace(',', '.'))
+        try:
+            # In the HTML, the discountPriceSpan is always available independent of the regular price
+            # If discountPriceSpan is available alone, then it is the regular price
+            discount_price = price_tag.find_all("span", {"class": "discountPriceSpan"})[0]
+            discount_price = discount_price.text.strip().replace('₺', '')
+            discount_price = discount_price.replace('.', '')
+            discount_price = float(discount_price.replace(',', '.'))
 
-        regular_price = discount_price
+            regular_price = discount_price
 
-        # Regular price is only available if there is really a discount on the article
-        if price_tag.find_all("span",{"class": "regularPriceSpan"}):
-            regular_price = price_tag.find_all("span",{"class": "regularPriceSpan"})[0]
-            regular_price = regular_price.text.strip().replace('₺', '')
-            regular_price = regular_price.replace('.', '')
-            regular_price = float(regular_price.replace(',', '.'))
+            # Regular price is only available if there is really a discount on the article
+            if price_tag.find_all("span",{"class": "regularPriceSpan"}):
+                regular_price = price_tag.find_all("span",{"class": "regularPriceSpan"})[0]
+                regular_price = regular_price.text.strip().replace('₺', '')
+                regular_price = regular_price.replace('.', '')
+                regular_price = float(regular_price.replace(',', '.'))
 
-        return discount_price, regular_price
+            return discount_price, regular_price
+
+        except Exception as e:
+            logger.error(f"An error occurred while fetching the prices." + str(e))
+            return 0.0, 0.0
