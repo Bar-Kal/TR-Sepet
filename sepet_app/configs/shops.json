@@ -2,6 +2,7 @@
     {
         "shop_name": "Carrefoursa",
         "base_url": "https://www.carrefoursa.com",
+        "logo": "https://kurumsal.carrefoursa.com/images/logo.svg",
         "scraper":
             {
                 "module": "sepet_app.scrapers.carrefoursa",
@@ -13,6 +14,7 @@
     {
         "shop_name": "Cagri",
         "base_url": "https://www.cagri.com/",
+        "logo": "https://cagri.com/images/logo/base-logo.png",
         "scraper":
             {
                 "module": "sepet_app.scrapers.cagrimarket",
@@ -24,6 +26,7 @@
     {
         "shop_name": "Onurmarket",
         "base_url": "https://www.onurmarket.com",
+        "logo": "https://static.ticimax.cloud/48857/uploads/images/logo/124x59px.png",
         "scraper":
             {
                 "module": "sepet_app.scrapers.onurmarket",
@@ -45,6 +48,7 @@
     {
         "shop_name": "Migros",
         "base_url": "https://www.migros.com.tr",
+        "logo": "https://www.migroskurumsal.com/dist/images/kurumsal-malzeme/svg/M-Migros.svg",
         "scraper":
             {
                 "module": "sepet_app.scrapers.migros",
