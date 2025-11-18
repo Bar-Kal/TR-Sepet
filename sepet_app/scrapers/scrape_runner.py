@@ -130,7 +130,7 @@ def combine_and_filter_csvs(base_downloads_path: Path):
         logger.error(f"Error writing to final file '{output_filepath}': {e}")
 
 
-def main():
+def main(arg_shop_name: str = None):
     """
     Main function to orchestrate the scraping process for all shops.
 
@@ -150,6 +150,10 @@ def main():
 
     for shop in shops:
         shop_name = shop['shop_name']
+
+        if arg_shop_name is not None and arg_shop_name != shop_name:
+            continue
+
         log_sink_id = logger.add(f"sepet_app/logs/{datetime.now().strftime("%Y%m%d-%H%M%S")}_{shop_name}.log", rotation="10 MB")
         logger.info(f"--- Starting process for {shop_name} ---")
         logger.info(f"Ignoring non-food products: {IGNORE_NONFOOD}")
