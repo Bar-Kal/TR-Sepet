@@ -9,7 +9,7 @@ from loguru import logger
 from dataclasses import asdict
 
 class MigrosScraper(BaseScraper):
-    """A scrapers for the Migros online shop."""
+    """A scraper for the Migros online shop."""
     def __init__(self, shop_name: str, base_url: str, driver_name: str, ignore_nonfood=False):
         """
         Initializes the MigrosScraper.
@@ -54,7 +54,8 @@ class MigrosScraper(BaseScraper):
             while True:
                 page_source = self.driver.page_source
                 soup = BeautifulSoup(page_source, 'html.parser')
-                articles = soup.find_all('mat-card')
+                articles = soup.find_all('sm-product-list-content')
+                articles = articles[0].find_all('mat-card')
 
                 logger.info(f"Found {len(articles)} {product} articles on page {page_num}.")
 
