@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Taranan Ürün URL'leri</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Ürün</th>
+                <th>URL'ler</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product, urls in product_urls.items() %}
+            <tr>
+                <td>{{ product }}</td>
+                <td>
+                    <ul>
+                        {% for url in urls %}
+                        <li><a href="{{ url }}" target="_blank">{{ url }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

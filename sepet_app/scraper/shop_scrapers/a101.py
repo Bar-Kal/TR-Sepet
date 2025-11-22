@@ -10,7 +10,7 @@ from dataclasses import asdict
 from loguru import logger
 
 class A101Scraper(BaseScraper):
-    """A scrapers for the A101 online shop."""
+    """A scraper for the A101 online shop."""
     def __init__(self, shop_name: str, base_url: str, driver_name: str, ignore_nonfood=False):
         """
         Initializes the A101Scraper.

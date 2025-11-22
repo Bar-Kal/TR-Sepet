@@ -5,7 +5,6 @@ from loguru import logger
 from .core import ScraperCore
 from selenium import webdriver
 
-
 def _create_driver(driver_name: str):
     if driver_name == "chrome":
         user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36'
@@ -81,7 +80,7 @@ def _create_driver(driver_name: str):
 
 class BaseScraper(ScraperCore, ABC):
     """
-    Abstract Base Class for all shop scrapers.
+    Abstract Base Class for all shop scraper.
     It defines the common interface (the "contract") that every
     concrete scraper must implement.
     """

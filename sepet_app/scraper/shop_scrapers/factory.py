@@ -1,6 +1,5 @@
 import importlib
 from typing import Dict, Any
-
 from .base_scraper import BaseScraper
 
 def get_scraper(shop_config: Dict[str, Any], ignore_nonfood: bool) -> BaseScraper:
@@ -39,7 +38,7 @@ n    instantiated object.
         raise ValueError(f"Configuration for shop is missing required key: {e}")
 
     try:
-        # Dynamically import the module (e.g., 'scrapers.migros')
+        # Dynamically import the module (e.g., 'scraper.migros')
         scraper_module = importlib.import_module(module_path)
         # Get the class from the imported module (e.g., MigrosScraper)
         scraper_class = getattr(scraper_module, class_name)

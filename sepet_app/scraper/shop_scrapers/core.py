@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 class ScraperCore:
     """
-    A core class providing common functionalities for all scrapers and all different base classes.
+    A core class providing common functionalities for all scraper and all different base classes.
     """
 
     def __init__(self):

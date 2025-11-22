@@ -1,9 +1,10 @@
-from flask import render_template, current_app, request
-from datetime import datetime, timedelta
+import os
 import pandas as pd
-from pathlib import Path
 import random
 import locale
+from flask import render_template, current_app, request
+from datetime import datetime, timedelta
+from pathlib import Path
 
 try:
     locale.setlocale(locale.LC_TIME, 'tr_TR.UTF-8')
@@ -20,14 +21,14 @@ def index():
     shop_names = sorted(list(current_app.pickled_shop_data.keys()))
 
     # Load food categories and create a mapping
-    food_path = Path(current_app.root_path) / 'configs' / 'food.json'
+    food_path = Path(os.path.join(current_app.root_path, '..', 'scraper' , 'configs' , 'food.json'))
     with open(food_path, 'r', encoding='utf-8') as f:
         food_file = pd.read_json(f)
         food_categories = food_file['TurkishName'].tolist()
         category_mapping = food_file.set_index('category_id')['TurkishCategory'].to_dict()
     food_categories.sort()
 
-    shops_path = Path(current_app.root_path) / 'configs' / 'shops.json'
+    shops_path = Path(os.path.join(current_app.root_path, '..', 'scraper', 'configs', 'shops.json'))
     with open(shops_path, 'r', encoding='utf-8') as f:
         shops_file = pd.read_json(f)
         shop_logo_mapping = shops_file.set_index('shop_name')['logo'].to_dict()

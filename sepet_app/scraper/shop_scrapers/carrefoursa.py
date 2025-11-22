@@ -12,7 +12,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 class CarrefoursaScraper(BaseScraper):
-    """A scrapers for the Carrefoursa online shop."""
+    """A scraper for the Carrefoursa online shop."""
     def __init__(self, shop_name: str, base_url: str, driver_name: str, ignore_nonfood=False):
         """
         Initializes the CarrefoursaScraper.

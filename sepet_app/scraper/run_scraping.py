@@ -1,4 +1,4 @@
-from .scrape_runner import main
+from .shop_scrapers.scrape_runner import main
 import argparse
 
 if __name__ == "__main__":

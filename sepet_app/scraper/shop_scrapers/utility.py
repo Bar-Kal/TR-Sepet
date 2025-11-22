@@ -1,4 +1,3 @@
-import re
 import pickle
 from gensim.models import FastText
 from loguru import logger
@@ -13,7 +12,7 @@ def _get_document_vector(doc_tokens, model):
 
 class ProductClassifier:
     """
-    A utility class providing common functionalities for scrapers,
+    A utility class providing common functionalities for scraper,
     such as product classification.
     """
 
@@ -23,8 +22,8 @@ class ProductClassifier:
         """
         try:
             # Load the models
-            self.ft_model = FastText.load("sepet_app/fasttext/trained_model/fasttext_model.bin")
-            with open("sepet_app/fasttext/trained_model/classifier_model.pkl", "rb") as f:
+            self.ft_model = FastText.load("sepet_app/models/trained_model/fasttext_model.bin")
+            with open("sepet_app/models/trained_model/classifier_model.pkl", "rb") as f:
                 self.classifier = pickle.load(f)
             logger.info("Successfully loaded FastText and classifier models.")
         except Exception as e:

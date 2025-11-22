@@ -9,7 +9,7 @@ from loguru import logger
 from dataclasses import asdict
 
 class OnurmarketScraper(AdvancedBaseScraper):
-    """A scrapers for the Onurmarket online shop."""
+    """A scraper for the Onurmarket online shop."""
     def __init__(self, shop_name: str, base_url: str, ignore_nonfood=False):
         """
         Initializes the OnurmarketScraper.

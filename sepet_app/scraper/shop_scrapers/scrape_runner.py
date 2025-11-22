@@ -19,7 +19,7 @@ def scrape_categories(scraper: Union[BaseScraper, AdvancedBaseScraper], products
     Scrapes product categories for a given shop and saves the results to CSV files.
 
     Args:
-        scraper (SimpleBaseScraper): The scrapers object for the shop.
+        scraper (SimpleBaseScraper): The scraper object for the shop.
         products_categories (json): JSON containing the products and categories to scrape. (food.json)
         shop_name (str): The name of the shop.
         filepath (str): The base filepath to save the CSV files.
@@ -138,15 +138,14 @@ def main(arg_shop_name: str = None):
     through each shop, initializing the corresponding scraper and running the scraping process.
     After scraping, it combines and deduplicates the generated CSV files.
     """
-
-    with open(os.path.join('sepet_app', 'configs', 'shops.json')) as f:
+    with open(os.path.join('sepet_app', 'scraper', 'configs', 'shops.json')) as f:
         shops = json.load(f)
 
-    with open(os.path.join('sepet_app', 'configs', 'food.json'), 'r', encoding='utf-8') as f:
+    with open(os.path.join('sepet_app', 'scraper', 'configs', 'food.json'), 'r', encoding='utf-8') as f:
         products_and_categories = json.load(f)
 
     today_str = datetime.now().strftime('%Y-%m-%d')  # Get today's date in YYYY-MM-DD format
-    filepath = os.path.join('sepet_app', 'downloads')
+    filepath = os.path.join('sepet_app', 'scraper', 'downloads')
 
     for shop in shops:
         shop_name = shop['shop_name']
@@ -154,7 +153,8 @@ def main(arg_shop_name: str = None):
         if arg_shop_name is not None and arg_shop_name != shop_name:
             continue
 
-        log_sink_id = logger.add(f"sepet_app/logs/{datetime.now().strftime("%Y%m%d-%H%M%S")}_{shop_name}.log", rotation="10 MB")
+        logfile_name = datetime.now().strftime("%Y%m%d-%H%M%S") + '_' + shop_name + '.log'
+        log_sink_id = logger.add(os.path.join('sepet_app', 'scraper', 'logs', logfile_name), rotation="10 MB")
         logger.info(f"--- Starting process for {shop_name} ---")
         logger.info(f"Ignoring non-food products: {IGNORE_NONFOOD}")
         logger.info(f"Found {len(shops)} shops to scrape.")

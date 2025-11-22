@@ -1,4 +1,3 @@
-import time
 import bs4
 from bs4 import BeautifulSoup
 from .base_scraper import BaseScraper
@@ -10,7 +9,7 @@ from loguru import logger
 from dataclasses import asdict
 
 class CagriScraper(BaseScraper):
-    """A scrapers for the Cagri online shop."""
+    """A scraper for the Cagri online shop."""
     def __init__(self, shop_name: str, base_url: str, driver_name: str, ignore_nonfood=False):
         """
         Initializes the CarrefourScraper.

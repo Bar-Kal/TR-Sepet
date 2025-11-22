@@ -1,11 +1,23 @@
 [
     {
+        "shop_name": "Migros",
+        "base_url": "https://www.migros.com.tr",
+        "logo": "https://www.migroskurumsal.com/dist/images/kurumsal-malzeme/svg/M-Migros.svg",
+        "scraper":
+            {
+                "module": "sepet_app.scraper.shop_scrapers.migros",
+                "class": "MigrosScraper",
+                "type": "basic",
+                "driver": "chrome"
+            }
+    },
+    {
         "shop_name": "Koop",
         "base_url": "https://www.tkkoop.com.tr",
         "logo": "https://www.tkkoop.com.tr/assets/image/tk_koop_logo.png",
         "scraper":
             {
-                "module": "sepet_app.scrapers.koop",
+                "module": "sepet_app.scraper.shop_scrapers.koop",
                 "class": "KoopScraper",
                 "type": "basic",
                 "driver": "firefox"
@@ -17,7 +29,7 @@
         "logo": "https://kurumsal.carrefoursa.com/images/logo.svg",
         "scraper":
             {
-                "module": "sepet_app.scrapers.carrefoursa",
+                "module": "sepet_app.scraper.shop_scrapers.carrefoursa",
                 "class": "CarrefoursaScraper",
                 "type": "basic",
                 "driver": "firefox"
@@ -29,7 +41,7 @@
         "logo": "https://cagri.com/images/logo/base-logo.png",
         "scraper":
             {
-                "module": "sepet_app.scrapers.cagrimarket",
+                "module": "sepet_app.scraper.shop_scrapers.cagrimarket",
                 "class": "CagriScraper",
                 "type": "basic",
                 "driver": "chrome"
@@ -41,7 +53,7 @@
         "logo": "https://static.ticimax.cloud/48857/uploads/images/logo/124x59px.png",
         "scraper":
             {
-                "module": "sepet_app.scrapers.onurmarket",
+                "module": "sepet_app.scraper.shop_scrapers.onurmarket",
                 "class": "OnurmarketScraper",
                 "type": "advanced"
             }
@@ -49,22 +61,11 @@
     {
         "shop_name": "A101",
         "base_url": "https://www.a101.com.tr",
+        "logo": "https://upload.wikimedia.org/wikipedia/commons/d/df/A101_logo.svg",
         "scraper":
             {
-                "module": "sepet_app.scrapers.a101",
+                "module": "sepet_app.scraper.shop_scrapers.a101",
                 "class": "A101Scraper",
-                "type": "basic",
-                "driver": "chrome"
-            }
-    },
-    {
-        "shop_name": "Migros",
-        "base_url": "https://www.migros.com.tr",
-        "logo": "https://www.migroskurumsal.com/dist/images/kurumsal-malzeme/svg/M-Migros.svg",
-        "scraper":
-            {
-                "module": "sepet_app.scrapers.migros",
-                "class": "MigrosScraper",
                 "type": "basic",
                 "driver": "chrome"
             }

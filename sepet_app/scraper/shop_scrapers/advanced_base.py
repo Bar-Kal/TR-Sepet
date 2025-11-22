@@ -6,7 +6,7 @@ from .core import ScraperCore
 
 class AdvancedBaseScraper(ScraperCore, ABC):
     """
-    Abstract Base Class for advanced shop scrapers that require more
+    Abstract Base Class for advanced shop scraper that require more
     sophisticated techniques to bypass anti-scraping mechanisms.
     """
 
