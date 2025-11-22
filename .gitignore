@@ -7,6 +7,6 @@ sepet_app/scraper/downloads/
 
 sepet_app/scraper/logs/*.log
 
-sepet_app/scraper/shell-scripts/
+sepet_app/shell-scripts/
 
 sepet_app/models/trained_model/
