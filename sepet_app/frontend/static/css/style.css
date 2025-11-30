@@ -59,6 +59,15 @@ nav a.brand {
     font-size: 1.5rem;
     color: var(--dark-gray);
     border-bottom: none;
+    display: flex; /* Make the brand a flex container */
+    align-items: center; /* Vertically align items */
+    gap: 10px; /* Space between logo and text */
+}
+
+.brand-logo {
+    height: 30px; /* Adjust as needed */
+    width: auto; /* Maintain aspect ratio */
+    vertical-align: middle; /* Align with text */
 }
 
 nav a:not(.brand):hover {
