@@ -10,7 +10,7 @@ from typing import Union
 from .advanced_base import AdvancedBaseScraper
 from .base_scraper import BaseScraper
 from .factory import get_scraper
-from .utility import ProductClassifier
+from .utility import ProductClassifier, create_pickle_from_csvs
 
 IGNORE_NONFOOD = False
 
@@ -173,3 +173,5 @@ def main(arg_shop_name: str = None):
         logger.info(f"--- Finished process for {shop_name} ---")
         del scraper
         logger.remove(log_sink_id)
+
+    create_pickle_from_csvs()
