@@ -44,7 +44,7 @@ nav {
     gap: 1.5rem;
 }
 
-nav a {
+.nav-links a {
     text-decoration: none;
     color: var(--text-gray);
     font-weight: 500;
@@ -54,20 +54,20 @@ nav a {
     transition: color var(--transition-speed), border-color var(--transition-speed);
 }
 
-nav a.brand {
+nav .logo-brand span {
     font-weight: 700;
     font-size: 1.5rem;
     color: var(--dark-gray);
-    border-bottom: none;
 }
 
-nav a:not(.brand):hover {
+.nav-links a:hover {
     color: var(--dark-gray);
 }
 
-nav a.active {
+.nav-links a.active {
     color: var(--chart-green);
     border-bottom-color: var(--chart-green);
+    font-weight: 600;
 }
 
 main {
@@ -295,3 +295,15 @@ footer {
     display: flex;
     align-items: center;
 }
+
+.logo-brand {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.logo {
+    height: 40px;
+    margin-right: 10px;
+}
+

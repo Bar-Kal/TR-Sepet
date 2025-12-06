@@ -157,7 +157,7 @@ def index():
 @current_app.route('/about')
 def about():
     """Renders a simple about page."""
-    return "<h1>Bu Uygulama Hakkında</h1>"
+    return render_template("about.html")
 
 
 @current_app.route('/test')

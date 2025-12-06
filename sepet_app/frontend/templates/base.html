@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- The title block can be overridden by child templates -->
     <title>{% block title %}Flask Uygulamam{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -14,7 +15,10 @@
     <header>
         <div class="container">
             <nav>
-                <a href="{{ url_for('index') }}" class="brand">TR-Sepet</a>
+                <a href="{{ url_for('index') }}" class="logo-brand">
+                    <img src="{{ url_for('static', filename='logo.png') }}" alt="TR-Sepet Logo" class="logo">
+                    <span class="brand">TR-Sepet</span>
+                </a>
                 <div class="nav-links">
                     <a href="{{ url_for('index') }}">Anasayfa</a>
                     <a href="{{ url_for('about') }}">Hakkında</a>
@@ -29,7 +33,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2025 Harika Flask Uygulamam</p>
+        <p>&copy; 2025 TR-Sepet. Tüm hakları saklıdır.</p>
     </footer>
 </body>
 </html>
