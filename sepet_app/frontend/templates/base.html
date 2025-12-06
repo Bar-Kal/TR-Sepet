@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- The title block can be overridden by child templates -->
     <title>{% block title %}TR-Sepet{% endblock %}</title>
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='./img/page/favicon.ico') }}" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
         <div class="container">
             <nav>
                 <a href="{{ url_for('index') }}" class="logo-brand">
-                    <img src="{{ url_for('static', filename='logo.png') }}" alt="TR-Sepet Logo" class="logo">
+                    <img src="{{ url_for('static', filename='./img/page/logo.png') }}" alt="TR-Sepet Logo" class="logo">
                     <span class="brand">TR-Sepet</span>
                 </a>
                 <div class="nav-links">

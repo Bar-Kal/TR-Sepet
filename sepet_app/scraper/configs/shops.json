@@ -2,7 +2,7 @@
     {
         "shop_name": "Migros",
         "base_url": "https://www.migros.com.tr",
-        "logo": "https://www.migroskurumsal.com/dist/images/kurumsal-malzeme/svg/M-Migros.svg",
+        "logo": "static/img/shops/M-Migros.svg",
         "scraper":
             {
                 "module": "sepet_app.scraper.shop_scrapers.migros",
@@ -14,7 +14,7 @@
     {
         "shop_name": "Koop",
         "base_url": "https://www.tkkoop.com.tr",
-        "logo": "https://www.tkkoop.com.tr/assets/image/tk_koop_logo.png",
+        "logo": "static/img/shops/Tk_Koop_Market_logo.svg",
         "scraper":
             {
                 "module": "sepet_app.scraper.shop_scrapers.koop",
@@ -26,7 +26,7 @@
     {
         "shop_name": "Carrefoursa",
         "base_url": "https://www.carrefoursa.com",
-        "logo": "https://kurumsal.carrefoursa.com/images/logo.svg",
+        "logo": "static/img/shops/carrefoursa_logo.svg",
         "scraper":
             {
                 "module": "sepet_app.scraper.shop_scrapers.carrefoursa",
@@ -38,7 +38,7 @@
     {
         "shop_name": "Cagri",
         "base_url": "https://www.cagri.com/",
-        "logo": "https://cagri.com/images/logo/base-logo.png",
+        "logo": "static/img/shops/cagri_logo.png",
         "scraper":
             {
                 "module": "sepet_app.scraper.shop_scrapers.cagrimarket",
@@ -50,7 +50,7 @@
     {
         "shop_name": "Onurmarket",
         "base_url": "https://www.onurmarket.com",
-        "logo": "https://static.ticimax.cloud/48857/uploads/images/logo/124x59px.png",
+        "logo": "static/img/shops/onur.png",
         "scraper":
             {
                 "module": "sepet_app.scraper.shop_scrapers.onurmarket",
@@ -61,7 +61,7 @@
     {
         "shop_name": "A101",
         "base_url": "https://www.a101.com.tr",
-        "logo": "https://upload.wikimedia.org/wikipedia/commons/d/df/A101_logo.svg",
+        "logo": "static/img/shops/A101_logo.svg",
         "scraper":
             {
                 "module": "sepet_app.scraper.shop_scrapers.a101",
