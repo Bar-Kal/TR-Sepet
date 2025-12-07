@@ -126,7 +126,7 @@ class A101Scraper(BaseScraper):
             # The text of this class has the regular price IF the next element is empty. Otherwise, it is the discount price
             discount_price = price_tag.contents[1].text.strip().replace('₺', '')
             discount_price = discount_price.replace('.', '')
-            discount_price = float(discount_price.replace(',', '.'))
+            discount_price = round(float(discount_price.replace(',', '.')), 2)
             regular_price = discount_price
 
             # A discount is available if the text of the next element is not empty.
@@ -134,7 +134,7 @@ class A101Scraper(BaseScraper):
             if len(price_tag.next.contents) > 0:
                 regular_price = price_tag.next.text.strip().replace('₺', '')
                 regular_price = regular_price.replace('.', '')
-                regular_price = float(regular_price.replace(',', '.'))
+                regular_price = round(float(regular_price.replace(',', '.')), 2)
 
             return discount_price, regular_price
 

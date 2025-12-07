@@ -106,8 +106,7 @@ class CagriScraper(BaseScraper):
             discount_price = str(price_tag.next.contents[0])
             discount_price = discount_price.replace("TL", "").strip()
             discount_price = discount_price.replace('.', '')
-            discount_price = float(discount_price.replace(',', '.'))
-
+            discount_price = round(float(discount_price.replace(',', '.')), 2)
             regular_price = discount_price
 
             # Regular price is only available if there is really a discount on the article
@@ -115,7 +114,7 @@ class CagriScraper(BaseScraper):
                 regular_price = price_tag.next.nextSibling.next
                 regular_price = regular_price.replace("TL", "").strip()
                 regular_price = regular_price.replace('.', '')
-                regular_price = float(regular_price.replace(',', '.'))
+                regular_price = round(float(regular_price.replace(',', '.')), 2)
 
             return discount_price, regular_price
 

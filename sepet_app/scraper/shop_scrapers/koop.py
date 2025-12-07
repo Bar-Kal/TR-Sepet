@@ -129,8 +129,7 @@ class KoopScraper(BaseScraper):
             discount_price = price_tag.text.strip()
             discount_price = discount_price.replace("TL", "")
             discount_price = discount_price.replace('.', '')
-            discount_price = float(discount_price.replace(',', '.'))
-
+            discount_price = round(float(discount_price.replace(',', '.')), 2)
             regular_price = discount_price
 
             return discount_price, regular_price

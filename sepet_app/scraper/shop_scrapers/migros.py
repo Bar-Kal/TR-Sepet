@@ -117,12 +117,13 @@ class MigrosScraper(BaseScraper):
                 dummy_prices = product_price_element.replace("Money ile", "")
                 dummy_prices = dummy_prices.replace("TL", "").strip().replace(",", ".")
                 dummy_prices = dummy_prices.split(' ')
-                price = float(dummy_prices[0])
-                discount = float(dummy_prices[1])
+                price = round(float(dummy_prices[0]), 2)
+                discount = round(float(dummy_prices[1]), 2)
                 return discount, price
 
             # No discount price available for article
             price = float(product_price_element.replace("TL", "").strip().replace(",", "."))
+            price = round(price, 2)
             return price, price
 
         except Exception as e:

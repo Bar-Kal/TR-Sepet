@@ -117,7 +117,7 @@ class CarrefoursaScraper(BaseScraper):
             # In the HTML, the item-price span is always available independent of the regular price
             # If item-price span is available alone, then it is the regular price. Otherwise, it is the discount price
             discount_price = price_tag.find_all("span", {"class": "item-price"})[0].attrs['content']
-            discount_price = float(discount_price)
+            discount_price = round(float(discount_price), 2)
             regular_price = discount_price
 
             # Regular price is only available if there is really a discount on the article
@@ -125,7 +125,7 @@ class CarrefoursaScraper(BaseScraper):
                 regular_price = price_tag.find_all("span", {"class": "priceLineThrough"})[0].text
                 regular_price = regular_price.replace("TL", "").strip()
                 regular_price = regular_price.replace('.', '')
-                regular_price = float(regular_price.replace(',', '.'))
+                regular_price = round(float(regular_price.replace(',', '.')), 2)
 
             return discount_price, regular_price
 

@@ -108,7 +108,7 @@ class OnurmarketScraper(AdvancedBaseScraper):
             discount_price = price_tag.find_all("span", {"class": "discountPriceSpan"})[0]
             discount_price = discount_price.text.strip().replace('₺', '')
             discount_price = discount_price.replace('.', '')
-            discount_price = float(discount_price.replace(',', '.'))
+            discount_price = round(float(discount_price.replace(',', '.')), 2)
 
             regular_price = discount_price
 
@@ -117,7 +117,7 @@ class OnurmarketScraper(AdvancedBaseScraper):
                 regular_price = price_tag.find_all("span",{"class": "regularPriceSpan"})[0]
                 regular_price = regular_price.text.strip().replace('₺', '')
                 regular_price = regular_price.replace('.', '')
-                regular_price = float(regular_price.replace(',', '.'))
+                regular_price = round(float(regular_price.replace(',', '.')), 2)
 
             return discount_price, regular_price
 
