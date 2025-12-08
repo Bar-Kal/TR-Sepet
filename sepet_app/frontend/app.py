@@ -8,6 +8,7 @@ def create_app():
     """
     # Create the Flask application instance
     app = Flask(__name__)
+    app.config['SECRET_KEY'] = os.urandom(24)
 
     # In a real application, you would initialize extensions here:
     # from .extensions import db, migrate

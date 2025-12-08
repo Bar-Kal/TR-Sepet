@@ -3,6 +3,32 @@
 {% block title %}{{ title }} - TR-Sepet{% endblock %}
 
 {% block content %}
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flashes">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+    <div class="upload-section">
+        <div class="container">
+            <h2>Upload a File</h2>
+            <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="file" name="file" id="file">
+                    </div>
+                    <div class="form-actions">
+                        <input type="submit" value="Upload">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
     <div class="controls-section">
         <div class="container">
             <form action="/index" method="post">

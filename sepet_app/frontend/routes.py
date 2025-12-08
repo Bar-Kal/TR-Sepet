@@ -2,7 +2,8 @@ import os
 import pandas as pd
 import random
 import locale
-from flask import render_template, current_app, request
+from flask import render_template, current_app, request, flash, redirect, url_for
+from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -167,3 +168,28 @@ def test():
     print(dummy['shop_name'])
     #combine_and_deduplicate_csvs(base_downloads_path=Path(os.path.join('sepet_app', 'downloads', '2025-test', 'A101')))
     return "<h1>Test endpointine ulaştınız</h1>"
+
+ALLOWED_EXTENSIONS = {'pkl'}
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@current_app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        flash('No file part')
+        return redirect(url_for('index'))
+    file = request.files['file']
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(url_for('index'))
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        upload_folder = os.path.join(current_app.root_path, 'database')
+        file.save(os.path.join(upload_folder, filename))
+        flash('File successfully uploaded')
+        return redirect(url_for('index'))
+    else:
+        flash('Allowed file types are csv, json, txt, pkl')
+        return redirect(url_for('index'))
