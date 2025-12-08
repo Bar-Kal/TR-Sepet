@@ -7,9 +7,11 @@ def load_pickled_data():
     """
     base_downloads_path = os.path.join('sepet_app', 'frontend', 'database')
     pickled_db_file = [os.path.join(base_downloads_path, f) for f in os.listdir(base_downloads_path) if f.endswith('.pkl')]
-    pickled_db_file = sorted(pickled_db_file)[-1]
 
-    if not os.path.exists(pickled_db_file):
+    if len(pickled_db_file) > 1:
+        pickled_db_file = sorted(pickled_db_file)[-1]
+
+    if (len(pickled_db_file) == 0) or (not os.path.exists(pickled_db_file)):
         print(f"Warning: Pickle file not found at '{pickled_db_file}'. Returning empty data.")
         return {}
 
