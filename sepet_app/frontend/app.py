@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 
 def create_app():
@@ -33,4 +34,4 @@ app = create_app()
 if __name__ == '__main__':
     # The debug=True flag enables the interactive debugger and auto-reloader.
     # This should only be used for development.
-    app.run(debug=True)
+    app.run(debug=True, port=os.getenv("PORT", default=5000))
