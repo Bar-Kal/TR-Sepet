@@ -5,6 +5,8 @@ __pycache__/
 
 sepet_app/scraper/downloads/
 
+sepet_app/frontend/database/
+
 sepet_app/scraper/logs/*.log
 
 sepet_app/shell-scripts/
