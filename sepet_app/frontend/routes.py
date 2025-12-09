@@ -2,7 +2,8 @@ import os
 import pandas as pd
 import random
 import locale
-from flask import render_template, current_app, request
+from flask import render_template, current_app, request, jsonify
+from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -167,3 +168,24 @@ def test():
     print(dummy['shop_name'])
     #combine_and_deduplicate_csvs(base_downloads_path=Path(os.path.join('sepet_app', 'downloads', '2025-test', 'A101')))
     return "<h1>Test endpointine ulaştınız</h1>"
+
+@current_app.route('/upload_secure', methods=['POST'])
+def upload_secure():
+    """Handles secure file uploads."""
+    secret_key = request.form.get('secret_key')
+    if secret_key != current_app.config['UPLOAD_SECRET_KEY']:
+        return jsonify({'error': 'Invalid secret key'}), 401
+
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    if file:
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+        return jsonify({'message': 'File successfully uploaded'}), 200
+    
+    return jsonify({'error': 'File upload failed'}), 500

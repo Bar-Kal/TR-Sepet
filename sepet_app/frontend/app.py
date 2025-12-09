@@ -9,6 +9,13 @@ def create_app():
     # Create the Flask application instance
     app = Flask(__name__)
 
+    # Load secret from environment variable
+    app.config['UPLOAD_SECRET_KEY'] = os.getenv('UPLOAD_SECRET_KEY')
+
+    # Define the upload folder
+    upload_folder = os.path.abspath(os.path.join(app.root_path, 'database'))
+    app.config['UPLOAD_FOLDER'] = upload_folder
+
     # In a real application, you would initialize extensions here:
     # from .extensions import db, migrate
     # db.init_app(app)
