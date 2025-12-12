@@ -12,9 +12,9 @@ def create_app():
     # Load secret from environment variable
     app.config['UPLOAD_SECRET_KEY'] = os.getenv('UPLOAD_SECRET_KEY')
 
-    # Define the upload folder
-    upload_folder = os.path.abspath(os.path.join(app.root_path, 'database'))
-    app.config['UPLOAD_FOLDER'] = upload_folder
+    # Define the database folder
+    database_path = os.path.abspath(os.path.join(app.root_path, 'database'))
+    app.config['DATABASE_PATH'] = database_path
 
     # The data will be loaded on-demand per request.
     with app.app_context():

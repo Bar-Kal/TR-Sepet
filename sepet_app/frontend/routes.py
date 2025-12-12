@@ -21,7 +21,7 @@ def format_price(price):
 # --- Database Helper Functions ---
 def get_db_path():
     """Finds the path to the latest database file."""
-    base_downloads_path = os.path.join(current_app.root_path, '..', 'scraper', 'downloads')
+    base_downloads_path = current_app.config['DATABASE_PATH']
     if not os.path.isdir(base_downloads_path):
         return None
     db_files = [os.path.join(base_downloads_path, f) for f in os.listdir(base_downloads_path) if f.endswith('.db')]
@@ -227,7 +227,7 @@ def upload_secure():
 
     if file:
         filename = secure_filename(file.filename)
-        file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+        file.save(os.path.join(current_app.config['DATABASE_PATH'], filename))
         return jsonify({'message': 'File successfully uploaded'}), 200
     
     return jsonify({'error': 'File upload failed'}), 500
