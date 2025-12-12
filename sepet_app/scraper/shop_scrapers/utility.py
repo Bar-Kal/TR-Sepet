@@ -7,6 +7,7 @@ import glob
 import pandas as pd
 import re
 from datetime import datetime
+import sqlite3
 
 def sanitize_name(name, is_path=False):
     """Sanitizes a string to be a valid name."""
@@ -17,14 +18,15 @@ def sanitize_name(name, is_path=False):
         name = f"{parent_dir}_{base_name}"
     return re.sub(r'[^a-zA-Z0-9_]', '_', name)
 
-def create_pickle_from_csvs():
+
+def create_sqlite_from_csvs():
     """
     Finds all combined.csv files, loads them into pandas DataFrames,
-    and saves them as a pickled dictionary.
+    and saves them into a sqlite database. Each shop gets its own table.
     """
-    today_str = datetime.now().strftime('%Y-%m-%d')  # Get today's date in YYYY-MM-DD format
+    today_str = datetime.now().strftime('%Y-%m-%d')
     downloads_folder = os.path.join('sepet_app', 'scraper', 'downloads')
-    pickle_file = os.path.join(downloads_folder, 'sepet_data_' + today_str + '.pkl')
+    db_file = os.path.join(downloads_folder, 'sepet_data_' + today_str + '.db')
 
     if not os.path.isdir(downloads_folder):
         logger.error(f"Error: Downloads folder not found at '{downloads_folder}'")
@@ -34,15 +36,15 @@ def create_pickle_from_csvs():
 
     if not csv_files:
         logger.info("No CSV files found in the downloads directory.")
-        # If no new CSVs, check if a pickle file already exists. If so, do nothing.
-        if os.path.exists(pickle_file):
-            logger.info("Pickle file already exists. No new data to process.")
+        # If no new CSVs, check if a db file already exists. If so, do nothing.
+        if os.path.exists(db_file):
+            logger.info("Database file already exists. No new data to process.")
             return
-        # If no pickle file and no CSVs, create an empty pickle file.
+        # If no db file and no CSVs, create an empty db file.
         else:
-            with open(pickle_file, 'wb') as f:
-                pickle.dump({}, f)
-            logger.info("No CSVs found and no existing pickle file. Created an empty pickle file.")
+            con = sqlite3.connect(db_file)
+            con.close()
+            logger.info("No CSVs found and no existing database file. Created an empty database file.")
             return
 
     logger.info(f"Found {len(csv_files)} CSV files to process.")
@@ -63,31 +65,34 @@ def create_pickle_from_csvs():
             else:
                 data[shop_name] = df
             
-            logger.info(f"  - Processed {file_path} for shop '{shop_name}'")
+            logger.info(f"  - Loaded {file_path} for shop '{shop_name}' into memory")
 
         except Exception as e:
             logger.error(f"  - ERROR: Failed to process {file_path}. Reason: {e}")
 
     if data:
-        # If a pickle file already exists, load it and merge the new data.
-        if os.path.exists(pickle_file):
-            logger.info("Existing pickle file found. Merging new data.")
-            with open(pickle_file, 'rb') as f:
-                existing_data = pickle.load(f)
-            
-            for shop, df in data.items():
-                if shop in existing_data:
-                    existing_data[shop] = pd.concat([existing_data[shop], df], ignore_index=True).drop_duplicates().reset_index(drop=True)
+        con = sqlite3.connect(db_file)
+        cursor = con.cursor()
+        try:
+            for shop_name, df in data.items():
+                cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (shop_name,))
+                if cursor.fetchone() is not None:
+                    logger.info(f"Table '{shop_name}' exists. Merging new data.")
+                    existing_df = pd.read_sql_query(f'SELECT * FROM "{shop_name}"', con)
+                    combined_df = pd.concat([existing_df, df], ignore_index=True)
+                    deduplicated_df = combined_df.drop_duplicates().reset_index(drop=True)
+                    deduplicated_df.to_sql(shop_name, con, if_exists='replace', index=False)
+                    logger.info(f"  - Merged and deduped data for '{shop_name}'. New shape: {deduplicated_df.shape}")
                 else:
-                    existing_data[shop] = df
-            data_to_save = existing_data
-        else:
-            data_to_save = data
+                    logger.info(f"Table '{shop_name}' does not exist. Creating it.")
+                    df.to_sql(shop_name, con, if_exists='replace', index=False)
+                    logger.info(f"  - Created table '{shop_name}' with new data. Shape: {df.shape}")
 
-        with open(pickle_file, 'wb') as f:
-            pickle.dump(data_to_save, f)
-        
-        logger.info(f"Successfully created/updated pickle file: {pickle_file}")
+            logger.info(f"Successfully created/updated database file: {db_file}")
+        except Exception as e:
+            logger.error(f"An error occurred during database operation: {e}")
+        finally:
+            con.close()
 
 def _get_document_vector(doc_tokens, model):
     valid_tokens = [word for word in doc_tokens if word in model.wv]

@@ -10,7 +10,7 @@ from typing import Union
 from .advanced_base import AdvancedBaseScraper
 from .base_scraper import BaseScraper
 from .factory import get_scraper
-from .utility import ProductClassifier, create_pickle_from_csvs
+from .utility import ProductClassifier, create_sqlite_from_csvs
 
 IGNORE_NONFOOD = False
 
@@ -174,4 +174,4 @@ def main(arg_shop_name: str = None):
         del scraper
         logger.remove(log_sink_id)
 
-    create_pickle_from_csvs()
+    create_sqlite_from_csvs()

@@ -16,24 +16,11 @@ def create_app():
     upload_folder = os.path.abspath(os.path.join(app.root_path, 'database'))
     app.config['UPLOAD_FOLDER'] = upload_folder
 
-    # In a real application, you would initialize extensions here:
-    # from .extensions import db, migrate
-    # db.init_app(app)
-    # migrate.init_app(app, db)
-
-    # Load the pickled data into memory at startup
-    with app.app_context():
-        from database import load_pickled_data
-        app.pickled_shop_data = load_pickled_data()
-
-    # Import and register the routes from the routes.py file.
-    # The import is done here to avoid circular dependencies, as routes.py
-    # will need to import the 'app' instance.
+    # The data will be loaded on-demand per request.
     with app.app_context():
         import routes
 
     return app
-
 
 # Create the application instance using the factory function
 app = create_app()
