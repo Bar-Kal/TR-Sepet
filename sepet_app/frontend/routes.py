@@ -56,7 +56,10 @@ def unzip_new_db_file():
     zipped_db_files = [os.path.join(base_downloads_path, f) for f in os.listdir(base_downloads_path) if f.endswith('.7z')]
     unzipped_db_files = [os.path.join(base_downloads_path, f) for f in os.listdir(base_downloads_path) if f.endswith('.db')]
 
-    if len(zipped_db_files) <= 1: # If there are no multiple zipped db files, return
+    if (len(unzipped_db_files) == 1) and len(zipped_db_files) == 1: # There is already a zipped and unzipped file
+        print(f"Files found under {base_downloads_path}:")
+        print(f"Unzipped: {unzipped_db_files}")
+        print(f"Zipped: {zipped_db_files}")
         return None
 
     zipped_db_file = sorted(zipped_db_files)[-1]
