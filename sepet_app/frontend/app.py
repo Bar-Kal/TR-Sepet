@@ -14,6 +14,7 @@ def create_app():
 
     # Define the database folder
     database_folder = os.path.abspath(os.path.join(app.root_path, 'database'))
+    print(f"Database folder in app.py: {database_folder}")
     app.config['DATABASE_FOLDER'] = database_folder
 
     # The data will be loaded on-demand per request.
