@@ -1,6 +1,7 @@
 import os
 import sqlite3
 import locale
+import py7zr
 from flask import render_template, current_app, request, jsonify
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
@@ -21,7 +22,7 @@ def format_price(price):
 # --- Database Helper Functions ---
 def get_db_path():
     """Finds the path to the latest database file."""
-    base_downloads_path = current_app.config['DATABASE_PATH']
+    base_downloads_path = current_app.config['DATABASE_FOLDER']
     if not os.path.isdir(base_downloads_path):
         return None
     db_files = [os.path.join(base_downloads_path, f) for f in os.listdir(base_downloads_path) if f.endswith('.db')]
@@ -44,6 +45,36 @@ def get_shop_names():
     except sqlite3.Error as e:
         print(f"Database error while fetching shop names: {e}")
         return []
+
+def unzip_new_db_file():
+    """Finds all new zipped db files and unzips them"""
+    base_downloads_path = current_app.config['DATABASE_FOLDER']
+    if not os.path.isdir(base_downloads_path):
+        return None
+    zipped_db_files = [os.path.join(base_downloads_path, f) for f in os.listdir(base_downloads_path) if f.endswith('.7z')]
+    unzipped_db_files = [os.path.join(base_downloads_path, f) for f in os.listdir(base_downloads_path) if f.endswith('.db')]
+
+    if len(zipped_db_files) <= 1: # If there are no multiple zipped db files, return
+        return None
+
+    zipped_db_file = sorted(zipped_db_files)[-1]
+    zipped_db_files = zipped_db_files[:-1]
+    print(f"Found {len(zipped_db_file)} 7z files and the latest one is {zipped_db_file}")
+
+    try:
+        with py7zr.SevenZipFile(zipped_db_file, mode='r') as z:
+            z.extractall(path=base_downloads_path)
+            print("7z file extracted successfully. Now, deleting old files.")
+            for unzipped_db_file in unzipped_db_files:
+                os.remove(unzipped_db_file)
+                print(f"Deleted {unzipped_db_file}")
+
+            for zipped_file in zipped_db_files:
+                os.remove(zipped_file)
+                print(f"Deleted {zipped_file}")
+
+    except Exception as e:
+        print(f"Error extracting 7z file: {e}")
 
 # --- Route Definitions ---
 @current_app.route('/', methods=['GET', 'POST'])
@@ -91,9 +122,9 @@ def index():
         if shop_names:
             shop_name = shop_names[0]
         if food_categories:
-            category_name = "Süt" # A common default
+            category_name = "Sucuk" # A common default
         end_date_str = datetime.now().strftime('%Y-%m-%d')
-        start_date_str = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
+        start_date_str = (datetime.now() - timedelta(days=14)).strftime('%Y-%m-%d')
 
     results_title = f"{shop_name or ''} için {category_name or ''} Fiyat Analizi"
 
@@ -203,14 +234,6 @@ def about():
     """Renders a simple about page."""
     return render_template('about.html', title='Hakkında')
 
-# Keeping other routes as they were, they seem unrelated to the product data
-@current_app.route('/test')
-def test():
-    """Renders a simple about page."""
-    dummy = request.args.to_dict()
-    print(dummy.get('shop_name', 'No shop_name provided'))
-    return "<h1>Test endpointine ulaştınız</h1>"
-
 @current_app.route('/upload_secure', methods=['POST'])
 def upload_secure():
     """Handles secure file uploads."""
@@ -227,7 +250,8 @@ def upload_secure():
 
     if file:
         filename = secure_filename(file.filename)
-        file.save(os.path.join(current_app.config['DATABASE_PATH'], filename))
+        file.save(os.path.join(current_app.config['DATABASE_FOLDER'], filename))
+        unzip_new_db_file()
         return jsonify({'message': 'File successfully uploaded'}), 200
     
     return jsonify({'error': 'File upload failed'}), 500

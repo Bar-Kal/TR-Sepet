@@ -8,6 +8,7 @@ import pandas as pd
 import re
 from datetime import datetime
 import sqlite3
+import py7zr
 
 def sanitize_name(name, is_path=False):
     """Sanitizes a string to be a valid name."""
@@ -19,13 +20,30 @@ def sanitize_name(name, is_path=False):
     return re.sub(r'[^a-zA-Z0-9_]', '_', name)
 
 
-def create_sqlite_from_csvs():
+def compress_db(db_file_path: str):
+    """
+    Compresses the given file using py7zr.
+    """
+    if not os.path.exists(db_file_path):
+        logger.error(f"Error: Database file not found at '{db_file_path}'. Cannot compress.")
+        return
+
+    archive_name = db_file_path + ".7z"
+    try:
+        logger.info(f"Attempting to compress '{db_file_path}' to '{archive_name}' using py7zr.")
+        with py7zr.SevenZipFile(archive_name, 'w') as archive:
+            archive.write(db_file_path, arcname=os.path.basename(db_file_path))
+        logger.info(f"Successfully compressed '{db_file_path}' to '{archive_name}'.")
+    except Exception as e:
+        logger.error(f"An unexpected error occurred during py7zr compression: {e}")
+
+
+def create_sqlite_from_csvs(downloads_folder: str):
     """
     Finds all combined.csv files, loads them into pandas DataFrames,
     and saves them into a sqlite database. Each shop gets its own table.
     """
     today_str = datetime.now().strftime('%Y-%m-%d')
-    downloads_folder = os.path.join('sepet_app', 'scraper', 'downloads')
     db_file = os.path.join(downloads_folder, 'sepet_data_' + today_str + '.db')
 
     if not os.path.isdir(downloads_folder):
@@ -65,10 +83,10 @@ def create_sqlite_from_csvs():
             else:
                 data[shop_name] = df
             
-            logger.info(f"  - Loaded {file_path} for shop '{shop_name}' into memory")
+            logger.info(f"Loaded {file_path} for shop '{shop_name}' into memory")
 
         except Exception as e:
-            logger.error(f"  - ERROR: Failed to process {file_path}. Reason: {e}")
+            logger.error(f"Failed to process {file_path}. Reason: {e}")
 
     if data:
         con = sqlite3.connect(db_file)
@@ -82,13 +100,14 @@ def create_sqlite_from_csvs():
                     combined_df = pd.concat([existing_df, df], ignore_index=True)
                     deduplicated_df = combined_df.drop_duplicates().reset_index(drop=True)
                     deduplicated_df.to_sql(shop_name, con, if_exists='replace', index=False)
-                    logger.info(f"  - Merged and deduped data for '{shop_name}'. New shape: {deduplicated_df.shape}")
+                    logger.info(f"Merged and deduped data for '{shop_name}'. New shape: {deduplicated_df.shape}")
                 else:
                     logger.info(f"Table '{shop_name}' does not exist. Creating it.")
                     df.to_sql(shop_name, con, if_exists='replace', index=False)
-                    logger.info(f"  - Created table '{shop_name}' with new data. Shape: {df.shape}")
+                    logger.info(f"Created table '{shop_name}' with new data. Shape: {df.shape}")
 
             logger.info(f"Successfully created/updated database file: {db_file}")
+
         except Exception as e:
             logger.error(f"An error occurred during database operation: {e}")
         finally:

@@ -10,7 +10,7 @@ from typing import Union
 from .advanced_base import AdvancedBaseScraper
 from .base_scraper import BaseScraper
 from .factory import get_scraper
-from .utility import ProductClassifier, create_sqlite_from_csvs
+from .utility import ProductClassifier, create_sqlite_from_csvs, compress_db
 
 IGNORE_NONFOOD = False
 
@@ -145,7 +145,7 @@ def main(arg_shop_name: str = None):
         products_and_categories = json.load(f)
 
     today_str = datetime.now().strftime('%Y-%m-%d')  # Get today's date in YYYY-MM-DD format
-    filepath = os.path.join('sepet_app', 'scraper', 'downloads')
+    download_folder = os.path.join('sepet_app', 'scraper', 'downloads')
 
     for shop in shops:
         shop_name = shop['shop_name']
@@ -165,13 +165,14 @@ def main(arg_shop_name: str = None):
             scraper=scraper,
             products_categories=products_and_categories,
             shop_name=scraper.shop_name,
-            filepath=filepath,
+            filepath=download_folder,
             today_str=today_str
         )
         logger.info("Starting data combination process...")
-        combine_and_filter_csvs(base_downloads_path=Path(os.path.join(filepath, scraper.shop_name, today_str)))
+        combine_and_filter_csvs(base_downloads_path=Path(os.path.join(download_folder, scraper.shop_name, today_str)))
         logger.info(f"--- Finished process for {shop_name} ---")
         del scraper
         logger.remove(log_sink_id)
 
-    create_sqlite_from_csvs()
+    create_sqlite_from_csvs(download_folder)
+    compress_db(download_folder)

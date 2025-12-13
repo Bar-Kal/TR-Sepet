@@ -10,3 +10,4 @@ APScheduler
 gensim
 scikit-learn
 cryptography
+py7zr
