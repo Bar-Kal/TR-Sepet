@@ -252,6 +252,6 @@ def upload_secure():
         filename = secure_filename(file.filename)
         file.save(os.path.join(current_app.config['DATABASE_FOLDER'], filename))
         unzip_new_db_file()
-        return jsonify({'message': 'File successfully uploaded'}), 200
+        return jsonify({'message': 'File successfully uploaded and unzipped'}), 200
     
     return jsonify({'error': 'File upload failed'}), 500
