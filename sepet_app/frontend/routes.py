@@ -23,7 +23,7 @@ def format_price(price):
 def get_db_path():
     """Finds the path to the latest database file."""
     base_downloads_path = current_app.config['DATABASE_FOLDER']
-    print(f"Database folder in get_db_path: {base_downloads_path}")
+    print(f"Get DB from: {base_downloads_path}")
     if not os.path.isdir(base_downloads_path):
         return None
     db_files = [os.path.join(base_downloads_path, f) for f in os.listdir(base_downloads_path) if f.endswith('.db')]
@@ -34,7 +34,6 @@ def get_db_path():
 def get_shop_names():
     """Gets a list of all shop names (tables) from the database."""
     db_path = get_db_path()
-    print(f"Database folder in get_shop_names: {db_path}")
     if not db_path:
         return []
     try:
