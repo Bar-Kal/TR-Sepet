@@ -64,7 +64,7 @@ def unzip_new_db_file():
 
     zipped_db_file = sorted(zipped_db_files)[-1]
     zipped_db_files = zipped_db_files[:-1]
-    print(f"Found {len(zipped_db_file)} 7z files and the latest one is {zipped_db_file}")
+    print(f"Found {len(zipped_db_files)} 7z files and the latest one is {zipped_db_file}")
 
     try:
         with py7zr.SevenZipFile(zipped_db_file, mode='r') as z:
