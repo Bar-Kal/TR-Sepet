@@ -33,6 +33,7 @@ def get_db_path():
 def get_shop_names():
     """Gets a list of all shop names (tables) from the database."""
     db_path = get_db_path()
+    print(db_path)
     if not db_path:
         return []
     try:
