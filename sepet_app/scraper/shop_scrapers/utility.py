@@ -38,7 +38,7 @@ def compress_db(db_file_path: str):
         logger.error(f"An unexpected error occurred during py7zr compression: {e}")
 
 
-def create_sqlite_from_csvs(downloads_folder: str):
+def create_sqlite_from_csvs(downloads_folder: str) -> str | None:
     """
     Finds all combined.csv files, loads them into pandas DataFrames,
     and saves them into a sqlite database. Each shop gets its own table.
@@ -57,13 +57,13 @@ def create_sqlite_from_csvs(downloads_folder: str):
         # If no new CSVs, check if a db file already exists. If so, do nothing.
         if os.path.exists(db_file):
             logger.info("Database file already exists. No new data to process.")
-            return
+            return None
         # If no db file and no CSVs, create an empty db file.
         else:
             con = sqlite3.connect(db_file)
             con.close()
             logger.info("No CSVs found and no existing database file. Created an empty database file.")
-            return
+            return None
 
     logger.info(f"Found {len(csv_files)} CSV files to process.")
     
@@ -107,11 +107,14 @@ def create_sqlite_from_csvs(downloads_folder: str):
                     logger.info(f"Created table '{shop_name}' with new data. Shape: {df.shape}")
 
             logger.info(f"Successfully created/updated database file: {db_file}")
+            return db_file
 
         except Exception as e:
             logger.error(f"An error occurred during database operation: {e}")
         finally:
             con.close()
+
+    return None
 
 def _get_document_vector(doc_tokens, model):
     valid_tokens = [word for word in doc_tokens if word in model.wv]

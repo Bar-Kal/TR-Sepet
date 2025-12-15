@@ -138,6 +138,8 @@ def main(arg_shop_name: str = None):
     through each shop, initializing the corresponding scraper and running the scraping process.
     After scraping, it combines and deduplicates the generated CSV files.
     """
+    shop_num = 1
+
     with open(os.path.join('sepet_app', 'scraper', 'configs', 'shops.json')) as f:
         shops = json.load(f)
 
@@ -155,9 +157,8 @@ def main(arg_shop_name: str = None):
 
         logfile_name = datetime.now().strftime("%Y%m%d-%H%M%S") + '_' + shop_name + '.log'
         log_sink_id = logger.add(os.path.join('sepet_app', 'scraper', 'logs', logfile_name), rotation="10 MB")
-        logger.info(f"--- Starting process for {shop_name} ---")
+        logger.info(f"--- Starting process for {shop_name}: {shop_num}/{len(shops)} shops ---")
         logger.info(f"Ignoring non-food products: {IGNORE_NONFOOD}")
-        logger.info(f"Found {len(shops)} shops to scrape.")
 
         # Use the factory to get the correct scraper
         scraper = get_scraper(shop_config=shop, ignore_nonfood=IGNORE_NONFOOD)
@@ -173,6 +174,9 @@ def main(arg_shop_name: str = None):
         logger.info(f"--- Finished process for {shop_name} ---")
         del scraper
         logger.remove(log_sink_id)
+        shop_num = shop_num + 1
 
-    create_sqlite_from_csvs(download_folder)
-    compress_db(download_folder)
+    db_file_path = create_sqlite_from_csvs(download_folder)
+
+    if db_file_path:
+        compress_db(db_file_path)
