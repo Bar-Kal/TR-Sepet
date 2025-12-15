@@ -38,19 +38,19 @@ def compress_db(db_file_path: str):
         logger.error(f"An unexpected error occurred during py7zr compression: {e}")
 
 
-def create_sqlite_from_csvs(downloads_folder: str) -> str | None:
+def create_sqlite_from_csvs(db_folder: str) -> str | None:
     """
     Finds all combined.csv files, loads them into pandas DataFrames,
     and saves them into a sqlite database. Each shop gets its own table.
     """
     today_str = datetime.now().strftime('%Y-%m-%d')
-    db_file = os.path.join(downloads_folder, 'sepet_data_' + today_str + '.db')
+    db_file = os.path.join(db_folder, 'sepet_data_' + today_str + '.db')
 
-    if not os.path.isdir(downloads_folder):
-        logger.error(f"Error: Downloads folder not found at '{downloads_folder}'")
-        return
+    if not os.path.isdir(db_folder):
+        logger.error(f"Error: Downloads folder not found at '{db_folder}'")
+        return None
 
-    csv_files = [f for f in glob.glob(os.path.join(downloads_folder, '**', 'combined.csv'), recursive=True) if 'imported' not in f]
+    csv_files = [f for f in glob.glob(os.path.join(db_folder, '**', 'combined.csv'), recursive=True) if 'imported' not in f]
 
     if not csv_files:
         logger.info("No CSV files found in the downloads directory.")

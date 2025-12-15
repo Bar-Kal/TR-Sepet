@@ -58,7 +58,7 @@ def save_to_csv(shop_name: str, df: pd.DataFrame, filepath: str, filename: str, 
         logger.info(f"No data to save for '{filename}' and '{shop_name}'.")
         return
 
-    # Create the full directory path (e.g., downloads/2023-10-27/shop_name)
+    # Create the full directory path (e.g., downloads/scraped_files/shop_name/2023-10-27/)
     # Pathlib is used for robust, cross-platform path handling.
     output_dir = Path(filepath) / shop_name / today_str
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -147,7 +147,7 @@ def main(arg_shop_name: str = None):
         products_and_categories = json.load(f)
 
     today_str = datetime.now().strftime('%Y-%m-%d')  # Get today's date in YYYY-MM-DD format
-    download_folder = os.path.join('sepet_app', 'scraper', 'downloads')
+    download_folder = os.path.join('sepet_app', 'scraper', 'downloads', 'scraped_files')
 
     for shop in shops:
         shop_name = shop['shop_name']
@@ -176,7 +176,7 @@ def main(arg_shop_name: str = None):
         logger.remove(log_sink_id)
         shop_num = shop_num + 1
 
-    db_file_path = create_sqlite_from_csvs(os.path.join(download_folder, 'db_files'))
+    db_file_path = create_sqlite_from_csvs(db_folder=os.path.join('sepet_app', 'scraper', 'downloads', 'db_files'))
 
     if db_file_path:
         compress_db(db_file_path)
