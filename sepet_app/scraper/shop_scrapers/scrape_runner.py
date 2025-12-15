@@ -176,7 +176,7 @@ def main(arg_shop_name: str = None):
         logger.remove(log_sink_id)
         shop_num = shop_num + 1
 
-    db_file_path = create_sqlite_from_csvs(download_folder)
+    db_file_path = create_sqlite_from_csvs(os.path.join(download_folder, 'db_files'))
 
     if db_file_path:
         compress_db(db_file_path)
