@@ -176,7 +176,13 @@ def main(arg_shop_name: str = None):
         logger.remove(log_sink_id)
         shop_num = shop_num + 1
 
-    db_file_path = create_sqlite_from_csvs(db_folder=os.path.join('sepet_app', 'scraper', 'downloads', 'db_files'))
+    logfile_name = datetime.now().strftime("%Y%m%d-%H%M%S") + '_sqlite_creation.log'
+    log_sink_id = logger.add(os.path.join('sepet_app', 'scraper', 'logs', logfile_name), rotation="10 MB")
+
+    db_file_path = create_sqlite_from_csvs(db_folder=os.path.join('sepet_app', 'scraper', 'downloads', 'db_files'),
+                                           scraped_files_folder=os.path.join('sepet_app', 'scraper', 'downloads', 'scraped_files'))
 
     if db_file_path:
         compress_db(db_file_path)
+
+    logger.remove(log_sink_id)
