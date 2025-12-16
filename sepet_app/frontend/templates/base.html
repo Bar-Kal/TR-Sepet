@@ -15,11 +15,20 @@
     <header>
         <div class="container">
             <nav>
-                <a href="{{ url_for('index') }}" class="logo-brand">
-                    <img src="{{ url_for('static', filename='./img/page/logo.png') }}" alt="TR-Sepet Logo" class="logo">
-                    <span class="brand">TR-Sepet</span>
-                </a>
-                <div class="nav-links">
+                <div class="nav-left">
+                    <a href="{{ url_for('index') }}" class="logo-brand">
+                        <img src="{{ url_for('static', filename='./img/page/logo.png') }}" alt="TR-Sepet Logo" class="logo">
+                        <span class="brand">TR-Sepet</span>
+                    </a>
+                </div>
+                {% if show_header_search %}
+                <div class="nav-center">
+                    <form action="{{ url_for('products') }}" method="get" class="header-search-form">
+                        <input type="search" name="q" class="header-search-bar" placeholder="Ara..." value="{{ search_query or '' }}">
+                    </form>
+                </div>
+                {% endif %}
+                <div class="nav-right">
                     <a href="{{ url_for('index') }}">Anasayfa</a>
                     <a href="{{ url_for('about') }}">Hakkında</a>
                 </div>

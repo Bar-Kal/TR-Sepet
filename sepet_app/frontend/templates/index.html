@@ -1,244 +1,28 @@
 {% extends "base.html" %}
 
-{% block title %}{{ title }} - TR-Sepet{% endblock %}
+{% block title %}Ara{% endblock %}
 
 {% block content %}
-    <div class="controls-section">
-        <div class="container">
-            <form action="/index" method="post">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="shop-select">Market</label>
-                        <select name="shop" id="shop-select">
-                            {% for shop in shop_names %}
-                                <option value="{{ shop }}" {% if shop == shop_name %}selected{% endif %}>{{ shop }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="category-select">Ürün</label>
-                        <select name="category" id="category-select">
-                            {% for category in food_categories %}
-                                <option value="{{ category }}" {% if category == category_name %}selected{% endif %}>{{ category }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-row">
-                    <div class="form-group">
-                        <label for="date-range">Tarih Aralığı</label>
-                        <input type="text" id="date-range" name="date_range" value="{{ start_date }} - {{ end_date }}">
-                    </div>
-                </div>
-                </div>
-                    <div class="form-group">
-                        <label for="product-search">Ürün Arama</label>
-                        <input type="text" id="product-search" name="product_search" value="{{ product_search }}">
-                    </div>
-                <div class="form-actions">
-                    <input type="submit" value="Fiyatları Analiz Et">
-                </div>
-            </form>
-        </div>
-    </div>
+<style>
+    .search-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 20vh;
+    }
 
-    <div class="results-section">
-        <div class="container">
-            {% if charts_data %}
-                <h2>{{ results_title }}</h2>
-                <p class="date-range">{{ start_date }} ile {{ end_date }} arasındaki veriler gösteriliyor</p>
+    .search-bar {
+        width: 50%;
+        padding: 15px;
+        font-size: 1.2em;
+        border-radius: 25px;
+        border: 1px solid #ccc;
+    }
+</style>
 
-                <div class="central-legend">
-                    <div class="legend-item" title="Fiyat">
-                        <div class="legend-color" style="background-color: rgba(0, 128, 0, 1);"></div>
-                        <span>Fiyat</span>
-                    </div>
-                    <div class="legend-item" title="İndirimli fiyat mevcut değilse, normal fiyat kullanılır.">
-                        <div class="legend-color" style="background-color: rgba(255, 159, 64, 1);"></div>
-                        <span>İndirimli Fiyat</span>
-                    </div>
-                    <div class="legend-item" title="Medyan">
-                        <div class="legend-color" style="background-color: rgba(255, 99, 132, 1);"></div>
-                        <span>Medyan</span>
-                    </div>
-                    <div class="legend-item" title="indirimli fiyattan hesaplanmıştır">
-                        <div class="legend-color" style="background-color: rgba(54, 162, 235, 1);"></div>
-                        <span>Hareketli Ortalama (14 gün)</span>
-                    </div>
-                </div>
-
-                <div class="chart-grid">
-                    {% for chart_data in charts_data %}
-                        <div class="chart-container">
-                            <img src="{{ chart_data.shop_logo }}" alt="{{ chart_data.product_name }} logo" class="shop-logo">
-                            <a href="{{ chart_data.url }}" target="_blank"><h3>{{ chart_data.product_name }}</h3></a>
-                            <span class="product-category">{{ chart_data.product_category }}</span>
-                            <canvas id="chart-{{ loop.index }}" width="400" height="200"></canvas>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% elif no_results %}
-                <div class="no-results">
-                    <h2>Sonuç Bulunamadı</h2>
-                    <p>Seçilen kriterlere uygun veri bulunmamaktadır. Lütfen farklı bir market, kategori veya tarih aralığı deneyin.</p>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-
-    {% if charts_data %}
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.2.1/dist/chartjs-plugin-zoom.min.js"></script>
-    {% endif %}
-    <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
-    <script>
-        new Litepicker({
-            element: document.getElementById('date-range'),
-            singleMode: false,
-            format: 'YYYY-MM-DD',
-            setup: (picker) => {
-                picker.on('selected', (date1, date2) => {
-                    // your code
-                });
-            }
-        });
-
-        {% if charts_data %}
-            {% for chart_data in charts_data %}
-                var prices{{ loop.index }} = {{ chart_data.prices | tojson }};
-                var discountPrices{{ loop.index }} = {{ chart_data.discount_prices | tojson }};
-                var labels{{ loop.index }} = {{ chart_data.labels | tojson }};
-
-                // Calculate median
-                var sortedPrices = [...prices{{ loop.index }}].sort((a, b) => a - b);
-                var mid = Math.floor(sortedPrices.length / 2);
-                var median = sortedPrices.length % 2 !== 0 ? sortedPrices[mid] : (sortedPrices[mid - 1] + sortedPrices[mid]) / 2;
-                var medianData = Array(prices{{ loop.index }}.length).fill(median);
-
-                // Calculate moving average on discount prices
-                var movingAvg = [];
-                var windowSize = 14;
-                for (var i = 0; i < discountPrices{{ loop.index }}.length; i++) {
-                    if (i < windowSize - 1) {
-                        movingAvg.push(null);
-                    } else {
-                        var sum = 0;
-                        for (var j = 0; j < windowSize; j++) {
-                            sum += discountPrices{{ loop.index }}[i - j];
-                        }
-                        movingAvg.push(sum / windowSize);
-                    }
-                }
-
-                var ctx{{ loop.index }} = document.getElementById('chart-{{ loop.index }}').getContext('2d');
-                var chart{{ loop.index }} = new Chart(ctx{{ loop.index }}, {
-                    type: 'line',
-                    data: {
-                        labels: labels{{ loop.index }},
-                        datasets: [{
-                            label: 'Fiyat',
-                            data: prices{{ loop.index }},
-                            borderColor: 'rgba(0, 128, 0, 1)',
-                            borderWidth: 2,
-                            stepped: true,
-                            fill: false,
-                            pointRadius: 0,
-                            pointHoverRadius: 5,
-                            pointBackgroundColor: 'rgba(0, 128, 0, 1)'
-                        }, {
-                            label: 'İndirimli Fiyat',
-                            data: discountPrices{{ loop.index }},
-                            borderColor: 'rgba(255, 159, 64, 1)',
-                            borderWidth: 2,
-                            stepped: true,
-                            fill: false,
-                            pointRadius: 0,
-                            pointHoverRadius: 5,
-                            pointBackgroundColor: 'rgba(255, 159, 64, 1)'
-                        }, {
-                            label: 'Medyan',
-                            data: medianData,
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 2,
-                            borderDash: [5, 5],
-                            fill: false,
-                            pointRadius: 0,
-                        }, {
-                            label: 'Hareketli Ortalama (14 gün)',
-                            data: movingAvg,
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 2,
-                            fill: false,
-                            pointRadius: 0,
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            x: {
-                                ticks: {
-                                    maxRotation: 90,
-                                    minRotation: 80
-                                },
-                                grid: {
-                                    display: false
-                                }
-                            },
-                            y: {
-                                beginAtZero: false,
-                                ticks: {
-                                    callback: function(value, index, values) {
-                                        return Math.round(value) + ' TL';
-                                    }
-                                },
-                                grid: {
-                                    color: 'rgba(200, 200, 200, 0.5)'
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false,
-                                position: 'top',
-                            },
-                            tooltip: {
-                                mode: 'index',
-                                intersect: false,
-                                callbacks: {
-                                    label: function(context) {
-                                        let label = context.dataset.label || '';
-                                        if (label) {
-                                            label += ': ';
-                                        }
-                                        if (context.parsed.y !== null) {
-                                            label += new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(context.parsed.y);
-                                        }
-                                        return label;
-                                    }
-                                }
-                            },
-                            zoom: {
-                                pan: {
-                                    enabled: true,
-                                    mode: 'xy'
-                                },
-                                zoom: {
-                                    wheel: {
-                                        enabled: true,
-                                    },
-                                    pinch: {
-                                        enabled: true
-                                    },
-                                    mode: 'xy',
-                                }
-                            }
-                        }
-                    }
-                });
-                
-                ctx{{ loop.index }}.canvas.ondblclick = function() {
-                    chart{{ loop.index }}.resetZoom();
-                };
-
-            {% endfor %}
-        {% endif %}
-    </script>
+<div class="search-container">
+    <form action="{{ url_for('products') }}" method="get" style="width: 100%; text-align: center;">
+        <input type="search" name="q" class="search-bar" placeholder="Gıda ürünü girin ...">
+    </form>
+</div>
 {% endblock %}

@@ -34,17 +34,29 @@ header {
 
 nav {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     width: 100%;
+    gap: 2rem;
 }
 
-.nav-links {
+.nav-left {
+    flex-shrink: 0;
+}
+
+.nav-center {
+    flex-grow: 1;
+    max-width: 700px; /* Adjust max-width as desired */
+}
+
+.nav-right {
     display: flex;
     gap: 1.5rem;
+    flex-shrink: 0;
 }
 
-.nav-links a {
+.nav-links a,
+.nav-right a {
     text-decoration: none;
     color: var(--text-gray);
     font-weight: 500;
@@ -60,42 +72,67 @@ nav .logo-brand span {
     color: var(--dark-gray);
 }
 
-.nav-links a:hover {
+.nav-links a:hover,
+.nav-right a:hover {
     color: var(--dark-gray);
 }
 
-.nav-links a.active {
+.nav-links a.active,
+.nav-right a.active {
     color: var(--chart-green);
     border-bottom-color: var(--chart-green);
     font-weight: 600;
+}
+
+/* Style for the new header search form */
+.header-search-form {
+    width: 100%;
+}
+
+.header-search-bar {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--medium-gray);
+    border-radius: 20px;
+    font-size: 1rem;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.header-search-bar:focus {
+    outline: none;
+    border-color: var(--chart-green);
+    box-shadow: 0 0 0 3px var(--chart-green-bg);
 }
 
 main {
     padding: 0;
 }
 
-.controls-section {
+.product-page-container {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.filter-sidebar {
+    width: 280px;
+    flex-shrink: 0;
     background-color: var(--background-color);
-    padding: 2.5rem 2rem;
-    border-bottom: 1px solid var(--medium-gray);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    align-self: flex-start;
 }
 
-.controls-section h3 {
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-    font-size: 1.25rem;
-}
-
-.controls-section form {
+.filter-form {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 1.5rem;
-    align-items: flex-end;
 }
 
-.form-row {
-    display: flex;
-    gap: 1.5rem;
+.results-main {
+    flex-grow: 1;
 }
 
 .form-group {
@@ -119,7 +156,8 @@ main {
     border-radius: var(--border-radius);
     font-family: inherit;
     font-size: 1rem;
-    min-width: 220px;
+    width: 100%;
+    box-sizing: border-box;
     transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
 }
 
@@ -130,8 +168,39 @@ main {
     box-shadow: 0 0 0 3px var(--chart-green-bg);
 }
 
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border: 1px solid var(--medium-gray);
+    border-radius: var(--border-radius);
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.shop-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Space between logo, checkbox and text */
+}
+
+.shop-filter-logo {
+    height: 20px; /* Adjust as needed */
+    width: auto;
+    max-width: 50px; /* Ensure logos don't get too wide */
+    object-fit: contain; /* Ensure the image is contained within its bounds */
+}
+
 .form-actions {
-    flex-basis: 100%;
     display: flex;
     justify-content: center;
     padding-top: 1rem;
@@ -146,16 +215,13 @@ main {
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
+    width: 100%;
     transition: background-color var(--transition-speed), transform var(--transition-speed);
 }
 
 .form-actions input[type="submit"]:hover {
     background-color: #218838; /* Darker green */
     transform: translateY(-2px);
-}
-
-.results-section {
-    padding: 2.5rem 2rem;
 }
 
 .results-section h2 {
@@ -171,7 +237,7 @@ main {
 
 .chart-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
     justify-content: center;
 }
@@ -307,4 +373,3 @@ footer {
     height: 40px;
     margin-right: 10px;
 }
-
