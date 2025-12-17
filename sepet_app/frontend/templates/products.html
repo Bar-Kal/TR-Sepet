@@ -40,6 +40,11 @@
     </aside>
 
     <main class="results-main">
+        {% if search_error %}
+            <div class="alert alert-danger" role="alert">
+                {{ search_error }}
+            </div>
+        {% endif %}
         {% if charts_data %}
             <h2>{{ results_title }}</h2>
             <p class="date-range">{{ start_date }} ile {{ end_date }} arasındaki veriler gösteriliyor</p>

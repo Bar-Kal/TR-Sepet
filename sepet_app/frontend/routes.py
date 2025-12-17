@@ -2,6 +2,7 @@ import os
 import sqlite3
 import locale
 import py7zr
+import re
 from flask import render_template, current_app, request, jsonify
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
@@ -85,7 +86,7 @@ def unzip_new_db_file():
 @current_app.route('/index', methods=['GET'])
 def index():
     """Renders the landing page."""
-    return render_template('index.html', title='Ara', search_query='', show_header_search=False)
+    return render_template('index.html', title='Ara', search_query='', show_header_search=True)
 
 
 @current_app.route('/products', methods=['GET'])
@@ -110,9 +111,25 @@ def products():
     # --- Initialize variables ---
     charts_data = None
     no_results = True
+    search_error = None
 
     # --- Handle request ---
     product_search = request.args.get('q')
+
+    # Server-side validation for product_search
+    if product_search is not None:
+        if not product_search.strip(): # Handles empty string and whitespace-only strings
+            product_search = None
+            search_error = "Lütfen bir arama terimi girin."
+        else:
+            # Regex to allow alphanumeric characters and Turkish specific characters
+            # Min 2, Max 30 characters
+            pattern = r"^[a-zA-Z0-9çÇğĞıİöÖşŞüÜ\s]{2,30}$"
+            if not re.match(pattern, product_search) or not (2 <= len(product_search) <= 30):
+                print(f"Invalid search query '{product_search}' received. Ignoring.")
+                product_search = None
+                search_error = "Arama çubuğuna sadece harf, rakam ve Türkçe karakterler girebilirsiniz. En az 2, en fazla 30 karakter olmalıdır."
+
     selected_shops = request.args.getlist('shops')
     category_name = request.args.get('category')
     date_range = request.args.get('date_range')
@@ -127,10 +144,10 @@ def products():
         try:
             start_date_str, end_date_str = date_range.split(' - ')
         except ValueError:
-            start_date_str = (datetime.now() - timedelta(days=14)).strftime('%Y-%m-%d')
+            start_date_str = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
             end_date_str = datetime.now().strftime('%Y-%m-%d')
     else:
-        start_date_str = (datetime.now() - timedelta(days=14)).strftime('%Y-%m-%d')
+        start_date_str = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
         end_date_str = datetime.now().strftime('%Y-%m-%d')
 
 
@@ -257,6 +274,7 @@ def products():
                            product_search=product_search or '',
                            search_query=product_search or '',
                            shop_logo_mapping=shop_logo_mapping,
+                           search_error=search_error,
                            show_header_search=True)
 
 

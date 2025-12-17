@@ -373,3 +373,34 @@ footer {
     height: 40px;
     margin-right: 10px;
 }
+
+/* Alert styles */
+.alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: var(--border-radius);
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+/* Shared search bar styles */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20vh;
+}
+
+.shared-search-bar {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2em;
+    border-radius: 25px;
+    border: 1px solid #ccc;
+}
+
