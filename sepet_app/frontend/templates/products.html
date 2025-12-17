@@ -78,6 +78,9 @@
                     </div>
                 {% endfor %}
             </div>
+            <div class="pagination-container">
+                {% include '_pagination.html' %}
+            </div>
         {% elif no_results %}
             <div class="no-results">
                 <h2>Sonuç Bulunamadı</h2>

@@ -3,6 +3,7 @@ import sqlite3
 import locale
 import py7zr
 import re
+import math
 from flask import render_template, current_app, request, jsonify
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
@@ -112,8 +113,10 @@ def products():
     charts_data = None
     no_results = True
     search_error = None
+    pagination = None
 
     # --- Handle request ---
+    page = request.args.get('page', 1, type=int)
     product_search = request.args.get('q')
 
     # Server-side validation for product_search
@@ -207,9 +210,30 @@ def products():
             for row in all_products:
                 product_groups[(row['Display_Name'], row['shop_name'])].append(row)
             
+            # --- Pagination Logic ---
+            PER_PAGE = 40
+            total_items = len(product_groups)
+            total_pages = math.ceil(total_items / PER_PAGE)
+            offset = (page - 1) * PER_PAGE
+            
+            # Get a paginated slice of the group keys
+            paginated_group_keys = list(product_groups.keys())[offset : offset + PER_PAGE]
+            
+            pagination = {
+                'page': page,
+                'total_pages': total_pages,
+                'total_items': total_items,
+                'per_page': PER_PAGE,
+                'has_prev': page > 1,
+                'has_next': page < total_pages
+            }
+            # --- End Pagination Logic ---
+
             charts_data = []
             
-            for (product_name, shop_name_of_product), group_rows in product_groups.items():
+            # Loop ONLY through the keys for the current page
+            for (product_name, shop_name_of_product) in paginated_group_keys:
+                group_rows = product_groups[(product_name, shop_name_of_product)]
                 # Process each group to find stats and format for chart
                 prices = []
                 discount_prices = []
@@ -275,7 +299,8 @@ def products():
                            search_query=product_search or '',
                            shop_logo_mapping=shop_logo_mapping,
                            search_error=search_error,
-                           show_header_search=True)
+                           show_header_search=True,
+                           pagination=pagination)
 
 
 
