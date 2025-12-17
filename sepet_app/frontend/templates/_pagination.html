@@ -1,0 +1,41 @@
+{% if pagination and pagination.total_pages > 1 %}
+{% set query_params = request.args.to_dict(flat=False) %}
+{% set _ = query_params.pop('page', None) %}
+<nav aria-label="Sayfalandırma" class="pagination-nav">
+    <ul class="pagination">
+        <!-- Previous -->
+        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+            <a class="page-link" href="{{ url_for(request.endpoint, page=pagination.page - 1, **query_params) }}">&laquo;</a>
+        </li>
+
+        <!-- Numbers -->
+        {% set start = [pagination.page - 2, 1] | max %}
+        {% set end = [pagination.page + 2, pagination.total_pages] | min %}
+
+        {% if start > 1 %}
+            <li class="page-item"><a class="page-link" href="{{ url_for(request.endpoint, page=1, **query_params) }}">1</a></li>
+            {% if start > 2 %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+            {% endif %}
+        {% endif %}
+
+        {% for page_num in range(start, end + 1) %}
+            <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                <a class="page-link" href="{{ url_for(request.endpoint, page=page_num, **query_params) }}">{{ page_num }}</a>
+            </li>
+        {% endfor %}
+
+        {% if end < pagination.total_pages %}
+            {% if end < pagination.total_pages - 1 %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+            {% endif %}
+            <li class="page-item"><a class="page-link" href="{{ url_for(request.endpoint, page=pagination.total_pages, **query_params) }}">{{ pagination.total_pages }}</a></li>
+        {% endif %}
+
+        <!-- Next -->
+        <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+            <a class="page-link" href="{{ url_for(request.endpoint, page=pagination.page + 1, **query_params) }}">&raquo;</a>
+        </li>
+    </ul>
+</nav>
+{% endif %}
