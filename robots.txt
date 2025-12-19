@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /.idea/
+Disallow: /.git/
+Disallow: /__pycache__/
+Disallow: /sepet_app/scraper/downloads/
+
+# Sitemap: [URL to your sitemap.xml, once you have one]
