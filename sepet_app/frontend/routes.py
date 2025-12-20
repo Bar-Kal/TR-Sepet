@@ -326,7 +326,8 @@ def about():
 @current_app.route('/privacy')
 def privacy():
     """Renders the privacy policy page."""
-    return render_template('privacy.html', title='Gizlilik Politikası')
+    contact_email = os.getenv('CONTACT_EMAIL', 'default@example.com') # Provide a default email if env var is not set
+    return render_template('privacy.html', title='Gizlilik Politikası', contact_email=contact_email)
 
 
 @current_app.route('/upload_secure', methods=['POST'])
