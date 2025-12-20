@@ -101,6 +101,7 @@ def products():
         import json
         food_file = json.load(f)
         food_categories = sorted([item['TurkishName'] for item in food_file])
+        available_food_categories = food_categories
         category_mapping = {item['category_id']: item['TurkishCategory'] for item in food_file}
 
     shops_path = Path(os.path.join(current_app.root_path, '..', 'scraper', 'configs', 'shops.json'))
@@ -290,8 +291,6 @@ def products():
 
             if charts_data:
                 no_results = False
-        else:
-            available_food_categories = food_categories
 
     return render_template('products.html',
                            title='Ürünler',
