@@ -20,7 +20,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="category-select">Ürün</label>
+                <label for="category-select" title="Toplamda 140'dan fazla kategori bulunmaktadır.&#10;Arama sonuçları ürünlerin mağazalarda hangi kategori aramalarıyla bulunduğuna göre listelenir.&#10;Bu nedenle, benzer ürünler farklı kategoriler altında görünebilir ve burada arama sonucuna göre filtre edilmiştir.">Kategori</label>
                 <select name="category" id="category-select">
                     <option value="all" {% if 'all' == category_name %}selected{% endif %}>Tümü</option>
                     {% for category in food_categories %}

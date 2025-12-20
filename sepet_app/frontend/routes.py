@@ -209,6 +209,13 @@ def products():
             product_groups = defaultdict(list)
             for row in all_products:
                 product_groups[(row['Display_Name'], row['shop_name'])].append(row)
+
+            # If a search is made, filter the categories to only those that are in the search results
+            if product_search:
+                # Get the categories from the first product of each group
+                available_food_categories = sorted(list(set([p[0]['Search_Term'] for p in product_groups.values()])))
+            else:
+                available_food_categories = food_categories
             
             # --- Pagination Logic ---
             PER_PAGE = 40
@@ -283,11 +290,13 @@ def products():
 
             if charts_data:
                 no_results = False
+        else:
+            available_food_categories = food_categories
 
     return render_template('products.html',
                            title='Ürünler',
                            shop_names=shop_names,
-                           food_categories=food_categories,
+                           food_categories=available_food_categories,
                            charts_data=charts_data,
                            category_name=category_name,
                            selected_shops=selected_shops,
@@ -309,6 +318,13 @@ def products():
 def about():
     """Renders a simple about page."""
     return render_template('about.html', title='Hakkında')
+
+
+@current_app.route('/privacy')
+def privacy():
+    """Renders the privacy policy page."""
+    return render_template('privacy.html', title='Gizlilik Politikası')
+
 
 @current_app.route('/upload_secure', methods=['POST'])
 def upload_secure():
