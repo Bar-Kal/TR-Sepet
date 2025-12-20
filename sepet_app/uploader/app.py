@@ -2,6 +2,7 @@ import os
 import requests
 from flask import Flask, request, redirect, url_for, render_template
 from jinja2 import ChoiceLoader, FileSystemLoader
+from urllib.parse import urljoin
 
 def create_app():
     """
@@ -16,8 +17,10 @@ def create_app():
         FileSystemLoader(os.path.join(app.root_path, '../frontend/templates'))
     ])
 
-    # Load app url
+    # Load app url and derive frontend domain
     app.config['INTERNAL_APP_DOMAIN'] = os.getenv('INTERNAL_APP_DOMAIN')
+    app.config['FRONTEND_APP_DOMAIN'] = urljoin(app.config['INTERNAL_APP_DOMAIN'], '/')
+
 
     @app.route('/', methods=['GET', 'POST'])
     def upload_file():
@@ -58,13 +61,27 @@ def create_app():
 
         return render_template('upload.html', title='Dosya Yükle', message=message, category=category)
 
+    # --- Redirects to Frontend App ---
+    # These routes catch the url_for() calls from the shared base.html template
+    # and redirect them to the main frontend application.
+
     @app.route('/index')
     def index():
-        return redirect('http://localhost:5001')
+        return redirect(app.config['FRONTEND_APP_DOMAIN'])
 
     @app.route('/about')
     def about():
-        return redirect('http://localhost:5001/about')
+        return redirect(urljoin(app.config['FRONTEND_APP_DOMAIN'], 'about'))
+
+    @app.route('/privacy')
+    def privacy():
+        return redirect(urljoin(app.config['FRONTEND_APP_DOMAIN'], 'privacy'))
+
+    @app.route('/products')
+    def products():
+        # Forward the search query from the header search bar
+        query_string = request.query_string.decode('utf-8')
+        return redirect(urljoin(app.config['FRONTEND_APP_DOMAIN'], f'products?{query_string}'))
 
     return app
 
