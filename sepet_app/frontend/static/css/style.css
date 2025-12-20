@@ -492,3 +492,7 @@ footer {
     100% { transform: rotate(360deg); }
 }
 
+.index-text {
+    text-align: center;
+    padding-top: 20px;
+}
