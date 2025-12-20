@@ -180,8 +180,12 @@ def products():
                 params.extend([start_date_str, end_date_str])
 
             if product_search:
-                conditions.append("Display_Name LIKE ?")
-                params.append(f'%{product_search}%')
+                if ' ' in product_search:
+                    conditions.append("Display_Name LIKE ?")
+                    params.append(f'%{product_search}%')
+                else:
+                    conditions.append("(Display_Name LIKE ? OR Display_Name LIKE ?)")
+                    params.extend([f'{product_search}%', f'% {product_search}%'])
 
             if conditions:
                 query += " WHERE " + " AND ".join(conditions)
