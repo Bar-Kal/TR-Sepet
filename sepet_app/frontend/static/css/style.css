@@ -423,7 +423,7 @@ footer {
 .shared-search-bar {
     width: 100%;
     padding: 15px;
-    font-size: 1.2em;
+    font-size: 1em;
     border-radius: 25px;
     border: 1px solid #ccc;
 }
@@ -518,4 +518,89 @@ footer {
 .index-text {
     text-align: center;
     padding-top: 20px;
+}
+
+/* Responsive Design */
+.menu-toggle {
+    display: none; /* Hidden by default */
+    background-color: var(--chart-green);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.close-sidebar {
+    display: none; /* Hidden by default on larger screens */
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 2rem;
+    background: none;
+    border: none;
+    color: var(--dark-gray);
+    cursor: pointer;
+}
+
+@media (max-width: 992px) {
+    .product-page-container {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .filter-sidebar {
+        width: 100%;
+        box-sizing: border-box;
+        display: none; /* Hidden by default on small screens */
+        position: fixed;
+        top: 0;
+        left: -100%; /* Start off-screen */
+        height: 100%;
+        z-index: 1001; /* Above the loading overlay */
+        overflow-y: auto;
+        transition: left 0.3s ease-in-out;
+        padding-top: 5rem; /* Space for a close button */
+    }
+
+    .filter-sidebar.active {
+        display: block; /* Show the sidebar */
+        left: 0; /* Slide in */
+    }
+
+    .menu-toggle {
+        display: block; /* Show the toggle button */
+    }
+
+    .close-sidebar {
+        display: block;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        font-size: 2rem;
+        background: none;
+        border: none;
+        color: var(--dark-gray);
+        cursor: pointer;
+    }
+
+    body.sidebar-active {
+        overflow: hidden; /* Prevent background scroll */
+    }
+
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+    }
+
+    .sidebar-overlay.active {
+        display: block;
+    }
 }

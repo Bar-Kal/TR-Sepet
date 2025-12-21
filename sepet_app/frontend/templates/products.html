@@ -3,8 +3,10 @@
 {% block title %}{{ title }} - Sepet{% endblock %}
 
 {% block content %}
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
 <div class="product-page-container">
-    <aside class="filter-sidebar">
+    <aside class="filter-sidebar" id="filter-sidebar">
+        <button class="close-sidebar" id="close-sidebar-btn">&times;</button>
         <form action="/products" method="get" class="filter-form">
             <input type="hidden" name="q" value="{{ search_query }}">
             <div class="form-group">
@@ -43,6 +45,7 @@
     </aside>
 
     <main class="results-main">
+        <button class="menu-toggle" id="menu-toggle-btn">Filtreleri Göster</button>
         {% if search_error %}
             <div class="alert alert-danger" role="alert">
                 {{ search_error }}
@@ -103,154 +106,184 @@
     {% endif %}
     <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
     <script>
-        new Litepicker({
-            element: document.getElementById('date-range'),
-            singleMode: false,
-            format: 'YYYY-MM-DD',
-            setup: (picker) => {
-                picker.on('selected', (date1, date2) => {
-                    // your code
-                });
-            }
-        });
+        document.addEventListener('DOMContentLoaded', function () {
+            // Sidebar toggle
+            const menuToggleBtn = document.getElementById('menu-toggle-btn');
+            const sidebar = document.getElementById('filter-sidebar');
+            const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+            const overlay = document.getElementById('sidebar-overlay');
+            const body = document.body;
 
-        {% if charts_data %}
-            {% for chart_data in charts_data %}
-                var prices{{ loop.index }} = {{ chart_data.prices | tojson }};
-                var discountPrices{{ loop.index }} = {{ chart_data.discount_prices | tojson }};
-                var labels{{ loop.index }} = {{ chart_data.labels | tojson }};
-
-                // Calculate median
-                var sortedPrices = [...prices{{ loop.index }}].sort((a, b) => a - b);
-                var mid = Math.floor(sortedPrices.length / 2);
-                var median = sortedPrices.length % 2 !== 0 ? sortedPrices[mid] : (sortedPrices[mid - 1] + sortedPrices[mid]) / 2;
-                var medianData = Array(prices{{ loop.index }}.length).fill(median);
-
-                // Calculate moving average on discount prices
-                var movingAvg = [];
-                var windowSize = 14;
-                for (var i = 0; i < discountPrices{{ loop.index }}.length; i++) {
-                    if (i < windowSize - 1) {
-                        movingAvg.push(null);
-                    } else {
-                        var sum = 0;
-                        for (var j = 0; j < windowSize; j++) {
-                            sum += discountPrices{{ loop.index }}[i - j];
-                        }
-                        movingAvg.push(sum / windowSize);
-                    }
+            if (menuToggleBtn) {
+                function openSidebar() {
+                    sidebar.classList.add('active');
+                    overlay.classList.add('active');
+                    body.classList.add('sidebar-active');
                 }
 
-                var ctx{{ loop.index }} = document.getElementById('chart-{{ loop.index }}').getContext('2d');
-                var chart{{ loop.index }} = new Chart(ctx{{ loop.index }}, {
-                    type: 'line',
-                    data: {
-                        labels: labels{{ loop.index }},
-                        datasets: [{
-                            label: 'Fiyat',
-                            data: prices{{ loop.index }},
-                            borderColor: 'rgba(0, 128, 0, 1)',
-                            borderWidth: 2,
-                            stepped: true,
-                            fill: false,
-                            pointRadius: 0,
-                            pointHoverRadius: 5,
-                            pointBackgroundColor: 'rgba(0, 128, 0, 1)'
-                        }, {
-                            label: 'İndirimli Fiyat',
-                            data: discountPrices{{ loop.index }},
-                            borderColor: 'rgba(255, 159, 64, 1)',
-                            borderWidth: 2,
-                            stepped: true,
-                            fill: false,
-                            pointRadius: 0,
-                            pointHoverRadius: 5,
-                            pointBackgroundColor: 'rgba(255, 159, 64, 1)'
-                        }, {
-                            label: 'Medyan',
-                            data: medianData,
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 2,
-                            borderDash: [5, 5],
-                            fill: false,
-                            pointRadius: 0,
-                        }, {
-                            label: 'Hareketli Ortalama (14 gün)',
-                            data: movingAvg,
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 2,
-                            fill: false,
-                            pointRadius: 0,
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            x: {
-                                ticks: {
-                                    maxRotation: 90,
-                                    minRotation: 80
-                                },
-                                grid: {
-                                    display: false
-                                }
-                            },
-                            y: {
-                                beginAtZero: false,
-                                ticks: {
-                                    callback: function(value, index, values) {
-                                        return Math.round(value) + ' TL';
-                                    }
-                                },
-                                grid: {
-                                    color: 'rgba(200, 200, 200, 0.5)'
+                function closeSidebar() {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                    body.classList.remove('sidebar-active');
+                }
+
+                menuToggleBtn.addEventListener('click', openSidebar);
+                closeSidebarBtn.addEventListener('click', closeSidebar);
+                overlay.addEventListener('click', closeSidebar);
+            }
+
+            // Litepicker
+            new Litepicker({
+                element: document.getElementById('date-range'),
+                singleMode: false,
+                format: 'YYYY-MM-DD',
+                setup: (picker) => {
+                    picker.on('selected', (date1, date2) => {
+                        // your code
+                    });
+                }
+            });
+
+            // Charts
+            {% if charts_data %}
+                {% for chart_data in charts_data %}
+                    var prices{{ loop.index }} = {{ chart_data.prices | tojson }};
+                    var discountPrices{{ loop.index }} = {{ chart_data.discount_prices | tojson }};
+                    var labels{{ loop.index }} = {{ chart_data.labels | tojson }};
+
+                    // Calculate median
+                    var sortedPrices = [...prices{{ loop.index }}].sort((a, b) => a - b);
+                    var mid = Math.floor(sortedPrices.length / 2);
+                    var median = sortedPrices.length % 2 !== 0 ? sortedPrices[mid] : (sortedPrices[mid - 1] + sortedPrices[mid]) / 2;
+                    var medianData = Array(prices{{ loop.index }}.length).fill(median);
+
+                    // Calculate moving average on discount prices
+                    var movingAvg = [];
+                    var windowSize = 14;
+                    for (var i = 0; i < discountPrices{{ loop.index }}.length; i++) {
+                        if (i < windowSize - 1) {
+                            movingAvg.push(null);
+                        } else {
+                            var sum = 0;
+                            for (var j = 0; j < windowSize; j++) {
+                                if(discountPrices{{ loop.index }}[i - j] !== null) {
+                                    sum += discountPrices{{ loop.index }}[i - j];
                                 }
                             }
+                            movingAvg.push(sum / windowSize);
+                        }
+                    }
+
+                    var ctx{{ loop.index }} = document.getElementById('chart-{{ loop.index }}').getContext('2d');
+                    var chart{{ loop.index }} = new Chart(ctx{{ loop.index }}, {
+                        type: 'line',
+                        data: {
+                            labels: labels{{ loop.index }},
+                            datasets: [{
+                                label: 'Fiyat',
+                                data: prices{{ loop.index }},
+                                borderColor: 'rgba(0, 128, 0, 1)',
+                                borderWidth: 2,
+                                stepped: true,
+                                fill: false,
+                                pointRadius: 0,
+                                pointHoverRadius: 5,
+                                pointBackgroundColor: 'rgba(0, 128, 0, 1)'
+                            }, {
+                                label: 'İndirimli Fiyat',
+                                data: discountPrices{{ loop.index }},
+                                borderColor: 'rgba(255, 159, 64, 1)',
+                                borderWidth: 2,
+                                stepped: true,
+                                fill: false,
+                                pointRadius: 0,
+                                pointHoverRadius: 5,
+                                pointBackgroundColor: 'rgba(255, 159, 64, 1)'
+                            }, {
+                                label: 'Medyan',
+                                data: medianData,
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                fill: false,
+                                pointRadius: 0,
+                            }, {
+                                label: 'Hareketli Ortalama (14 gün)',
+                                data: movingAvg,
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 2,
+                                fill: false,
+                                pointRadius: 0,
+                            }]
                         },
-                        plugins: {
-                            legend: {
-                                display: false,
-                                position: 'top',
-                            },
-                            tooltip: {
-                                mode: 'index',
-                                intersect: false,
-                                callbacks: {
-                                    label: function(context) {
-                                        let label = context.dataset.label || '';
-                                        if (label) {
-                                            label += ': ';
+                        options: {
+                            scales: {
+                                x: {
+                                    ticks: {
+                                        maxRotation: 90,
+                                        minRotation: 80
+                                    },
+                                    grid: {
+                                        display: false
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: false,
+                                    ticks: {
+                                        callback: function(value, index, values) {
+                                            return Math.round(value) + ' TL';
                                         }
-                                        if (context.parsed.y !== null) {
-                                            label += new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(context.parsed.y);
-                                        }
-                                        return label;
+                                    },
+                                    grid: {
+                                        color: 'rgba(200, 200, 200, 0.5)'
                                     }
                                 }
                             },
-                            zoom: {
-                                pan: {
-                                    enabled: true,
-                                    mode: 'xy'
+                            plugins: {
+                                legend: {
+                                    display: false,
+                                    position: 'top',
+                                },
+                                tooltip: {
+                                    mode: 'index',
+                                    intersect: false,
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.dataset.label || '';
+                                            if (label) {
+                                                label += ': ';
+                                            }
+                                            if (context.parsed.y !== null) {
+                                                label += new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(context.parsed.y);
+                                            }
+                                            return label;
+                                        }
+                                    }
                                 },
                                 zoom: {
-                                    wheel: {
+                                    pan: {
                                         enabled: true,
+                                        mode: 'xy'
                                     },
-                                    pinch: {
-                                        enabled: true
-                                    },
-                                    mode: 'xy',
+                                    zoom: {
+                                        wheel: {
+                                            enabled: true,
+                                        },
+                                        pinch: {
+                                            enabled: true
+                                        },
+                                        mode: 'xy',
+                                    }
                                 }
                             }
                         }
-                    }
-                });
-                
-                ctx{{ loop.index }}.canvas.ondblclick = function() {
-                    chart{{ loop.index }}.resetZoom();
-                };
+                    });
 
-            {% endfor %}
-        {% endif %}
+                    ctx{{ loop.index }}.canvas.ondblclick = function() {
+                        chart{{ loop.index }}.resetZoom();
+                    };
+                {% endfor %}
+            {% endif %}
+        });
     </script>
 {% endblock %}
