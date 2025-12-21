@@ -159,21 +159,16 @@ def products():
 
     # --- Query and Process Data ---
     db_path = get_db_path()
-    if category_name and db_path:
-        
-        all_products = []
+    if db_path: # Removed category_name from this check
 
+        all_products = []
         shops_to_query = selected_shops
 
+        # First, query all products based on search, shops, and date to determine available categories
         for current_shop in shops_to_query:
-            # Build query dynamically and safely
             query = f'SELECT Display_Name, Price, Discount_Price, URL, category_id, Scrape_Timestamp, Search_Term FROM "{current_shop}"'
             params = []
-            
             conditions = []
-            if category_name != 'all':
-                conditions.append("Search_Term = ?")
-                params.append(category_name)
 
             if start_date_str and end_date_str:
                 conditions.append("date(Scrape_Timestamp) BETWEEN ? AND ?")
@@ -194,12 +189,12 @@ def products():
 
             try:
                 con = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
-                con.row_factory = sqlite3.Row # Access columns by name
+                con.row_factory = sqlite3.Row
                 cursor = con.cursor()
                 cursor.execute(query, params)
                 rows = cursor.fetchall()
                 con.close()
-                
+
                 if rows:
                     for row in rows:
                         product = dict(row)
@@ -209,28 +204,34 @@ def products():
             except sqlite3.Error as e:
                 print(f"Database query failed for shop {current_shop}: {e}")
 
+        # Now, determine available categories from the full search results
         if all_products:
-            # Group rows by product name and shop name
+            if product_search:
+                # Get the categories from all products found in the search
+                available_food_categories = sorted(list(set(p['Search_Term'] for p in all_products)))
+            else:
+                # If no search term, all categories are considered available
+                available_food_categories = food_categories
+
+            # Filter the fetched products by the selected category for display
+            if category_name and category_name != 'all':
+                products_to_display = [p for p in all_products if p['Search_Term'] == category_name]
+            else:
+                products_to_display = all_products
+
+            # Group rows by product name and shop name for the products to be displayed
             product_groups = defaultdict(list)
-            for row in all_products:
+            for row in products_to_display:
                 product_groups[(row['Display_Name'], row['shop_name'])].append(row)
 
-            # If a search is made, filter the categories to only those that are in the search results
-            if product_search:
-                # Get the categories from the first product of each group
-                available_food_categories = sorted(list(set([p[0]['Search_Term'] for p in product_groups.values()])))
-            else:
-                available_food_categories = food_categories
-            
-            # --- Pagination Logic ---
+            # --- Pagination Logic (based on the number of groups to display) ---
             PER_PAGE = 40
             total_items = len(product_groups)
             total_pages = math.ceil(total_items / PER_PAGE)
             offset = (page - 1) * PER_PAGE
-            
-            # Get a paginated slice of the group keys
+
             paginated_group_keys = list(product_groups.keys())[offset : offset + PER_PAGE]
-            
+
             pagination = {
                 'page': page,
                 'total_pages': total_pages,
@@ -242,21 +243,18 @@ def products():
             # --- End Pagination Logic ---
 
             charts_data = []
-            
+
             # Loop ONLY through the keys for the current page
             for (product_name, shop_name_of_product) in paginated_group_keys:
                 group_rows = product_groups[(product_name, shop_name_of_product)]
-                # Process each group to find stats and format for chart
-                prices = []
-                discount_prices = []
-                dates = []
-                
+                prices, discount_prices, dates = [], [], []
+
                 for row in group_rows:
                     try:
                         prices.append(float(row['Price']))
                     except (ValueError, TypeError):
-                        prices.append(None) # Handle non-numeric price
-                    
+                        prices.append(None)
+
                     try:
                         discount_prices.append(float(row['Discount_Price']))
                     except (ValueError, TypeError):
@@ -267,14 +265,11 @@ def products():
                     except ValueError:
                         dates.append(datetime.strptime(row['Scrape_Timestamp'], '%Y-%m-%d %H:%M:%S'))
 
-
-                # Filter out None values for calculations
                 valid_prices = [p for p in prices if p is not None]
-                valid_discount_prices = [p for p in discount_prices if p is not None]
-
                 if not valid_prices:
-                    continue # Skip products with no valid price data
+                    continue
 
+                valid_discount_prices = [p for p in discount_prices if p is not None]
                 shop_logo = shop_logo_mapping.get(shop_name_of_product)
 
                 chart_data = {
@@ -284,7 +279,7 @@ def products():
                     'labels': [d.strftime('%d %b') for d in dates],
                     'prices': prices,
                     'discount_prices': discount_prices,
-                    'url': group_rows[-1]['URL'], # Latest URL
+                    'url': group_rows[-1]['URL'],
                     'highest_price': format_price(max(valid_prices)),
                     'lowest_price': format_price(min(valid_prices)),
                     'lowest_discount_price': format_price(min(valid_discount_prices)) if valid_discount_prices else "N/A",
@@ -296,23 +291,23 @@ def products():
             if charts_data:
                 no_results = False
 
-    return render_template('products.html',
-                           title='Ürünler',
-                           shop_names=shop_names,
-                           food_categories=available_food_categories,
-                           charts_data=charts_data,
-                           category_name=category_name,
-                           selected_shops=selected_shops,
-                           start_date=start_date_str,
-                           end_date=end_date_str,
-                           results_title=results_title,
-                           no_results=no_results,
-                           product_search=product_search or '',
-                           search_query=product_search or '',
-                           shop_logo_mapping=shop_logo_mapping,
-                           search_error=search_error,
-                           show_header_search=True,
-                           pagination=pagination)
+        return render_template('products.html',
+                       title='Ürünler',
+                       shop_names=shop_names,
+                       food_categories=available_food_categories,
+                       charts_data=charts_data,
+                       category_name=category_name,
+                       selected_shops=selected_shops,
+                       start_date=start_date_str,
+                       end_date=end_date_str,
+                       results_title=results_title,
+                       no_results=no_results,
+                       product_search=product_search or '',
+                       search_query=product_search or '',
+                       shop_logo_mapping=shop_logo_mapping,
+                       search_error=search_error,
+                       show_header_search=True,
+                       pagination=pagination)
 
 
 
