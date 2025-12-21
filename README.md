@@ -1,6 +1,6 @@
-# TR-Sepet 🛒
+# Sepet 🛒
 
-**TR-Sepet** is a powerful price comparison tool designed to track and analyze the prices of grocery products across various online stores in Turkey. It provides a comprehensive solution for collecting, storing, and visualizing price data, helping users make informed purchasing decisions.
+**Sepet** is a powerful price comparison tool designed to track and analyze the prices of grocery products across various online stores in Turkey. It provides a comprehensive solution for collecting, storing, and visualizing price data, helping users make informed purchasing decisions.
 
 ## ✨ Features
 
@@ -51,7 +51,7 @@ A JSON file listing the product categories to search for on each website.
 
 ## 🛠️ How to Run the Scraper
 
-To ensure all modules are found correctly, you **must** run the application from the project's root directory (`TR-Sepet/`) using the `-m` flag.
+To ensure all modules are found correctly, you **must** run the application from the project's root directory (`Sepet/`) using the `-m` flag.
 
 ```bash
 python -m sepet_app.scraper.run_scraping
