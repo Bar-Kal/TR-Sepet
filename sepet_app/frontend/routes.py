@@ -4,7 +4,7 @@ import locale
 import py7zr
 import re
 import math
-from flask import render_template, current_app, request, jsonify
+from flask import render_template, current_app, request, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -83,6 +83,16 @@ def unzip_new_db_file():
         print(f"Error extracting 7z file: {e}")
 
 # --- Route Definitions ---
+@current_app.route('/robots.txt')
+def robots_txt():
+    return send_from_directory(current_app.static_folder, 'robots.txt')
+
+
+@current_app.route('/sitemap.xml')
+def sitemap():
+    return send_from_directory(current_app.static_folder, 'sitemap.xml')
+
+
 @current_app.route('/', methods=['GET'])
 @current_app.route('/index', methods=['GET'])
 def index():
