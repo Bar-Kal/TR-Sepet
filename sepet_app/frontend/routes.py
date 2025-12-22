@@ -49,9 +49,9 @@ def get_shop_names():
         print(f"Database error while fetching shop names: {e}")
         return []
 
-def unzip_new_db_file():
+def unzip_new_db_file(base_downloads_path: str = current_app.config['DATABASE_FOLDER']):
     """Finds all new zipped db files and unzips them"""
-    base_downloads_path = current_app.config['DATABASE_FOLDER']
+    print(f"Unzip to: {base_downloads_path}")
     if not os.path.isdir(base_downloads_path):
         return None
     zipped_db_files = [os.path.join(base_downloads_path, f) for f in os.listdir(base_downloads_path) if f.endswith('.7z')]
@@ -352,7 +352,7 @@ def upload_secure():
     if file:
         filename = secure_filename(file.filename)
         file.save(os.path.join(current_app.config['DATABASE_FOLDER'], filename))
-        unzip_new_db_file()
+        unzip_new_db_file(base_downloads_path=current_app.config['DATABASE_FOLDER'])
         return jsonify({'message': 'File successfully uploaded and unzipped'}), 200
     
     return jsonify({'error': 'File upload failed'}), 500
