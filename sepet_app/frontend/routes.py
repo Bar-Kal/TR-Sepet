@@ -14,7 +14,7 @@ from collections import defaultdict
 try:
     locale.setlocale(locale.LC_TIME, 'tr_TR.UTF-8')
 except locale.Error:
-    print("Türkçe yerel ayarı desteklenmiyor, varsayılan kullanılıyor.")
+    print("Language setting for TR not found on system.")
 
 def format_price(price):
     if price is None:
@@ -34,20 +34,44 @@ def get_db_path():
     return sorted(db_files)[-1]
 
 def get_shop_names():
-    """Gets a list of all shop names (tables) from the database."""
+    """Gets a list of all shop names and their logos from the database."""
     db_path = get_db_path()
     if not db_path:
-        return []
+        return [], {}
     try:
         con = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
         cursor = con.cursor()
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;")
-        shops = [row[0] for row in cursor.fetchall()]
+        cursor.execute("SELECT shop_name, logo FROM shops_metadata ORDER BY shop_name;")
+        rows = cursor.fetchall()
         con.close()
-        return shops
+        
+        shop_names = [row[0] for row in rows]
+        shop_logo_mapping = {row[0]: row[1].replace('static/', '') for row in rows}
+        
+        return shop_names, shop_logo_mapping
     except sqlite3.Error as e:
         print(f"Database error while fetching shop names: {e}")
-        return []
+        return [], {}
+
+def get_food_categories():
+    """Gets food categories and their mappings from the database."""
+    db_path = get_db_path()
+    if not db_path:
+        return [], {}
+    try:
+        con = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+        cursor = con.cursor()
+        cursor.execute("SELECT category_id, TurkishCategory, TurkishName FROM food_categories_metadata;")
+        rows = cursor.fetchall()
+        con.close()
+        
+        food_categories = sorted([row[2] for row in rows])
+        category_mapping = {row[0]: row[1] for row in rows}
+        
+        return food_categories, category_mapping
+    except sqlite3.Error as e:
+        print(f"Database error while fetching food categories: {e}")
+        return [], {}
 
 def unzip_new_db_file(base_downloads_path: str = current_app.config['DATABASE_FOLDER']):
     """Finds all new zipped db files and unzips them"""
@@ -103,22 +127,11 @@ def index():
 @current_app.route('/products', methods=['GET'])
 def products():
     """Renders the home page with shop and category dropdowns."""
-    shop_names = get_shop_names()
+    shop_names, shop_logo_mapping = get_shop_names()
 
-    # --- Load static JSON configs ---
-    food_path = Path(os.path.join(current_app.root_path, '..', 'scraper', 'configs', 'food.json'))
-    with open(food_path, 'r', encoding='utf-8') as f:
-        import json
-        food_file = json.load(f)
-        food_categories = sorted([item['TurkishName'] for item in food_file])
-        available_food_categories = food_categories
-        category_mapping = {item['category_id']: item['TurkishCategory'] for item in food_file}
-
-    shops_path = Path(os.path.join(current_app.root_path, '..', 'scraper', 'configs', 'shops.json'))
-    with open(shops_path, 'r', encoding='utf-8') as f:
-        import json
-        shops_file = json.load(f)
-        shop_logo_mapping = {item['shop_name']: item['logo'].replace('static/', '') for item in shops_file}
+    # --- Load food categories from database ---
+    food_categories, category_mapping = get_food_categories()
+    available_food_categories = food_categories
 
     # --- Initialize variables ---
     charts_data = None
