@@ -65,7 +65,7 @@
                     <span>İndirimli Fiyat</span>
                 </div>
                 <div class="legend-item" title="Medyan">
-                    <div class="legend-color" style="background-color: rgba(255, 99, 132, 1);"></div>
+                    <div class="legend-color" title="indirimli fiyattan hesaplanmıştır" style="background-color: rgba(255, 99, 132, 1);"></div>
                     <span>Medyan</span>
                 </div>
                 <div class="legend-item" title="indirimli fiyattan hesaplanmıştır">
@@ -152,7 +152,7 @@
                     var labels{{ loop.index }} = {{ chart_data.labels | tojson }};
 
                     // Calculate median
-                    var sortedPrices = [...prices{{ loop.index }}].sort((a, b) => a - b);
+                    var sortedPrices = [...discountPrices{{ loop.index }}].sort((a, b) => a - b);
                     var mid = Math.floor(sortedPrices.length / 2);
                     var median = sortedPrices.length % 2 !== 0 ? sortedPrices[mid] : (sortedPrices[mid - 1] + sortedPrices[mid]) / 2;
                     var medianData = Array(prices{{ loop.index }}.length).fill(median);
