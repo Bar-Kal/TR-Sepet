@@ -604,3 +604,23 @@ footer {
         display: block;
     }
 }
+
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .nav-center {
+        width: 100%;
+        order: 2; /* Change order to place it below the logo */
+    }
+
+    .nav-left {
+        order: 1;
+    }
+
+    .nav-right {
+        order: 3;
+    }
+}
