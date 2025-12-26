@@ -26,7 +26,7 @@
     {
         "shop_name": "Carrefoursa",
         "base_url": "https://www.carrefoursa.com",
-        "logo": "static/img/shops/carrefoursa_logo.svg",
+        "logo": "static/img/shops/carrefoursa_logo.png",
         "scraper":
             {
                 "module": "sepet_app.scraper.shop_scrapers.carrefoursa",
