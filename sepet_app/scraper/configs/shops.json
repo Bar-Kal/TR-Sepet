@@ -1,5 +1,6 @@
 [
     {
+        "shop_id": 1,
         "shop_name": "Migros",
         "base_url": "https://www.migros.com.tr",
         "logo": "static/img/shops/M-Migros.svg",
@@ -12,6 +13,7 @@
             }
     },
     {
+        "shop_id": 2,
         "shop_name": "Koop",
         "base_url": "https://www.tkkoop.com.tr",
         "logo": "static/img/shops/Tk_Koop_Market_logo.svg",
@@ -24,6 +26,7 @@
             }
     },
     {
+        "shop_id": 3,
         "shop_name": "Carrefoursa",
         "base_url": "https://www.carrefoursa.com",
         "logo": "static/img/shops/carrefoursa_logo.png",
@@ -36,6 +39,7 @@
             }
     },
     {
+        "shop_id": 4,
         "shop_name": "Cagri",
         "base_url": "https://www.cagri.com/",
         "logo": "static/img/shops/cagri_logo.png",
@@ -48,6 +52,7 @@
             }
     },
     {
+        "shop_id": 5,
         "shop_name": "Onurmarket",
         "base_url": "https://www.onurmarket.com",
         "logo": "static/img/shops/onur.png",
@@ -59,6 +64,7 @@
             }
     },
     {
+        "shop_id": 6,
         "shop_name": "A101",
         "base_url": "https://www.a101.com.tr",
         "logo": "static/img/shops/A101_logo.svg",
