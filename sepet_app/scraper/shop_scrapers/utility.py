@@ -1,14 +1,15 @@
-import pickle
-from gensim.models import FastText
-from loguru import logger
-import numpy as np
 import os
 import glob
-import pandas as pd
+import json
+import pickle
 import re
-from datetime import datetime
 import sqlite3
 import py7zr
+import numpy as np
+import pandas as pd
+from datetime import datetime
+from gensim.models import FastText
+from loguru import logger
 
 def sanitize_name(name, is_path=False):
     """Sanitizes a string to be a valid name."""
@@ -116,7 +117,6 @@ def create_sqlite_from_csvs(db_folder: str, scraped_files_folder: str) -> str | 
             try:
                 logger.info("Adding shop metadata to the database.")
                 with open(os.path.join('sepet_app', 'scraper', 'configs', 'shops.json'), 'r', encoding='utf-8') as f:
-                    import json
                     shops_data = json.load(f)
                 
                 shops_df = pd.DataFrame(shops_data)
