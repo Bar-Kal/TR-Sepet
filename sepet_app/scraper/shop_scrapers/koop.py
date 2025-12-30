@@ -84,7 +84,7 @@ class KoopScraper(BaseScraper):
                             Product_ID=product['product_id'],
                             Discount_Price=self.get_prices(article.find("div", {"class": "ss_urun52"}))[0],
                             Price=self.get_prices(article.find("div", {"class": "ss_urun52"}))[1],
-                            URL=url.replace(f'^{self.base_url}', '', regex=True),
+                            URL=url.replace(self.base_url, ''),
                             Scraped_Product_ID=url.split('/')[-1]
                         )
                         product_info = asdict(product_info)
