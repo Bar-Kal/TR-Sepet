@@ -25,6 +25,7 @@ n    instantiated object.
         AttributeError: If the specified class does not exist in the module.
     """
     try:
+        shop_id = shop_config['shop_id']
         shop_name = shop_config['shop_name']
         base_url = shop_config['base_url']
         module_path = shop_config['scraper']['module']
@@ -52,5 +53,5 @@ n    instantiated object.
 
     # Create and return an instance of the correct scraper class
     if scraper_type == 'basic':
-        return scraper_class(shop_name=shop_name, base_url=base_url, driver_name=driver_name, ignore_nonfood=ignore_nonfood)
-    return scraper_class(shop_name=shop_name, base_url=base_url, ignore_nonfood=ignore_nonfood)
+        return scraper_class(shop_id=shop_id, shop_name=shop_name, base_url=base_url, driver_name=driver_name, ignore_nonfood=ignore_nonfood)
+    return scraper_class(shop_id=shop_id,shop_name=shop_name, base_url=base_url, ignore_nonfood=ignore_nonfood)
