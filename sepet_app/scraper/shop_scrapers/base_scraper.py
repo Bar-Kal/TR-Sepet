@@ -26,6 +26,7 @@ def _create_driver(driver_name: str):
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-browser-side-navigation')
         options.add_argument('--disable-dev-shm-usage')
+        options.add_argument("--disable-geolocation")
         options.add_argument('enable-automation')
         # Tell ChromeDriver to only log fatal errors.
         # Log level 3 is the most severe, effectively silencing most messages.
