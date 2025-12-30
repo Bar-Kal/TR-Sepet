@@ -1,6 +1,6 @@
 import shutil
 from abc import ABC, abstractmethod
-from typing import List, Dict
+from typing import List, Dict, Any
 from loguru import logger
 from .core import ScraperCore
 from selenium import webdriver
@@ -85,15 +85,16 @@ class BaseScraper(ScraperCore, ABC):
     concrete scraper must implement.
     """
 
-    def __init__(self, shop_name: str, base_url: str, driver_name: str, ignore_nonfood: bool = False):
+    def __init__(self, shop_id: int, shop_name: str, base_url: str, driver_name: str, ignore_nonfood: bool = False):
         super().__init__()
         self.driver = _create_driver(driver_name)
         if self.driver:
+            self.shop_id = shop_id
             self.shop_name = shop_name
             self.base_url = base_url
             self.ignore_nonfood = ignore_nonfood
         else:
-            logger.error(f"Failed to create webdriver for {shop_name}")
+            logger.error(f"Failed to create webdriver for {shop_name} with shop_id: {shop_id}")
 
     def __del__(self):
         if self.driver:
@@ -101,15 +102,14 @@ class BaseScraper(ScraperCore, ABC):
             logger.warning(f"Destructor of base class called for {self.shop_name}")
 
     @abstractmethod
-    def search(self, product: str, category_id: int) -> List[Dict]:
+    def search(self, product: dict) -> List[dict]:
         """
         Searches for products based on a query string.
 
         This method MUST be implemented by any class that inherits from BaseScraper.
 
         Args:
-            product (str): The search term (e.g., 'Sucuk', 'Pirinc').
-            category_id (int): The category id of a product (e.g. 21 for 'Meyve').
+            product (dict): The food product from food.json.
 
         Returns:
             A list of dictionaries, where each dictionary represents a found product.
