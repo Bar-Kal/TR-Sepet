@@ -88,7 +88,7 @@ class A101Scraper(BaseScraper):
                             Product_ID=product['product_id'],
                             Discount_Price=self.get_prices(article.find_all("section", {"class": "mt-2.5 h-full flex flex-col justify-end mb-3"})[0])[0],
                             Price=self.get_prices(article.find_all("section", {"class": "mt-2.5 h-full flex flex-col justify-end mb-3"})[0])[1],
-                            URL=url.replace(f'^{self.base_url}', '', regex=True),
+                            URL=url.replace(self.base_url, ''),
                             Scraped_Product_ID=article.contents[0].attrs['href'].split("p-")[-1]
                         )
                         product_info = asdict(product_info)
