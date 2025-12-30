@@ -4,10 +4,10 @@ import locale
 import py7zr
 import re
 import math
+import pandas as pd
 from flask import render_template, current_app, request, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
-from pathlib import Path
 from collections import defaultdict
 
 # --- Locale and Formatting ---
@@ -41,12 +41,12 @@ def get_shop_names():
     try:
         con = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
         cursor = con.cursor()
-        cursor.execute("SELECT shop_name, logo FROM shops_metadata ORDER BY shop_name;")
+        cursor.execute("SELECT shop_id, shop_name, logo FROM shops_metadata ORDER BY shop_name;")
         rows = cursor.fetchall()
         con.close()
-        
-        shop_names = [row[0] for row in rows]
-        shop_logo_mapping = {row[0]: row[1].replace('static/', '') for row in rows}
+
+        shop_names = [row[1] for row in rows]
+        shop_logo_mapping = {row[1]: row[2].replace('static/', '') for row in rows}
         
         return shop_names, shop_logo_mapping
     except sqlite3.Error as e:
@@ -61,14 +61,13 @@ def get_food_categories():
     try:
         con = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
         cursor = con.cursor()
-        cursor.execute("SELECT category_id, TurkishCategory, TurkishName FROM food_categories_metadata;")
+        cursor.execute("SELECT product_id, TurkishName, category_id, TurkishCategory FROM food_categories_metadata;")
         rows = cursor.fetchall()
         con.close()
         
-        food_categories = sorted([row[2] for row in rows])
-        category_mapping = {row[0]: row[1] for row in rows}
-        
-        return food_categories, category_mapping
+        productid_food_mapping = {row[0]: row[1] for row in rows}
+
+        return list(productid_food_mapping.values())
     except sqlite3.Error as e:
         print(f"Database error while fetching food categories: {e}")
         return [], {}
@@ -127,17 +126,16 @@ def index():
 @current_app.route('/products', methods=['GET'])
 def products():
     """Renders the home page with shop and category dropdowns."""
-    shop_names, shop_logo_mapping = get_shop_names()
-
-    # --- Load food categories from database ---
-    food_categories, category_mapping = get_food_categories()
-    available_food_categories = food_categories
 
     # --- Initialize variables ---
     charts_data = None
     no_results = True
     search_error = None
     pagination = None
+
+    # --- Load metadata from database ---
+    shop_names, shop_logo_mapping = get_shop_names()
+    available_food_categories = get_food_categories()
 
     # --- Handle request ---
     page = request.args.get('page', 1, type=int)
@@ -177,7 +175,6 @@ def products():
         start_date_str = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
         end_date_str = datetime.now().strftime('%Y-%m-%d')
 
-
     results_title = f"Fiyat Analizi"
 
     # --- Query and Process Data ---
@@ -189,7 +186,12 @@ def products():
 
         # First, query all products based on search, shops, and date to determine available categories
         for current_shop in shops_to_query:
-            query = f'SELECT Display_Name, Price, Discount_Price, URL, category_id, Scrape_Timestamp, Search_Term FROM "{current_shop}"'
+            query = (f'SELECT {current_shop}.Scrape_Timestamp, {current_shop}.Display_Name, {current_shop}.Discount_Price, {current_shop}.Price, '
+                     f'shops_metadata.shop_name as Shop_Name, '
+                     f'food_categories_metadata.TurkishName as Product_Name, food_categories_metadata.TurkishCategory as Category_Name, '
+                     f'CONCAT(shops_metadata.base_url, {current_shop}.URL) as Product_URL FROM "{current_shop}"'
+                     f'LEFT JOIN shops_metadata ON {current_shop}.Shop_ID = shops_metadata.shop_id '
+                     f'LEFT JOIN food_categories_metadata ON {current_shop}.Product_ID = food_categories_metadata.product_id')
             params = []
             conditions = []
 
@@ -221,7 +223,7 @@ def products():
                 if rows:
                     for row in rows:
                         product = dict(row)
-                        product['shop_name'] = current_shop
+                        #product['shop_name'] = current_shop
                         all_products.append(product)
 
             except sqlite3.Error as e:
@@ -231,21 +233,21 @@ def products():
         if all_products:
             if product_search:
                 # Get the categories from all products found in the search
-                available_food_categories = sorted(list(set(p['Search_Term'] for p in all_products)))
+                available_food_categories = sorted(list(set(p['Product_Name'] for p in all_products)))
             else:
-                # If no search term, all categories are considered available
-                available_food_categories = food_categories
+                # If no search term, all categories are considered available already in available_food_categories
+                pass
 
             # Filter the fetched products by the selected category for display
             if category_name and category_name != 'all':
-                products_to_display = [p for p in all_products if p['Search_Term'] == category_name]
+                products_to_display = [p for p in all_products if p['Product_Name'] == category_name]
             else:
                 products_to_display = all_products
 
             # Group rows by product name and shop name for the products to be displayed
             product_groups = defaultdict(list)
             for row in products_to_display:
-                product_groups[(row['Display_Name'], row['shop_name'])].append(row)
+                product_groups[(row['Display_Name'], row['Shop_Name'])].append(row)
 
             # --- Pagination Logic (based on the number of groups to display) ---
             PER_PAGE = 40
@@ -273,20 +275,9 @@ def products():
                 prices, discount_prices, dates = [], [], []
 
                 for row in group_rows:
-                    try:
-                        prices.append(float(row['Price']))
-                    except (ValueError, TypeError):
-                        prices.append(None)
-
-                    try:
-                        discount_prices.append(float(row['Discount_Price']))
-                    except (ValueError, TypeError):
-                        discount_prices.append(None)
-
-                    try:
-                        dates.append(datetime.strptime(row['Scrape_Timestamp'], '%Y-%m-%d %H:%M:%S.%f'))
-                    except ValueError:
-                        dates.append(datetime.strptime(row['Scrape_Timestamp'], '%Y-%m-%d %H:%M:%S'))
+                    prices.append(float(row['Price']))
+                    discount_prices.append(float(row['Discount_Price']))
+                    dates.append(datetime.strptime(row['Scrape_Timestamp'], '%Y-%m-%d %H:%M:%S'))
 
                 valid_prices = [p for p in prices if p is not None]
                 if not valid_prices:
@@ -297,12 +288,12 @@ def products():
 
                 chart_data = {
                     'product_name': product_name,
-                    'product_category': category_mapping.get(group_rows[0]['category_id'], "Bilinmeyen"),
-                    'search_term': group_rows[0]['Search_Term'],
+                    'product_category': group_rows[0]['Category_Name'],
+                    'search_term': group_rows[0]['Product_Name'],
                     'labels': [d.strftime('%d %b') for d in dates],
                     'prices': prices,
                     'discount_prices': discount_prices,
-                    'url': group_rows[-1]['URL'],
+                    'url': group_rows[-1]['Product_URL'],
                     'highest_price': format_price(max(valid_prices)),
                     'lowest_price': format_price(min(valid_prices)),
                     'lowest_discount_price': format_price(min(valid_discount_prices)) if valid_discount_prices else "N/A",
