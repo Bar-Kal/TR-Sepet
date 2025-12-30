@@ -1,19 +1,19 @@
 [
     {
         "shop_id": 1,
-        "shop_name": "Migros",
-        "base_url": "https://www.migros.com.tr",
-        "logo": "static/img/shops/M-Migros.svg",
+        "shop_name": "A101",
+        "base_url": "https://www.a101.com.tr",
+        "logo": "static/img/shops/A101_logo.svg",
         "scraper":
             {
-                "module": "sepet_app.scraper.shop_scrapers.migros",
-                "class": "MigrosScraper",
+                "module": "sepet_app.scraper.shop_scrapers.a101",
+                "class": "A101Scraper",
                 "type": "basic",
                 "driver": "chrome"
             }
     },
     {
-        "shop_id": 2,
+        "shop_id": 4,
         "shop_name": "Koop",
         "base_url": "https://www.tkkoop.com.tr",
         "logo": "static/img/shops/Tk_Koop_Market_logo.svg",
@@ -23,6 +23,19 @@
                 "class": "KoopScraper",
                 "type": "basic",
                 "driver": "firefox"
+            }
+    },
+    {
+        "shop_id": 5,
+        "shop_name": "Migros",
+        "base_url": "https://www.migros.com.tr",
+        "logo": "static/img/shops/M-Migros.svg",
+        "scraper":
+            {
+                "module": "sepet_app.scraper.shop_scrapers.migros",
+                "class": "MigrosScraper",
+                "type": "basic",
+                "driver": "chrome"
             }
     },
     {
@@ -39,7 +52,7 @@
             }
     },
     {
-        "shop_id": 4,
+        "shop_id": 2,
         "shop_name": "Cagri",
         "base_url": "https://www.cagri.com/",
         "logo": "static/img/shops/cagri_logo.png",
@@ -52,7 +65,7 @@
             }
     },
     {
-        "shop_id": 5,
+        "shop_id": 6,
         "shop_name": "Onurmarket",
         "base_url": "https://www.onurmarket.com",
         "logo": "static/img/shops/onur.png",
@@ -61,19 +74,6 @@
                 "module": "sepet_app.scraper.shop_scrapers.onurmarket",
                 "class": "OnurmarketScraper",
                 "type": "advanced"
-            }
-    },
-    {
-        "shop_id": 6,
-        "shop_name": "A101",
-        "base_url": "https://www.a101.com.tr",
-        "logo": "static/img/shops/A101_logo.svg",
-        "scraper":
-            {
-                "module": "sepet_app.scraper.shop_scrapers.a101",
-                "class": "A101Scraper",
-                "type": "basic",
-                "driver": "chrome"
             }
     }
 ]
