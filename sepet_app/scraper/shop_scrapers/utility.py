@@ -120,7 +120,7 @@ def create_sqlite_from_csvs(db_folder: str, scraped_files_folder: str) -> str | 
                     shops_data = json.load(f)
                 
                 shops_df = pd.DataFrame(shops_data)
-                shops_df = shops_df[['shop_name', 'logo']]
+                shops_df = shops_df[['shop_id', 'shop_name', 'base_url', 'logo']]
                 
                 shops_df.to_sql('shops_metadata', con, if_exists='replace', index=False)
                 logger.info("Successfully added/updated 'shops_metadata' table.")
@@ -131,7 +131,7 @@ def create_sqlite_from_csvs(db_folder: str, scraped_files_folder: str) -> str | 
                     food_data = json.load(f)
 
                 food_df = pd.DataFrame(food_data)
-                food_df = food_df[['category_id', 'TurkishCategory', 'TurkishName']]
+                food_df = food_df[['product_id', 'TurkishName', 'category_id', 'TurkishCategory']]
 
                 food_df.to_sql('food_categories_metadata', con, if_exists='replace', index=False)
                 logger.info("Successfully added/updated 'food_categories_metadata' table.")
