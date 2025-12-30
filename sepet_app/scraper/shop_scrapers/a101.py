@@ -2,6 +2,7 @@ import time
 import bs4
 from .base_scraper import BaseScraper
 from datetime import datetime
+from typing import Any
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -11,23 +12,24 @@ from loguru import logger
 
 class A101Scraper(BaseScraper):
     """A scraper for the A101 online shop."""
-    def __init__(self, shop_name: str, base_url: str, driver_name: str, ignore_nonfood=False):
+    def __init__(self, shop_id: int, shop_name: str, base_url: str, driver_name: str, ignore_nonfood=False):
         """
         Initializes the A101Scraper.
 
         Args:
+            shop_id (int): The ID of the shop.
             shop_name (str): The name of the shop (should be 'A101').
             base_url (str): The base URL for the A101 website.
             driver_name (str): The name of the driver to use.
             ignore_nonfood (bool): Whether to ignore non-food products.
         """
-        super().__init__(shop_name=shop_name, base_url=base_url, driver_name=driver_name, ignore_nonfood=ignore_nonfood)
+        super().__init__(shop_id=shop_id, shop_name=shop_name, base_url=base_url, driver_name=driver_name, ignore_nonfood=ignore_nonfood)
         self.search_string = "/arama?k=%s&kurumsal=1"
         self.search_url = f"{self.base_url}{self.search_string}"
         logger.info(f"Scraper for '{self.shop_name}' initialized.")
 
 
-    def search(self, product: str, category_id: int):
+    def search(self, product: dict):
         """
         Scrapes the A101 website for a given product.
 
@@ -36,14 +38,16 @@ class A101Scraper(BaseScraper):
         to extract product information.
 
         Args:
-            product (str): The product to search for.
-            category_id (int): The category id of the product (e.g. 21 for 'Meyve').
+            product (Any): The food product from food.json.
 
         Returns:
             list: A list of dictionaries, each containing information about a
                   scraped product. Returns None if an error occurs.
         """
-        search_url = self.search_url % product
+        product_name = product['TurkishName']
+        logger.info(f"Starting to scrape product {product_name} in {self.shop_name}.")
+
+        search_url = self.search_url % product_name
         scraped_data = []
 
         # Load the page
@@ -60,7 +64,7 @@ class A101Scraper(BaseScraper):
                 if article_count == last_article_count:
                     logger.info(f"Reached the end of the page. Total products found: {article_count}")
                     break
-                logger.info(f"Loaded {article_count} {product} products, scrolling for more...")
+                logger.info(f"Loaded {article_count} {product_name} products, scrolling for more...")
                 last_article_count = article_count
                 # Execute JavaScript to scroll to the bottom of the page
                 # Large footer causing that auto-scrolling is not working. Solution was to set scrollHeight - 1000
@@ -75,16 +79,17 @@ class A101Scraper(BaseScraper):
                 for article in articles:
                     if self.base_url in article.contents[0].attrs['href']:
                         display_name = article.contents[0].attrs['title']
+                        url = article.contents[0].attrs['href']
                         product_info = self.ScrapedProductInfo(
                             Scrape_Timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                             Display_Name=display_name,
-                            Shop=self.shop_name,
-                            category_id=category_id,
-                            Search_Term=product,
+                            Shop_ID=self.shop_id,
+                            Category_ID=product['category_id'],
+                            Product_ID=product['product_id'],
                             Discount_Price=self.get_prices(article.find_all("section", {"class": "mt-2.5 h-full flex flex-col justify-end mb-3"})[0])[0],
                             Price=self.get_prices(article.find_all("section", {"class": "mt-2.5 h-full flex flex-col justify-end mb-3"})[0])[1],
-                            URL=article.contents[0].attrs['href'],
-                            product_id=article.contents[0].attrs['href'].split("p-")[-1]
+                            URL=url.replace(f'^{self.base_url}', '', regex=True),
+                            Scraped_Product_ID=article.contents[0].attrs['href'].split("p-")[-1]
                         )
                         product_info = asdict(product_info)
                         scraped_data.append(product_info)

@@ -6,31 +6,32 @@ from .base_scraper import BaseScraper
 from datetime import datetime
 from loguru import logger
 from dataclasses import asdict
-
+from typing import Any
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 class KoopScraper(BaseScraper):
     """A scraper for the Koop online shop."""
-    def __init__(self, shop_name: str, base_url: str, driver_name: str, ignore_nonfood=False):
+    def __init__(self, shop_id: int, shop_name: str, base_url: str, driver_name: str, ignore_nonfood=False):
         """
         Initializes the KoopScraper.
 
         Args:
+            shop_id (int): The ID of the shop.
             shop_name (str): The name of the shop (should be 'Koop').
             base_url (str): The base URL for the Koop website.
             driver_name (str): The name of the driver to use.
             ignore_nonfood (bool): Whether to ignore non-food products.
         """
-        super().__init__(shop_name=shop_name, base_url=base_url, driver_name=driver_name, ignore_nonfood=ignore_nonfood)
+        super().__init__(shop_id=shop_id, shop_name=shop_name, base_url=base_url, driver_name=driver_name, ignore_nonfood=ignore_nonfood)
         # We put page=10 as Koop loads all available products --> no infinite scroll needed to load all products
         self.search_string = "/arama?ara=%s&page="
         self.search_url = f"{self.base_url}{self.search_string}"
         logger.info(f"Scraper for '{self.shop_name}' initialized.")
 
 
-    def search(self, product: str, category_id: int):
+    def search(self, product: dict):
         """
         Scrapes the Koop website for a given product.
 
@@ -39,20 +40,20 @@ class KoopScraper(BaseScraper):
         to extract product information.
 
         Args:
-            product (str): The product to search for.
-            category_id (int): The category id of the product (e.g. 21 for 'Meyve').
+            product (dict): The food product from food.json.
 
         Returns:
             list: A list of dictionaries, each containing information about a
                   scraped product. Returns None if an error occurs.
         """
-        logger.info(f"Starting to scrape product {product} in {self.shop_name}.")
+        product_name = product['TurkishName']
+        logger.info(f"Starting to scrape product {product_name} in {self.shop_name}.")
         scraped_data = []
         page_num = 1
 
         try:
             search_url = self.search_url + str(page_num)
-            search_url = search_url % urllib.parse.quote(product)
+            search_url = search_url % urllib.parse.quote(product_name)
             # Load the page
             self.driver.get(search_url)
             WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'ss_urun_area')))
@@ -60,7 +61,7 @@ class KoopScraper(BaseScraper):
             no_products_found = soup.find("div", {"class": "ss_urun_yok"})
 
             if no_products_found is None:
-
+                page_num_max = 0
                 # At the end of the page, the number of max pages is available --> fetch it
                 find_num_pages = soup.find_all("div", {"class": "ss_urun_area"})
 
@@ -70,22 +71,21 @@ class KoopScraper(BaseScraper):
 
                 for page_num in range (1,page_num_max + 1):
                     articles = soup.find_all("div", {"class": "ss_urun"})
-                    logger.info(f"Found {len(articles)} {product} articles on page {page_num}.")
+                    logger.info(f"Found {len(articles)} {product_name} articles on page {page_num}.")
                     for article in articles:
                         url = article.find("a").attrs["href"].strip()
                         # Fetching display name from url because long names are in html not written out and contain '...' at the end
                         display_name = url.split('/')[-1].replace('-', ' ').replace('_', ' ')
-                        #display_name = article.find("div", {"class": "ss_urun3"}).text.strip()
                         product_info = self.ScrapedProductInfo(
                             Scrape_Timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                             Display_Name=display_name,
-                            Shop=self.shop_name,
-                            category_id=category_id,
-                            Search_Term=product,
+                            Shop_ID=self.shop_id,
+                            Category_ID=product['category_id'],
+                            Product_ID=product['product_id'],
                             Discount_Price=self.get_prices(article.find("div", {"class": "ss_urun52"}))[0],
                             Price=self.get_prices(article.find("div", {"class": "ss_urun52"}))[1],
-                            URL=url,
-                            product_id=url.split('/')[-1]
+                            URL=url.replace(f'^{self.base_url}', '', regex=True),
+                            Scraped_Product_ID=url.split('/')[-1]
                         )
                         product_info = asdict(product_info)
                         scraped_data.append(product_info)
@@ -94,7 +94,7 @@ class KoopScraper(BaseScraper):
                 return scraped_data
 
             else:
-                logger.warning(f"No articles for {product} found.")
+                logger.warning(f"No articles for {product_name} found.")
 
         except Exception as e:
             logger.error(f"An error occurred: {e}")

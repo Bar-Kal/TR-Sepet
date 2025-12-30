@@ -2,6 +2,7 @@ from .base_scraper import BaseScraper
 import time
 from datetime import datetime
 from bs4 import BeautifulSoup
+from typing import Any
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -10,23 +11,24 @@ from dataclasses import asdict
 
 class MigrosScraper(BaseScraper):
     """A scraper for the Migros online shop."""
-    def __init__(self, shop_name: str, base_url: str, driver_name: str, ignore_nonfood=False):
+    def __init__(self, shop_id: int, shop_name: str, base_url: str, driver_name: str, ignore_nonfood=False):
         """
         Initializes the MigrosScraper.
 
         Args:
+            shop_id (int): The ID of the shop.
             shop_name (str): The name of the shop (should be 'Migros').
             base_url (str): The base URL for the Migros website.
             driver_name (str): The name of the driver to use.
             ignore_nonfood (bool): Whether to ignore non-food products.
         """
-        super().__init__(shop_name=shop_name, base_url=base_url, driver_name=driver_name, ignore_nonfood=ignore_nonfood)
+        super().__init__(shop_id=shop_id, shop_name=shop_name, base_url=base_url, driver_name=driver_name, ignore_nonfood=ignore_nonfood)
         self.search_string = "/arama?q="
         self.search_url = f"{self.base_url}{self.search_string}%s"
         logger.info(f"Scraper for '{self.shop_name}' initialized.")
 
 
-    def search(self, product: str, category_id: int):
+    def search(self, product: dict):
         """
         Scrapes the Migros website for a given product.
 
@@ -35,15 +37,15 @@ class MigrosScraper(BaseScraper):
         to extract product information.
 
         Args:
-            product (str): The product to search for.
-            category_id (int): The category id of the product (e.g. 21 for 'Meyve').
+            product (dict): The food product from food.json.
 
         Returns:
             list: A list of dictionaries, each containing information about a
                   scraped product. Returns None if an error occurs.
         """
-        logger.info(f"Starting to scrape product {product} in {self.shop_name}.")
-        search_url = self.search_url % product
+        product_name = product['TurkishName']
+        logger.info(f"Starting to scrape product {product_name} in {self.shop_name}.")
+        search_url = self.search_url % product_name
         scraped_data = []
         page_num = 1
 
@@ -57,7 +59,7 @@ class MigrosScraper(BaseScraper):
                 articles = soup.find_all('sm-product-list-content')
                 articles = articles[0].find_all('mat-card')
 
-                logger.info(f"Found {len(articles)} {product} articles on page {page_num}.")
+                logger.info(f"Found {len(articles)} {product_name} articles on page {page_num}.")
 
                 for article in articles:
                     product_name_element = article.find(id='product-name')
@@ -66,13 +68,13 @@ class MigrosScraper(BaseScraper):
                     product_info = self.ScrapedProductInfo(
                         Scrape_Timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                         Display_Name=product_name_element.text.strip(),
-                        Shop=self.shop_name,
-                        category_id=category_id,
-                        Search_Term=product,
+                        Shop_ID=self.shop_id,
+                        Category_ID=product['category_id'],
+                        Product_ID=product['product_id'],
                         Discount_Price=self.get_prices(product_price_element.text)[0],
                         Price=self.get_prices(product_price_element.text)[1],
-                        URL=self.base_url + str(product_name_element.attrs['href']),
-                        product_id=product_name_element.attrs['href'].split("p-")[-1]
+                        URL=str(product_name_element.attrs['href']),
+                        Scraped_Product_ID=product_name_element.attrs['href'].split("p-")[-1]
                     )
                     product_info = asdict(product_info)
                     scraped_data.append(product_info)
@@ -83,11 +85,11 @@ class MigrosScraper(BaseScraper):
                         EC.element_to_be_clickable((By.ID, 'pagination-button-next'))
                     )
                     self.driver.execute_script("arguments[0].click();", next_button)
-                    logger.info(f"Loading next page for product {product}.")
+                    logger.info(f"Loading next page for product {product_name}.")
                     page_num += 1
                     time.sleep(2)  # Wait for page to load
                 except Exception as e:
-                    logger.info(f"No more pages to load for product {product}.")
+                    logger.info(f"No more pages to load for product {product_name}.")
                     break
 
             return scraped_data

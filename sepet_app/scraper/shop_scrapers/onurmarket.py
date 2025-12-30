@@ -5,27 +5,29 @@ import ssl
 from bs4 import BeautifulSoup
 from .advanced_base import AdvancedBaseScraper
 from datetime import datetime
+from typing import Any
 from loguru import logger
 from dataclasses import asdict
 
 class OnurmarketScraper(AdvancedBaseScraper):
     """A scraper for the Onurmarket online shop."""
-    def __init__(self, shop_name: str, base_url: str, ignore_nonfood=False):
+    def __init__(self, shop_id: int, shop_name: str, base_url: str, ignore_nonfood=False):
         """
         Initializes the OnurmarketScraper.
 
         Args:
+            shop_id (int): The ID of the shop.
             shop_name (str): The name of the shop (should be 'Onurmarket').
             base_url (str): The base URL for the Onurmarket website.
             ignore_nonfood (bool): Whether to ignore non-food products.
         """
-        super().__init__(shop_name=shop_name, base_url=base_url, ignore_nonfood=ignore_nonfood)
+        super().__init__(shop_id=shop_id, shop_name=shop_name, base_url=base_url, ignore_nonfood=ignore_nonfood)
         self.search_string = "/Arama?1&kelime="
         self.search_url = f"{self.base_url}{self.search_string}%s"
         logger.info(f"Scraper for '{self.shop_name}' initialized.")
 
 
-    def search(self, product: str, category_id: int):
+    def search(self, product: dict):
         """
         Scrapes the Onurmarket website for a given product.
 
@@ -34,16 +36,16 @@ class OnurmarketScraper(AdvancedBaseScraper):
         to extract product information.
 
         Args:
-            product (str): The product to search for.
-            category_id (int): The category id of the product (e.g. 21 for 'Meyve').
+            product (dict): The food product from food.json.
 
         Returns:
             list: A list of dictionaries, each containing information about a
                   scraped product. Returns None if an error occurs.
         """
-        logger.info(f"Starting to scrape product {product} in {self.shop_name}.")
+        product_name = product['TurkishName']
+        logger.info(f"Starting to scrape product {product_name} in {self.shop_name}.")
 
-        search_url = self.search_url % urllib.parse.quote(product)
+        search_url = self.search_url % urllib.parse.quote(product_name)
         scraped_data = []
 
         opener = urllib.request.build_opener(
@@ -55,20 +57,20 @@ class OnurmarketScraper(AdvancedBaseScraper):
             page_source = opener.open(search_url).read().decode()
             soup = BeautifulSoup(page_source, 'html.parser')
             articles = soup.find_all("div", {"class": "productItem"})
-            logger.info(f"Found {len(articles)} {product} articles.")
+            logger.info(f"Found {len(articles)} {product_name} articles.")
 
             for article in articles:
                 display_name = article.find_all("div",{"class": "productName"})[0].text.strip()
                 product_info = self.ScrapedProductInfo(
                     Scrape_Timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     Display_Name=display_name,
-                    Shop=self.shop_name,
-                    category_id=category_id,
-                    Search_Term=product,
+                    Shop_ID=self.shop_id,
+                    Category_ID=product['category_id'],
+                    Product_ID=product['product_id'],
                     Discount_Price=self.get_prices(article.find_all("div",{"class": "productPrice"})[0])[0],
                     Price=self.get_prices(article.find_all("div",{"class": "productPrice"})[0])[1],
-                    URL=self.base_url + article.find_all("a",{"class": "detailUrl"})[0].attrs['href'],
-                    product_id=article.find_all("a",{"class": "detailUrl"})[0].attrs['data-id']
+                    URL=article.find_all("a",{"class": "detailUrl"})[0].attrs['href'],
+                    Scraped_Product_ID=article.find_all("a",{"class": "detailUrl"})[0].attrs['data-id']
                 )
                 product_info = asdict(product_info)
                 scraped_data.append(product_info)

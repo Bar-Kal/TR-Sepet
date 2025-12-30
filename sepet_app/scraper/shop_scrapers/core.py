@@ -17,10 +17,10 @@ class ScraperCore:
 
         Scrape_Timestamp: datetime
         Display_Name: str
-        Shop: str
-        category_id: int
-        Search_Term: str
+        Shop_ID: int
+        Category_ID: int
+        Product_ID: int
         Price: float
         Discount_Price: float
         URL: str
-        product_id: str
+        Scraped_Product_ID: str

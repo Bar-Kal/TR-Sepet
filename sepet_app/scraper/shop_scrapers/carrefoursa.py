@@ -6,31 +6,32 @@ from .base_scraper import BaseScraper
 from datetime import datetime
 from loguru import logger
 from dataclasses import asdict
-
+from typing import Any
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 class CarrefoursaScraper(BaseScraper):
     """A scraper for the Carrefoursa online shop."""
-    def __init__(self, shop_name: str, base_url: str, driver_name: str, ignore_nonfood=False):
+    def __init__(self, shop_id: int, shop_name: str, base_url: str, driver_name: str, ignore_nonfood=False):
         """
         Initializes the CarrefoursaScraper.
 
         Args:
+            shop_id (int): The ID of the shop.
             shop_name (str): The name of the shop (should be 'Carrefoursa').
             base_url (str): The base URL for the Carrefoursa website.
             driver_name (str): The name of the driver to use.
             ignore_nonfood (bool): Whether to ignore non-food products.
         """
-        super().__init__(shop_name=shop_name, base_url=base_url, driver_name=driver_name, ignore_nonfood=ignore_nonfood)
+        super().__init__(shop_id=shop_id, shop_name=shop_name, base_url=base_url, driver_name=driver_name, ignore_nonfood=ignore_nonfood)
         # We put page=10 as Carrefoursa loads all available products --> no infinite scroll needed to load all products
         self.search_string = "/search?q=%s:relevance&page="
         self.search_url = f"{self.base_url}{self.search_string}"
         logger.info(f"Scraper for '{self.shop_name}' initialized.")
 
 
-    def search(self, product: str, category_id: int):
+    def search(self, product: dict):
         """
         Scrapes the Carrefoursa website for a given product.
 
@@ -39,27 +40,27 @@ class CarrefoursaScraper(BaseScraper):
         to extract product information.
 
         Args:
-            product (str): The product to search for.
-            category_id (int): The category id of the product (e.g. 21 for 'Meyve').
+            product (dict): The food product from food.json.
 
         Returns:
             list: A list of dictionaries, each containing information about a
                   scraped product. Returns None if an error occurs.
         """
-        logger.info(f"Starting to scrape product {product} in {self.shop_name}.")
+        product_name = product['TurkishName']
+        logger.info(f"Starting to scrape product {product_name} in {self.shop_name}.")
         scraped_data = []
 
         try:
             for page_num in range(1,6): # Load only first 5 pages; Start from 1 because 0 and 1 would return both the first page
                 # For Carrefoursa blank spaces in product names must be replaced by plus symbol (+)
                 search_url = self.search_url + str(page_num)
-                search_url = search_url % urllib.parse.quote(product.replace(' ', '+'))
+                search_url = search_url % urllib.parse.quote(product_name.replace(' ', '+'))
                 # Load the page
                 self.driver.get(search_url)
                 WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'product-listing-item')))
                 soup = BeautifulSoup(self.driver.page_source, 'html.parser')
                 articles = soup.find_all("div", {"class": "product-card"})
-                logger.info(f"Found {len(articles)} {product} articles on page {page_num}.")
+                logger.info(f"Found {len(articles)} {product_name} articles on page {page_num}.")
 
                 for article in articles:
                     if article.find_all("div",{"class": "advice"}):
@@ -69,13 +70,13 @@ class CarrefoursaScraper(BaseScraper):
                         product_info = self.ScrapedProductInfo(
                             Scrape_Timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                             Display_Name=display_name,
-                            Shop=self.shop_name,
-                            category_id=category_id,
-                            Search_Term=product,
+                            Shop_ID=self.shop_id,
+                            Category_ID=product['category_id'],
+                            Product_ID=product['product_id'],
                             Discount_Price=self.get_prices(article.find_all("div",{"class": "item-price-contain"})[0])[0],
                             Price=self.get_prices(article.find_all("div",{"class": "item-price-contain"})[0])[1],
-                            URL=self.base_url + article.find_all("a",{"class": "product-return"})[0].attrs['href'],
-                            product_id=article.find_all("h3",{"class": "item-name"})[0].attrs['content']
+                            URL=article.find_all("a",{"class": "product-return"})[0].attrs['href'],
+                            Scraped_Product_ID=article.find_all("h3",{"class": "item-name"})[0].attrs['content']
                         )
                         product_info = asdict(product_info)
                         scraped_data.append(product_info)
