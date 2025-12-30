@@ -14,18 +14,17 @@ from .utility import ProductClassifier, create_sqlite_from_csvs, compress_db
 
 IGNORE_NONFOOD = False
 
-def scrape_categories(scraper: Union[BaseScraper, AdvancedBaseScraper], products_categories: json, shop_name: str, filepath: str, today_str: str):
+def scrape_categories(scraper: Union[BaseScraper, AdvancedBaseScraper], products_categories: json, filepath: str, today_str: str):
     """
     Scrapes product categories for a given shop and saves the results to CSV files.
 
     Args:
         scraper (SimpleBaseScraper): The scraper object for the shop.
         products_categories (json): JSON containing the products and categories to scrape. (food.json)
-        shop_name (str): The name of the shop.
         filepath (str): The base filepath to save the CSV files.
         today_str (str): The current date as a string in 'YYYY-MM-DD' format.
     """
-    logger.info(f'Got {len(products_categories)} product categories to scrape for shop {shop_name}.')
+    logger.info(f'Got {len(products_categories)} product categories to scrape for shop {scraper.shop_name}.')
 
     for product in products_categories: # List of products, Sucuk, Pirinc, etc.
         product_name = product['TurkishName']
@@ -33,7 +32,7 @@ def scrape_categories(scraper: Union[BaseScraper, AdvancedBaseScraper], products
             wait = random.randint(2, 10)
             logger.info(f"Waiting {wait} seconds before scraping {product_name} in shop {scraper.shop_name}")
             time.sleep(wait)  # Wait, to not create too much traffic to the server.
-            retrieved_products = scraper.search(product=product['TurkishName'], category_id=product['category_id'])
+            retrieved_products = scraper.search(product=product)
             df = pd.DataFrame(retrieved_products)
             save_to_csv(shop_name=scraper.shop_name, df=df, filepath=filepath, filename=product_name + '.csv',today_str=today_str)
             logger.info(f'File for product {product_name} created successfully for shop {scraper.shop_name}.')
@@ -89,11 +88,13 @@ def combine_and_filter_csvs(base_downloads_path: Path):
 
     logger.info(f"Found {len(csv_files)} CSV files to process.")
 
+    csvfiles_dtypes = {'Category_ID': int, 'Shop_ID': int, 'Product_ID': int}
+
     # Read all found CSVs into a list of DataFrames
     df_list = []
     for file in csv_files:
         try:
-            df = pd.read_csv(file, sep=';')
+            df = pd.read_csv(file, sep=';', dtype=csvfiles_dtypes)
             df_list.append(df)
         except pd.errors.EmptyDataError:
             logger.info(f"Skipping empty file: {file}")
@@ -165,7 +166,6 @@ def main(arg_shop_name: str = None):
         scrape_categories(
             scraper=scraper,
             products_categories=products_and_categories,
-            shop_name=scraper.shop_name,
             filepath=download_folder,
             today_str=today_str
         )
