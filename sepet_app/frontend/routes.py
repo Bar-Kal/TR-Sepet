@@ -4,7 +4,6 @@ import locale
 import py7zr
 import re
 import math
-import pandas as pd
 from flask import render_template, current_app, request, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
@@ -132,10 +131,30 @@ def products():
     no_results = True
     search_error = None
     pagination = None
+    all_products = []
 
     # --- Load metadata from database ---
+    db_path = get_db_path()
     shop_names, shop_logo_mapping = get_shop_names()
     available_food_categories = get_food_categories()
+
+    # --- Get selected filters by user ---
+    selected_shops = request.args.getlist('shops')
+    category_name = request.args.get('category')
+    date_range = request.args.get('date_range')
+
+    if not selected_shops:
+        selected_shops = shop_names
+
+    if date_range:
+        try:
+            start_date_str, end_date_str = date_range.split(' - ')
+        except ValueError:
+            start_date_str = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+            end_date_str = datetime.now().strftime('%Y-%m-%d')
+    else:
+        start_date_str = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+        end_date_str = datetime.now().strftime('%Y-%m-%d')
 
     # --- Handle request ---
     page = request.args.get('page', 1, type=int)
@@ -155,37 +174,11 @@ def products():
                 product_search = None
                 search_error = "Arama çubuğuna sadece harf, rakam ve Türkçe karakterler girebilirsiniz. En az 2, en fazla 30 karakter olmalıdır."
 
-    selected_shops = request.args.getlist('shops')
-    category_name = request.args.get('category')
-    date_range = request.args.get('date_range')
-
-    if not selected_shops:
-        selected_shops = shop_names
-    
-    if not category_name:
-        category_name = "all"
-
-    if date_range:
-        try:
-            start_date_str, end_date_str = date_range.split(' - ')
-        except ValueError:
-            start_date_str = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
-            end_date_str = datetime.now().strftime('%Y-%m-%d')
-    else:
-        start_date_str = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
-        end_date_str = datetime.now().strftime('%Y-%m-%d')
-
-    results_title = f"Fiyat Analizi"
-
     # --- Query and Process Data ---
-    db_path = get_db_path()
-    if db_path: # Removed category_name from this check
-
-        all_products = []
-        shops_to_query = selected_shops
+    if db_path:
 
         # First, query all products based on search, shops, and date to determine available categories
-        for current_shop in shops_to_query:
+        for current_shop in selected_shops:
             query = (f'SELECT {current_shop}.Scrape_Timestamp, {current_shop}.Display_Name, {current_shop}.Discount_Price, {current_shop}.Price, '
                      f'shops_metadata.shop_name as Shop_Name, '
                      f'food_categories_metadata.TurkishName as Product_Name, food_categories_metadata.TurkishCategory as Category_Name, '
@@ -198,6 +191,10 @@ def products():
             if start_date_str and end_date_str:
                 conditions.append("date(Scrape_Timestamp) BETWEEN ? AND ?")
                 params.extend([start_date_str, end_date_str])
+
+            if category_name:
+                conditions.append("Product_Name = ?")
+                params.append(category_name)
 
             if product_search:
                 if ' ' in product_search:
@@ -223,7 +220,6 @@ def products():
                 if rows:
                     for row in rows:
                         product = dict(row)
-                        #product['shop_name'] = current_shop
                         all_products.append(product)
 
             except sqlite3.Error as e:
@@ -238,15 +234,9 @@ def products():
                 # If no search term, all categories are considered available already in available_food_categories
                 pass
 
-            # Filter the fetched products by the selected category for display
-            if category_name and category_name != 'all':
-                products_to_display = [p for p in all_products if p['Product_Name'] == category_name]
-            else:
-                products_to_display = all_products
-
             # Group rows by product name and shop name for the products to be displayed
             product_groups = defaultdict(list)
-            for row in products_to_display:
+            for row in all_products:
                 product_groups[(row['Display_Name'], row['Shop_Name'])].append(row)
 
             # --- Pagination Logic (based on the number of groups to display) ---
@@ -314,7 +304,7 @@ def products():
                        selected_shops=selected_shops,
                        start_date=start_date_str,
                        end_date=end_date_str,
-                       results_title=results_title,
+                       results_title='Fiyat Analizi',
                        no_results=no_results,
                        product_search=product_search or '',
                        search_query=product_search or '',
