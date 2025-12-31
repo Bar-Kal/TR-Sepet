@@ -69,7 +69,7 @@ class CagriScraper(BaseScraper):
                         Product_ID=product['product_id'],
                         Discount_Price=self.get_prices(article.find("div",{"class": "flex items-center gap-1"}))[0],
                         Price=self.get_prices(article.find("div",{"class": "flex items-center gap-1"}))[1],
-                        URL=article.find("a",{"class": "mt-2 md:mt-4"}).attrs['href'].replace('/', '').split('?')[0],
+                        URL=article.find("a",{"class": "mt-2 md:mt-4"}).attrs['href'].split('?')[0],
                         Scraped_Product_ID=article.find("a",{"class": "mt-2 md:mt-4"}).attrs['href'].replace('/', '').split('?')[0] # product id not found -> take url instead
                     )
                     product_info = asdict(product_info)
