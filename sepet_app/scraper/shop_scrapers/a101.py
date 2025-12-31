@@ -53,7 +53,7 @@ class A101Scraper(BaseScraper):
         # Load the page
         self.driver.get(search_url)
         try:
-            WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, 'article')))
+            WebDriverWait(self.driver, 30).until(EC.presence_of_element_located((By.TAG_NAME, 'article')))
             # This loop scrolls down the page until no new products are loaded.
             last_article_count = 0
             while True:
