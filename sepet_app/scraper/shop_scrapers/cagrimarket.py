@@ -52,7 +52,7 @@ class CagriScraper(BaseScraper):
         self.driver.get(search_url)
 
         try:
-            WebDriverWait(self.driver, 15).until(EC.presence_of_element_located((By.CLASS_NAME, "product_name-card")))
+            WebDriverWait(self.driver, 15).until(EC.presence_of_element_located((By.CLASS_NAME, "product-card")))
             while True:
                 page_source = self.driver.page_source
                 soup = BeautifulSoup(page_source, 'html.parser')
