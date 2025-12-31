@@ -24,13 +24,14 @@ def format_price(price):
 def get_db_path():
     """Finds the path to the latest database file."""
     base_downloads_path = current_app.config['DATABASE_FOLDER']
-    print(f"Get DB from: {base_downloads_path}")
     if not os.path.isdir(base_downloads_path):
         return None
     db_files = [os.path.join(base_downloads_path, f) for f in os.listdir(base_downloads_path) if f.endswith('.db')]
     if not db_files:
         return None
-    return sorted(db_files)[-1]
+    latest_db_file = sorted(db_files)[-1]
+    print(f"Using latest DB: {latest_db_file}")
+    return latest_db_file
 
 def get_shop_names():
     """Gets a list of all shop names and their logos from the database."""
@@ -143,6 +144,10 @@ def products():
     category_name = request.args.get('category')
     date_range = request.args.get('date_range')
 
+    # Usually in first request category_name is None
+    if category_name is None:
+        category_name = 'all'
+
     if not selected_shops:
         selected_shops = shop_names
 
@@ -192,7 +197,7 @@ def products():
                 conditions.append("date(Scrape_Timestamp) BETWEEN ? AND ?")
                 params.extend([start_date_str, end_date_str])
 
-            if category_name:
+            if category_name != 'all':
                 conditions.append("Product_Name = ?")
                 params.append(category_name)
 
