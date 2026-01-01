@@ -141,12 +141,12 @@ def products():
 
     # --- Get selected filters by user ---
     selected_shops = request.args.getlist('shops')
-    category_name = request.args.get('category')
+    selected_category_name = request.args.get('category')
     date_range = request.args.get('date_range')
 
-    # Usually in first request category_name is None
-    if category_name is None:
-        category_name = 'all'
+    # Usually in first request selected_category_name is None
+    if selected_category_name is None:
+        selected_category_name = 'all'
 
     if not selected_shops:
         selected_shops = shop_names
@@ -197,9 +197,9 @@ def products():
                 conditions.append("date(Scrape_Timestamp) BETWEEN ? AND ?")
                 params.extend([start_date_str, end_date_str])
 
-            if category_name != 'all':
+            if selected_category_name != 'all':
                 conditions.append("Product_Name = ?")
-                params.append(category_name)
+                params.append(selected_category_name)
 
             if product_search:
                 if ' ' in product_search:
@@ -305,7 +305,7 @@ def products():
                        shop_names=shop_names,
                        food_categories=available_food_categories,
                        charts_data=charts_data,
-                       category_name=category_name,
+                       category_name=selected_category_name,
                        selected_shops=selected_shops,
                        start_date=start_date_str,
                        end_date=end_date_str,
