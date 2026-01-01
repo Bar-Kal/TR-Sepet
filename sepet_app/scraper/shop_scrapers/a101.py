@@ -1,14 +1,15 @@
 import time
 import bs4
+from dataclasses import asdict
+from loguru import logger
 from .base_scraper import BaseScraper
 from datetime import datetime
-from typing import Any
 from bs4 import BeautifulSoup
+import selenium.webdriver.chromium.options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from dataclasses import asdict
-from loguru import logger
+from selenium.common.exceptions import TimeoutException
 
 class A101Scraper(BaseScraper):
     """A scraper for the A101 online shop."""
@@ -53,7 +54,7 @@ class A101Scraper(BaseScraper):
         # Load the page
         self.driver.get(search_url)
         try:
-            WebDriverWait(self.driver, 30).until(EC.presence_of_element_located((By.TAG_NAME, 'article')))
+            WebDriverWait(self.driver, 15).until(EC.presence_of_element_located((By.TAG_NAME, 'article')))
             # This loop scrolls down the page until no new products are loaded.
             last_article_count = 0
             while True:
@@ -96,6 +97,11 @@ class A101Scraper(BaseScraper):
                         logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
 
                 return scraped_data
+        except TimeoutException:
+            soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+            no_products_found = soup.find("div", {"class": "text-xl mt-8"})
+            if no_products_found is not None:
+                logger.warning(f"Ran into Timeout. No articles for {product_name} found.")
         except Exception as e:
             logger.error(f"An error occurred: {e}")
         return None
