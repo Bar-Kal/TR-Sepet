@@ -13,7 +13,7 @@ class CagriScraper(BaseScraper):
     """A scraper for the Cagri online shop."""
     def __init__(self, shop_id: int, shop_name: str, base_url: str, driver_name: str, ignore_nonfood=False):
         """
-        Initializes the CarrefourScraper.
+        Initializes the CagriScraper.
 
         Args:
             shop_id (int): The ID of the shop.
