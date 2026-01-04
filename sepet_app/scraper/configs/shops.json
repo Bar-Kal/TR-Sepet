@@ -1,5 +1,18 @@
 [
     {
+        "shop_id": 7,
+        "shop_name": "Macrocenter",
+        "base_url": "https://www.macrocenter.com.tr",
+        "logo": "static/img/shops/macrocenter.png",
+        "scraper":
+            {
+                "module": "sepet_app.scraper.shop_scrapers.macrocenter",
+                "class": "MacrocenterScraper",
+                "type": "basic",
+                "driver": "chrome"
+            }
+    },
+    {
         "shop_id": 1,
         "shop_name": "A101",
         "base_url": "https://www.a101.com.tr",
