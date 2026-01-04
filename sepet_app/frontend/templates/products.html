@@ -37,7 +37,6 @@
                     {% endfor %}
                 </select>
             </div>
-
             <div class="form-actions">
                 <input type="submit" value="Filtrele" class="btn btn-primary">
             </div>
@@ -146,6 +145,8 @@
 
             // Charts
             {% if charts_data %}
+                let charts = [];
+
                 {% for chart_data in charts_data %}
                     var prices{{ loop.index }} = {{ chart_data.prices | tojson }};
                     var discountPrices{{ loop.index }} = {{ chart_data.discount_prices | tojson }};
@@ -265,6 +266,10 @@
                                         enabled: true,
                                         mode: 'xy'
                                     },
+                                    limits: {
+                                        x: {min: 'original', max: 'original'},
+                                        y: {min: 'original', max: 'original', minRange: 10}
+                                    },
                                     zoom: {
                                         wheel: {
                                             enabled: true,
@@ -278,6 +283,8 @@
                             }
                         }
                     });
+
+                    charts.push(chart{{ loop.index }});
 
                     ctx{{ loop.index }}.canvas.ondblclick = function() {
                         chart{{ loop.index }}.resetZoom();
