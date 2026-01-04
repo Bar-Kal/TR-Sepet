@@ -4,6 +4,7 @@
         "shop_name": "Macrocenter",
         "base_url": "https://www.macrocenter.com.tr",
         "logo": "static/img/shops/macrocenter.png",
+        "scrape": true,
         "scraper":
             {
                 "module": "sepet_app.scraper.shop_scrapers.macrocenter",
@@ -17,6 +18,7 @@
         "shop_name": "A101",
         "base_url": "https://www.a101.com.tr",
         "logo": "static/img/shops/A101_logo.svg",
+        "scrape": true,
         "scraper":
             {
                 "module": "sepet_app.scraper.shop_scrapers.a101",
@@ -30,6 +32,7 @@
         "shop_name": "Koop",
         "base_url": "https://www.tkkoop.com.tr",
         "logo": "static/img/shops/Tk_Koop_Market_logo.svg",
+        "scrape": true,
         "scraper":
             {
                 "module": "sepet_app.scraper.shop_scrapers.koop",
@@ -43,6 +46,7 @@
         "shop_name": "Migros",
         "base_url": "https://www.migros.com.tr",
         "logo": "static/img/shops/M-Migros.svg",
+        "scrape": true,
         "scraper":
             {
                 "module": "sepet_app.scraper.shop_scrapers.migros",
@@ -56,6 +60,7 @@
         "shop_name": "Carrefoursa",
         "base_url": "https://www.carrefoursa.com",
         "logo": "static/img/shops/carrefoursa_logo.png",
+        "scrape": true,
         "scraper":
             {
                 "module": "sepet_app.scraper.shop_scrapers.carrefoursa",
@@ -69,6 +74,7 @@
         "shop_name": "Cagri",
         "base_url": "https://www.cagri.com/",
         "logo": "static/img/shops/cagri_logo.png",
+        "scrape": true,
         "scraper":
             {
                 "module": "sepet_app.scraper.shop_scrapers.cagrimarket",
@@ -82,6 +88,7 @@
         "shop_name": "Onurmarket",
         "base_url": "https://www.onurmarket.com",
         "logo": "static/img/shops/onur.png",
+        "scrape": false,
         "scraper":
             {
                 "module": "sepet_app.scraper.shop_scrapers.onurmarket",
