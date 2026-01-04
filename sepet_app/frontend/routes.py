@@ -9,6 +9,8 @@ from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
 from collections import defaultdict
 
+PER_PAGE = 40   #Number of products to show per page
+
 # --- Locale and Formatting ---
 try:
     locale.setlocale(locale.LC_TIME, 'tr_TR.UTF-8')
@@ -212,7 +214,7 @@ def products():
             if conditions:
                 query += " WHERE " + " AND ".join(conditions)
 
-            query += " ORDER BY Scrape_Timestamp"
+            query += f" ORDER BY Scrape_Timestamp LIMIT {PER_PAGE*20}" # Show max 20 pages"
 
             try:
                 con = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
@@ -245,7 +247,6 @@ def products():
                 product_groups[(row['Display_Name'], row['Shop_Name'])].append(row)
 
             # --- Pagination Logic (based on the number of groups to display) ---
-            PER_PAGE = 40
             total_items = len(product_groups)
             total_pages = math.ceil(total_items / PER_PAGE)
             offset = (page - 1) * PER_PAGE
