@@ -1,4 +1,5 @@
 import bs4
+import time
 import urllib.request
 import urllib.parse
 from bs4 import BeautifulSoup
@@ -6,7 +7,6 @@ from .base_scraper import BaseScraper
 from datetime import datetime
 from loguru import logger
 from dataclasses import asdict
-from typing import Any
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -52,49 +52,44 @@ class KoopScraper(BaseScraper):
         page_num = 1
 
         try:
-            search_url = self.search_url + str(page_num)
-            search_url = search_url % urllib.parse.quote(product_name)
-            # Load the page
-            self.driver.get(search_url)
-            WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'ss_urun_area')))
-            soup = BeautifulSoup(self.driver.page_source, 'html.parser')
-            no_products_found = soup.find("div", {"class": "ss_urun_yok"})
+            while True:
+                logger.info(f"Loading page {page_num} for product {product_name}.")
+                search_url = self.search_url + str(page_num)
+                search_url = search_url % urllib.parse.quote(product_name)
+                self.driver.get(search_url)
+                WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'ss_urun_area')))
+                page_source = self.driver.page_source
+                soup = BeautifulSoup(page_source, 'html.parser')
 
-            if no_products_found is None:
-                page_num_max = 0
-                # At the end of the page, the number of max pages is available --> fetch it
-                find_num_pages = soup.find_all("div", {"class": "ss_urun_area"})
+                no_products_found = soup.find("div", {"class": "ss_urun_yok"})
+                if no_products_found is not None: # There are no more products
+                    logger.info(f"No (more) articles found for product {product_name}.")
+                    break
 
-                for content in find_num_pages[0].contents:
-                    if "Toplam Sayfa" in content.text.strip():
-                        page_num_max = int(content.contents[4].text)
+                articles = soup.find_all("div", {"class": ["product-card campaigna", "product-card campaign"]})
+                logger.info(f"Found {len(articles)} {product_name} articles on page {page_num}.")
+                for article in articles:
+                    url = article.find("a").attrs["href"].strip()
+                    # Fetching display name from url because long names are in html not written out and contain '...' at the end
+                    display_name = url.split('/')[-1].replace('-', ' ').replace('_', ' ')
+                    product_info = self.ScrapedProductInfo(
+                        Scrape_Timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        Display_Name=display_name,
+                        Shop_ID=self.shop_id,
+                        Category_ID=product['category_id'],
+                        Product_ID=product['product_id'],
+                        Discount_Price=self.get_prices(article.find("div", {"class": "ss_urun52"}))[0],
+                        Price=self.get_prices(article.find("div", {"class": "ss_urun52"}))[1],
+                        URL=url.replace(self.base_url, ''),
+                        Scraped_Product_ID=url.split('/')[-1]
+                    )
+                    product_info = asdict(product_info)
+                    scraped_data.append(product_info)
+                    logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
 
-                for page_num in range (1,page_num_max + 1):
-                    articles = soup.find_all("div", {"class": "ss_urun"})
-                    logger.info(f"Found {len(articles)} {product_name} articles on page {page_num}.")
-                    for article in articles:
-                        url = article.find("a").attrs["href"].strip()
-                        # Fetching display name from url because long names are in html not written out and contain '...' at the end
-                        display_name = url.split('/')[-1].replace('-', ' ').replace('_', ' ')
-                        product_info = self.ScrapedProductInfo(
-                            Scrape_Timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                            Display_Name=display_name,
-                            Shop_ID=self.shop_id,
-                            Category_ID=product['category_id'],
-                            Product_ID=product['product_id'],
-                            Discount_Price=self.get_prices(article.find("div", {"class": "ss_urun52"}))[0],
-                            Price=self.get_prices(article.find("div", {"class": "ss_urun52"}))[1],
-                            URL=url.replace(self.base_url, ''),
-                            Scraped_Product_ID=url.split('/')[-1]
-                        )
-                        product_info = asdict(product_info)
-                        scraped_data.append(product_info)
-                        logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
+                page_num += 1
 
-                return scraped_data
-
-            else:
-                logger.warning(f"No articles for {product_name} found.")
+            return scraped_data
 
         except Exception as e:
             logger.error(f"An error occurred: {e}")
