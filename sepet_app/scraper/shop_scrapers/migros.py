@@ -1,8 +1,7 @@
-from .base_scraper import BaseScraper
 import time
 from datetime import datetime
 from bs4 import BeautifulSoup
-from typing import Any
+from .base_scraper import BaseScraper
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -49,9 +48,9 @@ class MigrosScraper(BaseScraper):
         scraped_data = []
         page_num = 1
 
-        # Load the page
-        self.driver.get(search_url)
         try:
+            # Load the page
+            self.driver.get(search_url)
             WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.TAG_NAME, 'fe-product-price')))
             while True:
                 page_source = self.driver.page_source
