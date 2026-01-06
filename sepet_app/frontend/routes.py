@@ -82,6 +82,14 @@ def unzip_new_db_file(base_downloads_path: str = current_app.config['DATABASE_FO
     zipped_db_files = [os.path.join(base_downloads_path, f) for f in os.listdir(base_downloads_path) if f.endswith('.7z')]
     unzipped_db_files = [os.path.join(base_downloads_path, f) for f in os.listdir(base_downloads_path) if f.endswith('.db')]
 
+    other_files = [os.path.join(base_downloads_path, f) for f in os.listdir(base_downloads_path) if not f.endswith(('.db', '.7z'))]
+
+    if other_files:
+        print(f'Found these other files on disk and removing them: {other_files}')
+        for other_file in other_files:
+            os.remove(other_file)
+            print(f"Deleted {other_file}")
+
     if (len(unzipped_db_files) == 1) and len(zipped_db_files) == 1: # There is already a zipped and unzipped file
         print(f"Files found under {base_downloads_path}:")
         print(f"Unzipped: {unzipped_db_files}")
