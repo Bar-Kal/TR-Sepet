@@ -24,6 +24,7 @@ def create_app():
 
     @app.route('/', methods=['GET', 'POST'])
     def upload_file():
+        print("Started to upload file...")
         message = None
         category = None
         if request.method == 'POST':
