@@ -351,6 +351,7 @@ def upload_secure():
 
     if file:
         filename = secure_filename(file.filename)
+        print(f'Upload endpoint was hit and a file is being uploaded named {filename}.')
         file.save(os.path.join(current_app.config['DATABASE_FOLDER'], filename))
         unzip_new_db_file(base_downloads_path=current_app.config['DATABASE_FOLDER'])
         return jsonify({'message': 'File successfully uploaded and unzipped'}), 200

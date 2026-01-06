@@ -24,10 +24,10 @@ def create_app():
 
     @app.route('/', methods=['GET', 'POST'])
     def upload_file():
-        print("Started to upload file...")
         message = None
         category = None
         if request.method == 'POST':
+            print("Started to upload file...")
             if 'file' not in request.files or 'secret_key' not in request.form:
                 message = 'File or secret key not provided'
                 category = 'danger'
