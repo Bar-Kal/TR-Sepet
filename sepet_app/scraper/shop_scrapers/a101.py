@@ -78,23 +78,22 @@ class A101Scraper(BaseScraper):
             articles = soup.find_all('article')
             if articles:
                 for article in articles:
-                    if self.base_url in article.contents[0].attrs['href']:
-                        display_name = article.contents[0].attrs['title']
-                        url = article.contents[0].attrs['href']
-                        product_info = self.ScrapedProductInfo(
-                            Scrape_Timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                            Display_Name=display_name,
-                            Shop_ID=self.shop_id,
-                            Category_ID=product['category_id'],
-                            Product_ID=product['product_id'],
-                            Discount_Price=self.get_prices(article.find_all("section", {"class": "mt-2.5 h-full flex flex-col justify-end mb-3"})[0])[0],
-                            Price=self.get_prices(article.find_all("section", {"class": "mt-2.5 h-full flex flex-col justify-end mb-3"})[0])[1],
-                            URL=url.replace(self.base_url, ''),
-                            Scraped_Product_ID=article.contents[0].attrs['href'].split("p-")[-1]
-                        )
-                        product_info = asdict(product_info)
-                        scraped_data.append(product_info)
-                        logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
+                    display_name = article.contents[0].attrs['title']
+                    url = article.contents[0].attrs['href']
+                    product_info = self.ScrapedProductInfo(
+                        Scrape_Timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        Display_Name=display_name,
+                        Shop_ID=self.shop_id,
+                        Category_ID=product['category_id'],
+                        Product_ID=product['product_id'],
+                        Discount_Price=self.get_prices(article.find_all("section", {"class": "mt-2.5 h-full flex flex-col justify-end mb-3"})[0])[0],
+                        Price=self.get_prices(article.find_all("section", {"class": "mt-2.5 h-full flex flex-col justify-end mb-3"})[0])[1],
+                        URL=url,
+                        Scraped_Product_ID=url.split("p-")[-1]
+                    )
+                    product_info = asdict(product_info)
+                    scraped_data.append(product_info)
+                    logger.info(f"Article {product_info['Display_Name']} scraped successfully.")
 
                 return scraped_data
         except TimeoutException:
