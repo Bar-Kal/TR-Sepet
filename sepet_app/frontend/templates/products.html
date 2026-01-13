@@ -52,8 +52,7 @@
         {% endif %}
         {% if charts_data %}
             <h2>{{ results_title }}</h2>
-            <p class="date-range">{{ start_date }} ile {{ end_date }} arasındaki veriler gösteriliyor</p>
-
+            <p class="date-range">{{ start_date }} ile {{ end_date }} arasındaki veriler gösteriliyor</br>Seçilen marketler: {{ selected_shops | join(', ') }}</p>
             <div class="central-legend">
                 <div class="legend-item" title="Fiyat">
                     <div class="legend-color" style="background-color: rgba(0, 128, 0, 1);"></div>
