@@ -9,7 +9,7 @@ from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
 from collections import defaultdict
 
-PER_PAGE = 40   #Number of products to show per page
+PER_PAGE = 20 #Number of products to show per page
 
 # --- Locale and Formatting ---
 try:
@@ -162,7 +162,7 @@ def products():
         selected_category_name = 'all'
 
     if not selected_shops:
-        selected_shops = shop_names
+        selected_shops = ['Carrefoursa']
 
     if date_range:
         try:
@@ -225,7 +225,7 @@ def products():
             if conditions:
                 query += " WHERE " + " AND ".join(conditions)
 
-            query += f" ORDER BY Scrape_Timestamp LIMIT {PER_PAGE*20}" # Show max 20 pages"
+            query += f" ORDER BY Scrape_Timestamp "
 
             try:
                 con = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
