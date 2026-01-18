@@ -74,6 +74,34 @@ def get_food_categories():
         print(f"Database error while fetching food categories: {e}")
         return [], {}
 
+def regexp(expr, item):
+    """Custom SQLite REGEXP function."""
+    if item is None:
+        return False
+    try:
+        reg = re.compile(expr, re.IGNORECASE)
+        return reg.search(item) is not None
+    except Exception as e:
+        return False
+
+def get_turkish_regex_pattern(text):
+    """Converts a search string into a regex pattern matching Turkish characters."""
+    mapping = {
+        'c': '[cç]', 'ç': '[cç]',
+        'g': '[gğ]', 'ğ': '[gğ]',
+        'i': '[iıİ]', 'ı': '[iıİ]', 'İ': '[iıİ]',
+        'o': '[oö]', 'ö': '[oö]',
+        's': '[sş]', 'ş': '[sş]',
+        'u': '[uü]', 'ü': '[uü]'
+    }
+    pattern = ""
+    for char in text:
+        if char.lower() in mapping:
+            pattern += mapping[char.lower()]
+        else:
+            pattern += re.escape(char)
+    return pattern
+
 def unzip_new_db_file(base_downloads_path: str = current_app.config['DATABASE_FOLDER']):
     """Finds all new zipped db files and unzips them"""
     print(f"Unzip to: {base_downloads_path}")
@@ -215,12 +243,13 @@ def products():
                 params.append(selected_category_name)
 
             if product_search:
+                tr_pattern = get_turkish_regex_pattern(product_search)
                 if ' ' in product_search:
-                    conditions.append("Display_Name LIKE ?")
-                    params.append(f'%{product_search}%')
+                    conditions.append("Display_Name REGEXP ?")
+                    params.append(tr_pattern)
                 else:
-                    conditions.append("(Display_Name LIKE ? OR Display_Name LIKE ?)")
-                    params.extend([f'{product_search}%', f'% {product_search}%'])
+                    conditions.append("Display_Name REGEXP ?")
+                    params.append(rf'(^|\s){tr_pattern}')
 
             if conditions:
                 query += " WHERE " + " AND ".join(conditions)
@@ -230,6 +259,7 @@ def products():
             try:
                 con = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
                 con.row_factory = sqlite3.Row
+                con.create_function("REGEXP", 2, regexp)
                 cursor = con.cursor()
                 cursor.execute(query, params)
                 rows = cursor.fetchall()
