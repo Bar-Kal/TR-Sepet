@@ -24,7 +24,7 @@
                 {% if show_header_search %}
                 <div class="nav-center">
                     <form action="{{ url_for('products') }}" method="get" class="header-search-form">
-                        <input type="search" name="q" class="shared-search-bar" placeholder="Gıda ürünü girin ..." value="{{ search_query or '' }}" pattern="^[a-zA-Z0-9çÇğĞıİöÖşŞüÜ\s]{2,30}$" minlength="2" maxlength="30" title="Arama çubuğuna sadece harf, rakam ve Türkçe karakterler girebilirsiniz. En az 2, en fazla 30 karakter olmalıdır.">
+                        <input type="search" name="q" class="shared-search-bar" placeholder="Gıda ürünü girin ( Peynir | Makarna | Kuzu | Dana | Sucuk | ... )" value="{{ search_query or '' }}" pattern="^[a-zA-Z0-9çÇğĞıİöÖşŞüÜ\s]{2,30}$" minlength="2" maxlength="30" title="Arama çubuğuna sadece harf, rakam ve Türkçe karakterler girebilirsiniz. En az 2, en fazla 30 karakter olmalıdır.">
                     </form>
                 </div>
                 {% endif %}
