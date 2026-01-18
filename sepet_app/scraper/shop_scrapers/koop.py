@@ -70,8 +70,7 @@ class KoopScraper(BaseScraper):
                 logger.info(f"Found {len(articles)} {product_name} articles on page {page_num}.")
                 for article in articles:
                     url = article.find("a").attrs["href"].strip()
-                    # Fetching display name from url because long names are in html not written out and contain '...' at the end
-                    display_name = url.split('/')[-1].replace('-', ' ').replace('_', ' ')
+                    display_name = article.find("a").attrs["title"].strip().title()
                     product_info = self.ScrapedProductInfo(
                         Scrape_Timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                         Display_Name=display_name,
