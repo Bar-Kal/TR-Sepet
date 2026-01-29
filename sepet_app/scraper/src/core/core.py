@@ -8,7 +8,7 @@ class ScraperCore:
 
     def __init__(self):
         """
-        Initializes the ScraperCore by loading the machine learning models.
+        Initializes the ScraperCore by loading the machine learning model.
         """
 
     @dataclass

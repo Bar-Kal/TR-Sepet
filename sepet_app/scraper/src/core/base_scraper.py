@@ -1,6 +1,6 @@
 import shutil
 from abc import ABC, abstractmethod
-from typing import List, Dict, Any
+from typing import List
 from loguru import logger
 from .core import ScraperCore
 from selenium import webdriver

@@ -1,9 +1,8 @@
 import bs4
-import time
 import urllib.request
 import urllib.parse
 from bs4 import BeautifulSoup
-from .base_scraper import BaseScraper
+from sepet_app.scraper.src.core.base_scraper import BaseScraper
 from datetime import datetime
 from loguru import logger
 from dataclasses import asdict

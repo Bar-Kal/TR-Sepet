@@ -2,10 +2,9 @@ import time
 import bs4
 from dataclasses import asdict
 from loguru import logger
-from .base_scraper import BaseScraper
+from sepet_app.scraper.src.core.base_scraper import BaseScraper
 from datetime import datetime
 from bs4 import BeautifulSoup
-import selenium.webdriver.chromium.options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC

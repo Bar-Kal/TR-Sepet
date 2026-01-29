@@ -3,9 +3,8 @@ import urllib.request
 import urllib.parse
 import ssl
 from bs4 import BeautifulSoup
-from .advanced_base import AdvancedBaseScraper
+from sepet_app.scraper.src.core.advanced_base import AdvancedBaseScraper
 from datetime import datetime
-from typing import Any
 from loguru import logger
 from dataclasses import asdict
 

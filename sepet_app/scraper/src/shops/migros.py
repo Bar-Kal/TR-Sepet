@@ -1,7 +1,7 @@
 import time
 from datetime import datetime
 from bs4 import BeautifulSoup
-from .base_scraper import BaseScraper
+from sepet_app.scraper.src.core.base_scraper import BaseScraper
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
