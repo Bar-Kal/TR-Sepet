@@ -156,7 +156,7 @@ def main(arg_shop_name: str = None):
     with open(os.path.join('sepet_app', 'scraper', 'configs', 'shops.json')) as f:
         shops = json.load(f)
 
-    with open(os.path.join('sepet_app', 'scraper', 'configs', 'food_short.json'), 'r', encoding='utf-8') as f:
+    with open(os.path.join('sepet_app', 'scraper', 'configs', 'food.json'), 'r', encoding='utf-8') as f:
         products_and_categories = json.load(f)
 
     today_str = datetime.now().strftime('%Y-%m-%d')  # Get today's date in YYYY-MM-DD format
