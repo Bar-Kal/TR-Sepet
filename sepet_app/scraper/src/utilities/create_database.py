@@ -1,14 +1,11 @@
 import os
 import glob
 import json
-import pickle
 import re
 import sqlite3
 import py7zr
-import numpy as np
 import pandas as pd
 from datetime import datetime
-from gensim.models import FastText
 from loguru import logger
 
 def sanitize_name(name, is_path=False):
@@ -19,7 +16,6 @@ def sanitize_name(name, is_path=False):
         parent_dir = os.path.basename(os.path.dirname(os.path.dirname(name)))
         name = f"{parent_dir}_{base_name}"
     return re.sub(r'[^a-zA-Z0-9_]', '_', name)
-
 
 def compress_db(db_file_path: str):
     """
@@ -51,7 +47,8 @@ def create_sqlite_from_csvs(db_folder: str, scraped_files_folder: str) -> str | 
         logger.error(f"Error: Scraped files not found at '{scraped_files_folder}'")
         return None
 
-    csv_files = [f for f in glob.glob(os.path.join(scraped_files_folder, '**', 'combined.csv'), recursive=True) if 'imported' not in f]
+    csv_files = [f for f in glob.glob(os.path.join(scraped_files_folder, '**', 'combined.csv'), recursive=True) if
+                 'imported' not in f]
 
     if not csv_files:
         logger.info("No CSV files found in the downloads directory.")
@@ -67,15 +64,15 @@ def create_sqlite_from_csvs(db_folder: str, scraped_files_folder: str) -> str | 
             return None
 
     logger.info(f"Found {len(csv_files)} CSV files to process.")
-    
+
     data = {}
     for file_path in csv_files:
         try:
             shop_name_raw = os.path.basename(os.path.dirname(os.path.dirname(file_path)))
             shop_name = sanitize_name(shop_name_raw)
-            
+
             df = pd.read_csv(file_path, delimiter=';', encoding='utf-8', on_bad_lines='skip')
-            
+
             # Sanitize column names
             df.columns = [sanitize_name(col) for col in df.columns]
 
@@ -83,7 +80,7 @@ def create_sqlite_from_csvs(db_folder: str, scraped_files_folder: str) -> str | 
                 data[shop_name] = pd.concat([data[shop_name], df], ignore_index=True)
             else:
                 data[shop_name] = df
-            
+
             logger.info(f"Loaded {file_path} for shop '{shop_name}' into memory")
 
         except Exception as e:
@@ -118,10 +115,10 @@ def create_sqlite_from_csvs(db_folder: str, scraped_files_folder: str) -> str | 
                 logger.info("Adding shop metadata to the database.")
                 with open(os.path.join('sepet_app', 'scraper', 'configs', 'shops.json'), 'r', encoding='utf-8') as f:
                     shops_data = json.load(f)
-                
+
                 shops_df = pd.DataFrame(shops_data)
                 shops_df = shops_df[['shop_id', 'shop_name', 'base_url', 'logo']]
-                
+
                 shops_df.to_sql('shops_metadata', con, if_exists='replace', index=False)
                 logger.info("Successfully added/updated 'shops_metadata' table.")
 
@@ -138,57 +135,7 @@ def create_sqlite_from_csvs(db_folder: str, scraped_files_folder: str) -> str | 
 
             except Exception as e:
                 logger.error(f"Failed to add metadata to the database. Reason: {e}")
-            
+
             con.close()
 
     return None
-
-def _get_document_vector(doc_tokens, model):
-    valid_tokens = [word for word in doc_tokens if word in model.wv]
-    if not valid_tokens:
-        return np.zeros(model.vector_size)
-    vectors = [model.wv[word] for word in valid_tokens]
-    return np.mean(vectors, axis=0)
-
-class ProductClassifier:
-    """
-    A utility class providing common functionalities for scraper,
-    such as product classification.
-    """
-
-    def __init__(self):
-        """
-        Initializes the ScraperCore by loading the machine learning models.
-        """
-        try:
-            # Load the models
-            self.ft_model = FastText.load("sepet_app/models/trained_model/fasttext_model.bin")
-            with open("sepet_app/models/trained_model/classifier_model.pkl", "rb") as f:
-                self.classifier = pickle.load(f)
-            logger.info("Successfully loaded FastText and classifier models.")
-        except Exception as e:
-            logger.error(f"An error occurred while loading the ML models: {e}")
-
-    def predict(self, text: str) -> bool:
-        """
-        Predicts if an article is a food or non-food product.
-
-        Args:
-            text (str): The text to classify.
-
-        Returns:
-            bool: True if the article is predicted to be food, False otherwise.
-        """
-        try:
-            # Create a document vector for the input text
-            text = text.lower()
-            vector = _get_document_vector(text, self.ft_model).reshape(1, -1)
-
-            # Predict the category
-            prediction = self.classifier.predict_proba(vector)
-            logger.info(f"Prediction: {prediction}")
-            return True if prediction[0][1] > 0.7 else False
-
-        except Exception as e:
-            logger.error(f"An error occurred during prediction: {e}")
-            return False
