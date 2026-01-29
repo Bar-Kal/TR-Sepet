@@ -15,15 +15,13 @@ class ProductClassifier:
         """
         Initializes the ProductClassifier by loading the DistilBERT model.
         """
-
-        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         model_folder_path = os.path.join('sepet_app', "models", "trained_model_distilbert")
 
         if os.path.exists(model_folder_path):
             try:
                 # The training script used '0' for non-food and '1' for food.
                 self.id2label = {0: False, 1: True}
-                self.session = onnxruntime.InferenceSession(model_folder_path + "\\" + "model.onnx")
+                self.session = onnxruntime.InferenceSession(os.path.join(model_folder_path, "model.onnx"))
                 self.transformer_tokenizer = AutoTokenizer.from_pretrained(model_folder_path)
                 logger.info("Model and tokenizer loaded successfully.")
             except Exception as e:
