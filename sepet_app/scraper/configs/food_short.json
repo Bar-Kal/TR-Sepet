@@ -8,30 +8,6 @@
     "category_id": 24
   },
   {
-    "product_id": 20,
-    "TurkishName": "Terlik",
-    "EnglishName": "Terlik",
-    "TurkishCategory": "Reçel, Bal ve Sürülebilir Ürünler",
-    "EnglishCategory": "Jam, Honey & Spreads",
-    "category_id": 24
-  },
-  {
-    "product_id": 12,
-    "TurkishName": "Bebek Sütü",
-    "EnglishName": "Formula milk",
-    "TurkishCategory": "Bebek Ürünleri",
-    "EnglishCategory": "Baby Products",
-    "category_id": 3
-  },
-  {
-    "product_id": 6,
-    "TurkishName": "Süt",
-    "EnglishName": "Milk",
-    "TurkishCategory": "Meyve",
-    "EnglishCategory": "Fruit",
-    "category_id": 21
-  },
-  {
     "product_id": 6,
     "TurkishName": "Elma",
     "EnglishName": "Apple",
