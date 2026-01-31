@@ -69,7 +69,7 @@ class KoopScraper(BaseScraper):
                 logger.info(f"Found {len(articles)} {product_name} articles on page {page_num}.")
                 for article in articles:
                     url = article.find("a").attrs["href"].strip()
-                    display_name = article.find("a").attrs["title"].strip().title()
+                    display_name = self.turkish_title(article.find("a").attrs["title"].strip())
                     product_info = self.ScrapedProductInfo(
                         Scrape_Timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                         Display_Name=display_name,
@@ -130,3 +130,28 @@ class KoopScraper(BaseScraper):
         except Exception as e:
             logger.error(f"An error occurred while fetching the prices." + str(e))
             return 0.0, 0.0
+
+    @staticmethod
+    def turkish_title(text: str) -> str:
+        """
+        Converts a string to title case, respecting Turkish characters.
+        .title() depends on locale which needs to be changed when scraping. We decided not setting locale to TR but apply this function.
+        Example: "İÇİM KREMA %18 YAĞLI" -> "İçim Krema %18 Yağlı"
+        """
+        if not text:
+            return ""
+
+        words = text.split()
+        out = []
+        for word in words:
+            first = word[0]
+            rest = (word[1:].replace("I", "ı")
+                    .replace("Ç", "ç")
+                    .replace("Ğ", "ğ")
+                    .replace("I", "ı")
+                    .replace("İ", "i")
+                    .replace("Ş", "ş")
+                    .lower())
+            out.append(f"{first}{rest}")
+
+        return " ".join(out)
