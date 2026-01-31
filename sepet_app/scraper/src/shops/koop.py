@@ -134,7 +134,7 @@ class KoopScraper(BaseScraper):
     @staticmethod
     def turkish_title(text: str) -> str:
         """
-        Converts a string to title case, respecting Turkish characters.
+        Converts a string to title case, respecting Turkish characters. (Koop product titles are all in upper-case)
         .title() depends on locale which needs to be changed when scraping. We decided not setting locale to TR but apply this function.
         Example: "İÇİM KREMA %18 YAĞLI" -> "İçim Krema %18 Yağlı"
         """
