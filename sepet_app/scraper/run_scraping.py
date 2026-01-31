@@ -125,9 +125,8 @@ def combine_and_filter_csvs(base_downloads_path: Path, product_classifier: Produ
 
     # Concatenate all DataFrames into one
     combined_df = pd.concat(df_list, ignore_index=True)
-    combined_df.reset_index(inplace=True, drop=False)
+    combined_df.reset_index(inplace=True, drop=True)
     logger.info(f"Combined {len(combined_df)} total rows from all files.")
-
 
     if RUN_PRODUCT_CLASSIFIER:
         food_labels = filter_nonfood(list_of_products=combined_df['Display_Name'].tolist(), product_classifier=product_classifier)
@@ -146,6 +145,7 @@ def combine_and_filter_csvs(base_downloads_path: Path, product_classifier: Produ
 def main(arg_shop_name: str = None):
     """
     Main function to orchestrate the scraping process for all shops.
+
 
     This function reads the shop configurations from a JSON file, then iterates
     through each shop, initializing the corresponding scraper and running the scraping process.
