@@ -73,15 +73,6 @@ def create_sqlite_from_csvs(db_folder: str, scraped_files_folder: str) -> str | 
 
             df = pd.read_csv(file_path, delimiter=';', encoding='utf-8', on_bad_lines='skip')
 
-            # Select weekly data points per product to make the database smaller.
-            # To keep "interesting" data points, select the data point with the highest absolute discount price.
-            df['Scrape_Timestamp'] = pd.to_datetime(df['Scrape_Timestamp'])
-            df['week'] = df['Scrape_Timestamp'].dt.isocalendar().week
-            df['year'] = df['Scrape_Timestamp'].dt.isocalendar().year
-            idx = df.groupby(['year', 'week', 'Scraped_Product_ID'])['Discount_Price'].apply(lambda x: x.abs().idxmax())
-            df = df.loc[idx].drop(columns=['week', 'year', 'index']).copy()
-            df.reset_index(inplace=True, drop=True)
-
             # Sanitize column names
             df.columns = [sanitize_name(col) for col in df.columns]
 
@@ -94,6 +85,16 @@ def create_sqlite_from_csvs(db_folder: str, scraped_files_folder: str) -> str | 
 
         except Exception as e:
             logger.error(f"Failed to process {file_path}. Reason: {e}")
+
+    for shop_name, df in data.items():
+        # Select weekly data points per product to make the database smaller.
+        # To keep "interesting" data points, select the data point with the highest absolute discount price.
+        df['Scrape_Timestamp'] = pd.to_datetime(df['Scrape_Timestamp'])
+        df['week'] = df['Scrape_Timestamp'].dt.isocalendar().week
+        df['year'] = df['Scrape_Timestamp'].dt.isocalendar().year
+        idx = df.groupby(['year', 'week', 'Scraped_Product_ID'])['Discount_Price'].apply(lambda x: x.abs().idxmax())
+        df = df.loc[idx].drop(columns=['week', 'year', 'index']).copy()
+        df.reset_index(inplace=True, drop=True)
 
     if data:
         con = sqlite3.connect(db_file)
