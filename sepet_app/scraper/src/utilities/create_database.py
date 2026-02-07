@@ -93,8 +93,10 @@ def create_sqlite_from_csvs(db_folder: str, scraped_files_folder: str) -> str | 
         df['week'] = df['Scrape_Timestamp'].dt.isocalendar().week
         df['year'] = df['Scrape_Timestamp'].dt.isocalendar().year
         idx = df.groupby(['year', 'week', 'Scraped_Product_ID'])['Discount_Price'].apply(lambda x: x.abs().idxmax())
-        df = df.loc[idx].drop(columns=['week', 'year']).copy()
+        df = df.loc[idx].copy()
+        df = df.drop(columns=['week', 'year'])
         df.reset_index(inplace=True, drop=True)
+        data[shop_name] = df
 
     if data:
         con = sqlite3.connect(db_file)
