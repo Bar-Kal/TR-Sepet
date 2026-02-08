@@ -196,10 +196,10 @@ def products():
         try:
             start_date_str, end_date_str = date_range.split(' - ')
         except ValueError:
-            start_date_str = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+            start_date_str = (datetime.now() - timedelta(days=90)).strftime('%Y-%m-%d')
             end_date_str = datetime.now().strftime('%Y-%m-%d')
     else:
-        start_date_str = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+        start_date_str = (datetime.now() - timedelta(days=90)).strftime('%Y-%m-%d')
         end_date_str = datetime.now().strftime('%Y-%m-%d')
 
     # --- Handle request ---
