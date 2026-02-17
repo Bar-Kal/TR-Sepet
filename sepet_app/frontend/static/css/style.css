@@ -346,6 +346,37 @@ footer {
     border-top: 1px solid var(--medium-gray);
 }
 
+.footer-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem; /* Adjust this value as needed for spacing */
+}
+
+.footer-link {
+    text-decoration: none;
+    color: var(--text-gray);
+    font-weight: 500;
+    font-size: 0.9rem; /* Adjusted to match footer's font-size */
+    padding: 0; /* Remove padding */
+    border-bottom: 2px solid transparent;
+    transition: color var(--transition-speed), border-color var(--transition-speed);
+}
+
+.footer-link:hover {
+    color: var(--dark-gray);
+}
+
+.github-icon-link {
+    text-decoration: none;
+    color: inherit; /* Inherit color from parent */
+}
+
+.github-icon-link:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
 .central-legend {
     display: flex;
     justify-content: center;

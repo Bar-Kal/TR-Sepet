@@ -146,6 +146,13 @@ def unzip_new_db_file(base_downloads_path: str = current_app.config['DATABASE_FO
     except Exception as e:
         print(f"Error extracting 7z file: {e}")
 
+# --- Context Processors ---
+@current_app.context_processor
+def inject_current_year():
+    """Injects the current year into all templates."""
+    return {'current_year': datetime.now().year}
+
+
 # --- Route Definitions ---
 @current_app.route('/robots.txt')
 def robots_txt():
