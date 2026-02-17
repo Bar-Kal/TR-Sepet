@@ -53,22 +53,29 @@
         {% if charts_data %}
             <h2>{{ results_title }}</h2>
             <p class="date-range">{{ start_date }} ile {{ end_date }} arasındaki veriler gösteriliyor</br>Seçilen marketler: {{ selected_shops | join(', ') }}</p>
+            <div class="view-toggle">
+                <img id="plot-view-btn" src="{{ url_for('static', filename='img/page/chart_icon.svg') }}" alt="Plot View" class="view-icon active">
+                <span class="view-toggle-pipe">|</span>
+                <img id="table-view-btn" src="{{ url_for('static', filename='img/page/table_icon.svg') }}" alt="Table View" class="view-icon">
+            </div>
             <div class="central-legend">
-                <div class="legend-item" title="Fiyat">
-                    <div class="legend-color" style="background-color: rgba(0, 128, 0, 1);"></div>
-                    <span>Fiyat</span>
-                </div>
-                <div class="legend-item" title="İndirimli fiyat. Market kartı indirimi de olabilir. Indirim mevcut değilse, normal fiyat kullanılır.">
-                    <div class="legend-color" style="background-color: rgba(255, 159, 64, 1);"></div>
-                    <span>İndirimli Fiyat</span>
-                </div>
-                <div class="legend-item" title="indirimli fiyattan hesaplanmıştır">
-                    <div class="legend-color" style="background-color: rgba(255, 99, 132, 1);"></div>
-                    <span>Medyan</span>
-                </div>
-                <div class="legend-item" title="indirimli fiyattan hesaplanmıştır">
-                    <div class="legend-color" style="background-color: rgba(54, 162, 235, 1);"></div>
-                    <span>Hareketli Ortalama (14 gün)</span>
+                <div class="legend-items-container">
+                    <div class="legend-item" title="Fiyat">
+                        <div class="legend-color" style="background-color: rgba(0, 128, 0, 1);"></div>
+                        <span>Fiyat</span>
+                    </div>
+                    <div class="legend-item" title="İndirimli fiyat. Market kartı indirimi de olabilir. Indirim mevcut değilse, normal fiyat kullanılır.">
+                        <div class="legend-color" style="background-color: rgba(255, 159, 64, 1);"></div>
+                        <span>İndirimli Fiyat</span>
+                    </div>
+                    <div class="legend-item" title="indirimli fiyattan hesaplanmıştır">
+                        <div class="legend-color" style="background-color: rgba(255, 99, 132, 1);"></div>
+                        <span>Medyan</span>
+                    </div>
+                    <div class="legend-item" title="indirimli fiyattan hesaplanmıştır">
+                        <div class="legend-color" style="background-color: rgba(54, 162, 235, 1);"></div>
+                        <span>Hareketli Ortalama (14 gün)</span>
+                    </div>
                 </div>
             </div>
 
@@ -81,6 +88,48 @@
                         <canvas id="chart-{{ loop.index }}" width="400" height="200"></canvas>
                     </div>
                 {% endfor %}
+            </div>
+            <div class="table-view" style="display: none;">
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Market</th>
+                            <th>Ürün Adı</th>
+                            <th title="Veriler seçilen tarih filtresine göre alınmıştır.">Fiyat</th>
+                            <th title="Veriler seçilen tarih filtresine göre alınmıştır.">İndirimli Fiyat</th>
+                            <th title="Veriler seçilen tarih filtresine göre hesaplanmış.">Fiyat Değişimi</th>
+                            <th title="Veriler seçilen tarih filtresine göre hesaplanmış.">İndirimli Fiyat Değişimi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in table_data %}
+                            <tr>
+                                <td>{{ row.shop_name }}</td>
+                                <td>{{ row.product_name }}</td>
+                                <td>{{ row.current_price }}</td>
+                                <td>{{ row.discount_price }}</td>
+                                <td>
+                                    {% if row.price_change.direction == 'positive' %}
+                                        <span class="price-increase">⬆</span> {{ row.price_change.text }}
+                                    {% elif row.price_change.direction == 'negative' %}
+                                        <span class="price-decrease">⬇</span> {{ row.price_change.text }}
+                                    {% else %}
+                                        {{ row.price_change.text }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if row.discount_price_change.direction == 'positive' %}
+                                        <span class="price-increase">⬆</span> {{ row.discount_price_change.text }}
+                                    {% elif row.discount_price_change.direction == 'negative' %}
+                                        <span class="price-decrease">⬇</span> {{ row.discount_price_change.text }}
+                                    {% else %}
+                                        {{ row.discount_price_change.text }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
             <div class="pagination-container">
                 {% include '_pagination.html' %}
@@ -141,6 +190,53 @@
                     });
                 }
             });
+
+            // View toggle
+            const plotViewBtn = document.getElementById('plot-view-btn');
+            const tableViewBtn = document.getElementById('table-view-btn');
+            const chartGrid = document.querySelector('.chart-grid');
+            const tableView = document.querySelector('.table-view');
+            const centralLegend = document.querySelector('.central-legend');
+
+            function updatePaginationLinks(view) {
+                const paginationLinks = document.querySelectorAll('.pagination a');
+                paginationLinks.forEach(link => {
+                    const url = new URL(link.href);
+                    url.searchParams.set('view', view);
+                    link.href = url.toString();
+                });
+            }
+
+            if (plotViewBtn && tableViewBtn && chartGrid && tableView && centralLegend) {
+                plotViewBtn.addEventListener('click', () => {
+                    plotViewBtn.classList.add('active');
+                    tableViewBtn.classList.remove('active');
+                    chartGrid.style.display = 'grid';
+                    tableView.style.display = 'none';
+                    centralLegend.style.display = 'flex';
+                    updatePaginationLinks('chart');
+                });
+
+                tableViewBtn.addEventListener('click', () => {
+                    tableViewBtn.classList.add('active');
+                    plotViewBtn.classList.remove('active');
+                    chartGrid.style.display = 'none';
+                    tableView.style.display = 'block';
+                    centralLegend.style.display = 'none';
+                    updatePaginationLinks('table');
+                });
+
+                // On page load, check for view parameter
+                const urlParams = new URLSearchParams(window.location.search);
+                const view = urlParams.get('view');
+
+                if (view === 'table') {
+                    tableViewBtn.click();
+                } else {
+                    // Default to chart view
+                    updatePaginationLinks('chart');
+                }
+            }
 
             // Charts
             {% if charts_data %}

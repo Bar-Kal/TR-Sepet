@@ -171,12 +171,45 @@ def index():
     return render_template('index.html', title='Ara', search_query='', show_header_search=True)
 
 
+def calculate_price_change(prices_list):
+    """Calculates price change and returns a dictionary with formatted text and direction."""
+    if len(prices_list) < 2:
+        return {'text': "N/A", 'direction': 'na'}
+
+    first_price = prices_list[0]
+    last_price = prices_list[-1]
+    
+    if first_price is None or last_price is None:
+        return {'text': "N/A", 'direction': 'na'}
+
+    if first_price == 0: # Avoid division by zero
+        if last_price > 0:
+            return {'text': f"{format_price(last_price)} (inf%)", 'direction': 'positive'}
+        else:
+            return {'text': "0,00 TL (0%)", 'direction': 'zero'}
+
+    price_change_value = last_price - first_price
+    percentage_change = (price_change_value / first_price) * 100
+    
+    formatted_text = f"{format_price(price_change_value)} ({percentage_change:.0f}%)"
+    
+    if price_change_value > 0:
+        direction = 'positive'
+    elif price_change_value < 0:
+        direction = 'negative'
+    else:
+        direction = 'zero'
+        formatted_text = "0,00 TL (0%)"
+
+    return {'text': formatted_text, 'direction': direction}
+
 @current_app.route('/products', methods=['GET'])
 def products():
     """Renders the home page with shop and category dropdowns."""
 
     # --- Initialize variables ---
     charts_data = None
+    table_data = []
     no_results = True
     search_error = None
     pagination = None
@@ -346,6 +379,33 @@ def products():
                 }
                 charts_data.append(chart_data)
 
+                # Format current price
+                if len(prices) > 1:
+                    formatted_current_price = f"{format_price(prices[0])} - {format_price(prices[-1])}"
+                else:
+                    formatted_current_price = format_price(prices[0])
+
+                # Format discount price
+                if len(discount_prices) > 1:
+                    formatted_discount_price = f"{format_price(discount_prices[0])} - {format_price(discount_prices[-1])}"
+                else:
+                    formatted_discount_price = format_price(discount_prices[0])
+
+                # Calculate price changes using the helper function
+                price_change_data = calculate_price_change(prices)
+                discount_price_change_data = calculate_price_change(valid_discount_prices)
+
+                table_row = {
+                    'shop_name': shop_name_of_product,
+                    'product_name': product_name,
+                    'product_category': group_rows[0]['Category_Name'],
+                    'current_price': formatted_current_price,
+                    'discount_price': formatted_discount_price,
+                    'price_change': price_change_data,
+                    'discount_price_change': discount_price_change_data
+                }
+                table_data.append(table_row)
+
             if charts_data:
                 no_results = False
 
@@ -365,7 +425,8 @@ def products():
                        shop_logo_mapping=shop_logo_mapping,
                        search_error=search_error,
                        show_header_search=True,
-                       pagination=pagination)
+                       pagination=pagination,
+                       table_data=table_data)
 
 
 

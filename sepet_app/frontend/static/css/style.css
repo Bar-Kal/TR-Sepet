@@ -379,7 +379,7 @@ footer {
 
 .central-legend {
     display: flex;
-    justify-content: center;
+    justify-content: space-between; /* This will push the items to the sides */
     align-items: center;
     gap: 1.5rem;
     margin-bottom: 2rem;
@@ -387,6 +387,48 @@ footer {
     background-color: var(--background-color);
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
+}
+
+.legend-items-container {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center; /* Center the legend items */
+    flex-grow: 1; /* Allow the legend items to take up space */
+}
+
+.view-toggle {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    align-items: center; /* Align items vertically */
+    margin-bottom: 5px; /* Add margin bottom to separate from content below */
+}
+
+.view-icon {
+    width: 30px; /* Adjust as needed */
+    height: 30px; /* Adjust as needed */
+    cursor: pointer;
+    padding: 5px;
+    border-radius: var(--border-radius);
+    transition: background-color var(--transition-speed), border-color var(--transition-speed);
+    color: var(--text-gray); /* Default color for inactive icon */
+}
+
+.view-icon:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.view-icon.active {
+    background-color: var(--chart-green-bg); /* Use background color for selected state */
+    border: 1px solid var(--chart-green);
+    box-shadow: 0 0 0 2px var(--chart-green-bg);
+    color: var(--chart-green); /* Color for active icon */
+}
+
+.view-toggle-pipe {
+    font-size: 1.2rem;
+    color: var(--text-gray);
+    margin: 0 5px;
 }
 
 .legend-item {
@@ -654,4 +696,49 @@ footer {
     .nav-right {
         order: 3;
     }
+}
+
+/* Table View Styles */
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background-color: var(--background-color);
+    box-shadow: var(--box-shadow);
+    border-radius: var(--border-radius);
+    overflow: hidden; /* Ensures the border-radius is respected by child elements */
+    font-size: 0.9rem; /* Smaller font size for the table */
+}
+
+.results-table th,
+.results-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--medium-gray);
+}
+
+.results-table th {
+    background-color: var(--light-gray);
+    font-weight: 600;
+    color: var(--dark-gray);
+}
+
+.results-table tbody tr:nth-child(even) {
+    background-color: var(--chart-green-bg);
+}
+
+.results-table tbody tr:nth-child(odd) {
+    background-color: var(--light-gray);
+}
+
+.results-table tbody tr:hover {
+    background-color: var(--medium-gray);
+}
+/* Price change indicator styles */
+.price-increase {
+    color: #dc3545; /* A standard red color for increases */
+}
+
+.price-decrease {
+    color: var(--chart-green); /* Use the existing green variable for decreases */
 }
