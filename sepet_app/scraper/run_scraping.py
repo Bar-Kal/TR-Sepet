@@ -85,7 +85,7 @@ def filter_nonfood(list_of_products: list, product_classifier):
     return pd.DataFrame(food_labels, columns = ['food'])
 
 
-def combine_and_filter_csvs(base_downloads_path: Path, product_classifier: ProductClassifier = None):
+def combine_and_filter_csvs(base_downloads_path: Path):
     """
     Combines all CSV files in a directory, removes duplicates, and saves the result.
 
@@ -95,7 +95,6 @@ def combine_and_filter_csvs(base_downloads_path: Path, product_classifier: Produ
 
     Args:
         base_downloads_path (Path): The path to the directory containing the CSV files.
-        :param product_classifier:  Instance of Distilbert classifier
     """
     # Use .rglob to recursively find all .csv files, excluding 'combined.csv' itself.
     csv_files = [f for f in base_downloads_path.rglob('*.csv') if f.name != 'combined.csv']
@@ -128,10 +127,6 @@ def combine_and_filter_csvs(base_downloads_path: Path, product_classifier: Produ
     combined_df.reset_index(inplace=True, drop=True)
     logger.info(f"Combined {len(combined_df)} total rows from all files.")
 
-    if RUN_PRODUCT_CLASSIFIER:
-        food_labels = filter_nonfood(list_of_products=combined_df['Display_Name'].tolist(), product_classifier=product_classifier)
-        combined_df = combined_df.join(food_labels)
-
     # Save the final, clean DataFrame
     output_filepath = os.path.join(base_downloads_path, 'combined.csv')
 
@@ -140,6 +135,45 @@ def combine_and_filter_csvs(base_downloads_path: Path, product_classifier: Produ
         logger.info(f"Successfully saved combined data with {len(combined_df)} unique rows to '{output_filepath}'")
     except IOError as e:
         logger.error(f"Error writing to final file '{output_filepath}': {e}")
+
+def filtering_all_combined_files(base_download_path_of_shop: Path):
+    """
+    Run on all generated combined.csv files for all shops filtering like Bert-Classification.
+
+    This function recursively finds all 'combined.csv' for the entire download history and applies filtering.
+    The combined.csv files gets overwritten.
+
+    Args:
+        base_download_path_of_shop (Path): The path to the directory containing the scraped CSV files.
+    """
+
+    if RUN_PRODUCT_CLASSIFIER:
+        product_classifier = ProductClassifier()
+        csvfiles_dtypes = {'Category_ID': int, 'Shop_ID': int, 'Product_ID': int}
+
+        # Use .rglob to recursively find all .csv files, excluding 'combined.csv' itself.
+        combined_file_paths = [f for f in base_download_path_of_shop.rglob('combined.csv')]
+        logger.info(f"Found {len(combined_file_paths)} combined CSV files to process.")
+
+        if not combined_file_paths:
+            logger.info("No combined.csv files found to combine.")
+            return
+
+        for filepath in combined_file_paths:
+            try:
+                logger.info(f"--- Processing file {filepath} ---")
+                combined_df = pd.read_csv(filepath, sep=';', dtype=csvfiles_dtypes, encoding='utf-8')
+                food_labels = filter_nonfood(list_of_products=combined_df['Display_Name'].tolist(),
+                                             product_classifier=product_classifier)
+                combined_df = combined_df.join(food_labels)
+                combined_df = combined_df[combined_df['food'] == 1]
+                combined_df.drop('food', axis=1, inplace=True)
+                combined_df.to_csv(filepath, sep=';', index=False, encoding='utf-8', header=True)
+
+            except pd.errors.EmptyDataError:
+                logger.info(f"Skipping empty file: {filepath}")
+            except Exception as e:
+                logger.error(f"Error reading {filepath}: {e}")
 
 
 def main(arg_shop_name: str = None):
@@ -153,7 +187,7 @@ def main(arg_shop_name: str = None):
     """
     shop_num = 1
 
-    with open(os.path.join('sepet_app', 'scraper', 'configs', 'shops.json')) as f:
+    with open(os.path.join('sepet_app', 'scraper', 'configs', 'shops.json'), 'r', encoding='utf-8') as f:
         shops = json.load(f)
 
     with open(os.path.join('sepet_app', 'scraper', 'configs', 'food.json'), 'r', encoding='utf-8') as f:
@@ -161,10 +195,6 @@ def main(arg_shop_name: str = None):
 
     today_str = datetime.now().strftime('%Y-%m-%d')  # Get today's date in YYYY-MM-DD format
     download_folder = os.path.join('sepet_app', 'scraper', 'downloads', 'scraped_files')
-
-    product_classifier = None
-    if RUN_PRODUCT_CLASSIFIER:
-        product_classifier = ProductClassifier()
 
     for shop in shops:
         shop_name = shop['shop_name']
@@ -187,8 +217,7 @@ def main(arg_shop_name: str = None):
                 today_str=today_str
             )
             logger.info("Starting data combination process...")
-            combine_and_filter_csvs(base_downloads_path=Path(os.path.join(download_folder, scraper.shop_name, today_str)),
-                                    product_classifier=product_classifier)
+            combine_and_filter_csvs(base_downloads_path=Path(os.path.join(download_folder, scraper.shop_name, today_str)))
             logger.info(f"--- Finished process for {shop_name} ---")
             del scraper
             logger.remove(log_sink_id)
@@ -199,6 +228,10 @@ def main(arg_shop_name: str = None):
     logfile_name = datetime.now().strftime("%Y%m%d-%H%M%S") + '_sqlite_creation.log'
     log_sink_id = logger.add(os.path.join('sepet_app', 'scraper', 'logs', logfile_name), rotation="10 MB")
 
+    logger.info(f"--- Starting to filter all combined.csv files ---")
+    filtering_all_combined_files(base_download_path_of_shop=Path(download_folder))
+
+    logger.info(f"--- Starting to create database file ---")
     db_file_path = create_sqlite_from_csvs(db_folder=os.path.join('sepet_app', 'scraper', 'downloads', 'db_files'),
                                            scraped_files_folder=os.path.join('sepet_app', 'scraper', 'downloads', 'scraped_files'))
 
