@@ -214,6 +214,7 @@ def products():
     search_error = None
     pagination = None
     all_products = []
+    all_product_names = []
 
     # --- Load metadata from database ---
     db_path = get_db_path()
@@ -313,6 +314,7 @@ def products():
             except sqlite3.Error as e:
                 print(f"Database query failed for shop {current_shop}: {e}")
 
+        all_product_names.append([x['Display_Name'] for x in all_products])
         # Now, determine available categories from the full search results
         if all_products:
             if product_search:
