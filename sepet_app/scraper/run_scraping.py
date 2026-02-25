@@ -15,6 +15,7 @@ from .src.utilities.create_database import  create_sqlite_from_csvs, compress_db
 from .src.utilities.classifier import ProductClassifier
 
 RUN_PRODUCT_CLASSIFIER = True
+RUN_BERT_FOR_ALL = False # If set to false, BERT model will only run for the current day of download. Otherwise, for all combined files
 
 def scrape_categories(scraper: Union[BaseScraper, AdvancedBaseScraper], products_categories: json, filepath: str, today_str: str):
     """
@@ -203,6 +204,7 @@ def main(arg_shop_name: str = None):
         shop_name = shop['shop_name']
         logfile_name = datetime.now().strftime("%Y%m%d-%H%M%S") + '_' + shop_name + '.log'
         log_sink_id = logger.add(os.path.join('sepet_app', 'scraper', 'logs', logfile_name), rotation="10 MB")
+        path_current_download_folder = os.path.join(download_folder, scraper.shop_name, today_str)
 
         if shop['scrape']:
             if arg_shop_name is not None and arg_shop_name != shop_name:
@@ -220,7 +222,12 @@ def main(arg_shop_name: str = None):
                 today_str=today_str
             )
             logger.info("Starting data combination process...")
-            combine_and_filter_csvs(base_downloads_path=Path(os.path.join(download_folder, scraper.shop_name, today_str)))
+            combine_and_filter_csvs(base_downloads_path=Path(path_current_download_folder))
+
+            if not RUN_BERT_FOR_ALL:
+                logger.info(f"--- Starting to filter combined.csv file with Distilbert ---")
+                filtering_all_combined_files(base_download_path_of_shop=Path(path_current_download_folder))
+
             logger.info(f"--- Finished process for {shop_name} ---")
             del scraper
             logger.remove(log_sink_id)
@@ -231,8 +238,9 @@ def main(arg_shop_name: str = None):
     logfile_name = datetime.now().strftime("%Y%m%d-%H%M%S") + '_sqlite_creation.log'
     log_sink_id = logger.add(os.path.join('sepet_app', 'scraper', 'logs', logfile_name), rotation="10 MB")
 
-    logger.info(f"--- Starting to filter all combined.csv files ---")
-    filtering_all_combined_files(base_download_path_of_shop=Path(download_folder))
+    if RUN_BERT_FOR_ALL:
+        logger.info(f"--- Starting to filter all combined.csv files with Distilbert ---")
+        filtering_all_combined_files(base_download_path_of_shop=Path(download_folder))
 
     logger.info(f"--- Starting to create database file ---")
     db_file_path = create_sqlite_from_csvs(db_folder=os.path.join('sepet_app', 'scraper', 'downloads', 'db_files'),
