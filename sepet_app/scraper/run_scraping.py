@@ -163,11 +163,14 @@ def filtering_all_combined_files(base_download_path_of_shop: Path):
             try:
                 logger.info(f"--- Processing file {filepath} ---")
                 combined_df = pd.read_csv(filepath, sep=';', dtype=csvfiles_dtypes, encoding='utf-8')
+
+                if 'food' in combined_df.columns:
+                    # Some combined.csv files can have from previous classification with Bert the food column
+                    combined_df.drop('food', axis=1, inplace=True)
+
                 food_labels = filter_nonfood(list_of_products=combined_df['Display_Name'].tolist(),
                                              product_classifier=product_classifier)
                 combined_df = combined_df.join(food_labels)
-                combined_df = combined_df[combined_df['food'] == 1]
-                combined_df.drop('food', axis=1, inplace=True)
                 combined_df.to_csv(filepath, sep=';', index=False, encoding='utf-8', header=True)
 
             except pd.errors.EmptyDataError:
