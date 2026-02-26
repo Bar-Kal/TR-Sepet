@@ -137,7 +137,7 @@ def combine_and_filter_csvs(base_downloads_path: Path):
     except IOError as e:
         logger.error(f"Error writing to final file '{output_filepath}': {e}")
 
-def filtering_all_combined_files(base_download_path_of_shop: Path):
+def filtering_all_combined_files(base_download_path_of_shop: Path, skip_food_column: bool = True):
     """
     Run on all generated combined.csv files for all shops filtering like Bert-Classification.
 
@@ -146,6 +146,7 @@ def filtering_all_combined_files(base_download_path_of_shop: Path):
 
     Args:
         base_download_path_of_shop (Path): The path to the directory containing the scraped CSV files.
+        skip_food_column (bool): If set to True and the file has the food-column already, don't process it.
     """
 
     if RUN_PRODUCT_CLASSIFIER:
@@ -165,14 +166,15 @@ def filtering_all_combined_files(base_download_path_of_shop: Path):
                 logger.info(f"--- Processing file {filepath} ---")
                 combined_df = pd.read_csv(filepath, sep=';', dtype=csvfiles_dtypes, encoding='utf-8')
 
-                if 'food' in combined_df.columns:
-                    # Some combined.csv files can have from previous classification with Bert the food column
-                    combined_df.drop('food', axis=1, inplace=True)
+                if not skip_food_column:
+                    if 'food' in combined_df.columns:
+                        # Some combined.csv files can have from previous classification with Bert the food column
+                        combined_df.drop('food', axis=1, inplace=True)
 
-                food_labels = filter_nonfood(list_of_products=combined_df['Display_Name'].tolist(),
-                                             product_classifier=product_classifier)
-                combined_df = combined_df.join(food_labels)
-                combined_df.to_csv(filepath, sep=';', index=False, encoding='utf-8', header=True)
+                    food_labels = filter_nonfood(list_of_products=combined_df['Display_Name'].tolist(),
+                                                 product_classifier=product_classifier)
+                    combined_df = combined_df.join(food_labels)
+                    combined_df.to_csv(filepath, sep=';', index=False, encoding='utf-8', header=True)
 
             except pd.errors.EmptyDataError:
                 logger.info(f"Skipping empty file: {filepath}")
@@ -240,7 +242,7 @@ def main(arg_shop_name: str = None):
 
     if RUN_BERT_FOR_ALL:
         logger.info(f"--- Starting to filter all combined.csv files with Distilbert ---")
-        filtering_all_combined_files(base_download_path_of_shop=Path(download_folder))
+        filtering_all_combined_files(base_download_path_of_shop=Path(download_folder), skip_food_column=True)
 
     logger.info(f"--- Starting to create database file ---")
     db_file_path = create_sqlite_from_csvs(db_folder=os.path.join('sepet_app', 'scraper', 'downloads', 'db_files'),
