@@ -166,7 +166,9 @@ def filtering_all_combined_files(base_download_path_of_shop: Path, skip_food_col
                 logger.info(f"--- Processing file {filepath} ---")
                 combined_df = pd.read_csv(filepath, sep=';', dtype=csvfiles_dtypes, encoding='utf-8')
 
-                if not skip_food_column:
+                if 'food' in combined_df.columns and skip_food_column:
+                    pass
+                else:
                     if 'food' in combined_df.columns:
                         # Some combined.csv files can have from previous classification with Bert the food column
                         combined_df.drop('food', axis=1, inplace=True)
