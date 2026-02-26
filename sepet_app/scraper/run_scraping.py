@@ -206,7 +206,7 @@ def main(arg_shop_name: str = None):
         shop_name = shop['shop_name']
         logfile_name = datetime.now().strftime("%Y%m%d-%H%M%S") + '_' + shop_name + '.log'
         log_sink_id = logger.add(os.path.join('sepet_app', 'scraper', 'logs', logfile_name), rotation="10 MB")
-        path_current_download_folder = os.path.join(download_folder, scraper.shop_name, today_str)
+        path_current_download_folder = os.path.join(download_folder, shop_name, today_str)
 
         if shop['scrape']:
             if arg_shop_name is not None and arg_shop_name != shop_name:
