@@ -275,6 +275,8 @@ def products():
             params = []
             conditions = []
 
+            conditions.append("food = 1")
+
             if start_date_str and end_date_str:
                 conditions.append("date(Scrape_Timestamp) BETWEEN ? AND ?")
                 params.extend([start_date_str, end_date_str])
