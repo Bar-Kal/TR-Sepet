@@ -148,9 +148,12 @@ def unzip_new_db_file(base_downloads_path: str = current_app.config['DATABASE_FO
 
 # --- Context Processors ---
 @current_app.context_processor
-def inject_current_year():
-    """Injects the current year into all templates."""
-    return {'current_year': datetime.now().year}
+def inject_globals():
+    """Injects global variables into all templates."""
+    return {
+        'current_year': datetime.now().year,
+        'canonical_url': request.base_url
+    }
 
 
 # --- Route Definitions ---
@@ -161,14 +164,29 @@ def robots_txt():
 
 @current_app.route('/sitemap.xml')
 def sitemap():
-    return send_from_directory(current_app.static_folder, 'sitemap.xml')
+    """Generates a dynamic sitemap."""
+    today = datetime.now().strftime('%Y-%m-%d')
+    pages = []
+    
+    # Static pages
+    for rule in current_app.url_map.iter_rules():
+        if "GET" in rule.methods and len(rule.arguments) == 0:
+            if rule.endpoint not in ['sitemap', 'robots_txt', 'static', 'upload_secure']:
+                pages.append([f"https://www.sepetanalizi.com{rule.rule}", today])
+
+    sitemap_xml = render_template('sitemap_template.xml', pages=pages)
+    return current_app.response_class(sitemap_xml, mimetype='application/xml')
 
 
 @current_app.route('/', methods=['GET'])
 @current_app.route('/index', methods=['GET'])
 def index():
     """Renders the landing page."""
-    return render_template('index.html', title='Ara', search_query='', show_header_search=True)
+    return render_template('index.html', 
+                           title='Ara', 
+                           search_query='', 
+                           show_header_search=True,
+                           meta_description="Türkiye'deki süpermarketlerin gıda fiyatlarını karşılaştırın. En uygun fiyatlı ürünleri bulun ve bütçenizi koruyun.")
 
 
 def calculate_price_change(prices_list):
@@ -413,8 +431,13 @@ def products():
             if charts_data:
                 no_results = False
 
+        # Determine meta description
+        meta_description = f"Türkiye'deki süpermarketlerde {product_search or 'gıda'} ürünleri için fiyat analizi ve karşılaştırma."
+        if product_search:
+             meta_description = f"'{product_search}' için market fiyatları ve tarihsel değişim grafikleri. En ucuz '{product_search}' nerede? Sepet ile keşfedin."
+
         return render_template('products.html',
-                       title='Ürünler',
+                       title=f"{product_search or 'Ürünler'} - Fiyat Analizi",
                        shop_names=shop_names,
                        food_categories=available_food_categories,
                        charts_data=charts_data,
@@ -430,7 +453,8 @@ def products():
                        search_error=search_error,
                        show_header_search=True,
                        pagination=pagination,
-                       table_data=table_data)
+                       table_data=table_data,
+                       meta_description=meta_description)
 
 
 

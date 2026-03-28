@@ -3,13 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- The title block can be overridden by child templates -->
-    <title>{% block title %}Sepet{% endblock %}</title>
+    
+    <!-- Primary Meta Tags -->
+    <title>{% block title %}Sepet - Gıda Fiyat Analizi ve Karşılaştırma{% endblock %}</title>
+    <meta name="title" content="{% block meta_title %}Sepet - Gıda Fiyat Analizi ve Karşılaştırma{% endblock %}">
+    <meta name="description" content="{% block meta_description %}Marketlerdeki gıda ürünlerinin fiyat değişimlerini takip edin. 140'tan fazla ürünün güncel ve geçmiş fiyatlarını karşılaştırarak bütçenizi yönetin.{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}gıda fiyatları, market fiyatları, fiyat karşılaştırma, enflasyon takibi, ucuz gıda, sepet analizi{% endblock %}">
+    <meta name="author" content="Bar-Kal">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ canonical_url or request.url }}">
+    <meta property="og:title" content="{% block og_title %}Sepet - Gıda Fiyat Analizi ve Karşılaştırma{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Marketlerdeki gıda ürünlerinin fiyat değişimlerini takip edin. 140'tan fazla ürünün güncel ve geçmiş fiyatlarını karşılaştırarak bütçenizi yönetin.{% endblock %}">
+    <meta property="og:image" content="{{ url_for('static', filename='img/page/logo.png', _external=True) }}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ canonical_url or request.url }}">
+    <meta property="twitter:title" content="{% block twitter_title %}Sepet - Gıda Fiyat Analizi ve Karşılaştırma{% endblock %}">
+    <meta property="twitter:description" content="{% block twitter_description %}Marketlerdeki gıda ürünlerinin fiyat değişimlerini takip edin. 140'tan fazla ürünün güncel ve geçmiş fiyatlarını karşılaştırarak bütçenizi yönetin.{% endblock %}">
+    <meta property="twitter:image" content="{{ url_for('static', filename='img/page/logo.png', _external=True) }}">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ canonical_url or request.url }}">
+
+    <!-- PWA -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#28a745">
+
     <link rel="icon" href="{{ url_for('static', filename='img/page/favicon.ico') }}" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Sepet",
+      "url": "https://www.sepetanalizi.com",
+      "logo": "https://www.sepetanalizi.com/static/img/page/logo.png",
+      "description": "Türkiye'deki süpermarketlerin gıda fiyatlarını karşılaştıran ve analiz eden platform."
+    }
+    </script>
+    {% block extra_head %}{% endblock %}
 </head>
 <body>
     <header>
@@ -43,11 +83,12 @@
     <footer>
         <div class="footer-content">
             <p>&copy; {{ current_year }} Sepet</p>
-            <a href="https://github.com/Bar-Kal/TR-Sepet" target="_blank" class="github-icon-link"><img src="{{ url_for('static', filename='img/page/github-logo.svg') }}" alt="GitHub logo" style="height: 1.5em; vertical-align: middle;"></a>
+            <a href="https://github.com/Bar-Kal/TR-Sepet" target="_blank" class="github-icon-link" aria-label="GitHub'da Bizi Takip Edin"><img src="{{ url_for('static', filename='img/page/github-logo.svg') }}" alt="GitHub logo" style="height: 1.5em; vertical-align: middle;"></a>
             <a href="{{ url_for('privacy') }}" class="footer-link">Gizlilik Politikası</a>
         </div>
     </footer>
 
     <script src="{{ url_for('static', filename='js/search.js') }}"></script>
+    {% block extra_scripts %}{% endblock %}
 </body>
 </html>
