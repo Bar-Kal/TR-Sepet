@@ -17,18 +17,8 @@ from .utils import (
 
 PER_PAGE = 20
 
-def index(request):
-    """Renders the landing page."""
-    context = {
-        'title': 'Ara',
-        'search_query': '',
-        'show_header_search': True,
-        'meta_description': "Türkiye'deki süpermarketlerin gıda fiyatlarını karşılaştırın. En uygun fiyatlı ürünleri bulun ve bütçenizi koruyun."
-    }
-    return render(request, 'index.html', context)
-
-def products(request):
-    """Renders the home page with shop and category dropdowns."""
+def _get_product_data(request):
+    """Internal helper to fetch product data based on request parameters."""
     charts_data = []
     table_data = []
     no_results = True
@@ -42,14 +32,19 @@ def products(request):
 
     selected_shops = request.GET.getlist('shops')
     selected_category_name = request.GET.get('category', 'all')
-    date_range = request.GET.get('date_range')
+    date_range_param = request.GET.get('date_range')
+    start_date_param = request.GET.get('start_date')
+    end_date_param = request.GET.get('end_date')
 
     if not selected_shops:
         selected_shops = ['Carrefoursa']
 
-    if date_range:
+    if start_date_param and end_date_param:
+        start_date_str = start_date_param
+        end_date_str = end_date_param
+    elif date_range_param:
         try:
-            start_date_str, end_date_str = date_range.split(' - ')
+            start_date_str, end_date_str = date_range_param.split(' - ')
         except ValueError:
             start_date_str = (datetime.now() - timedelta(days=90)).strftime('%Y-%m-%d')
             end_date_str = datetime.now().strftime('%Y-%m-%d')
@@ -134,7 +129,7 @@ def products(request):
                 'total_items': paginator.count,
                 'has_prev': page_obj.has_previous(),
                 'has_next': page_obj.has_next(),
-                'page_range': range(max(1, page_obj.number - 2), min(paginator.num_pages, page_obj.number + 2) + 1),
+                'page_range': list(range(max(1, page_obj.number - 2), min(paginator.num_pages, page_obj.number + 2) + 1)),
                 'start': max(1, page_obj.number - 2),
                 'end': min(paginator.num_pages, page_obj.number + 2)
             }
@@ -201,6 +196,20 @@ def products(request):
                 if not valid_prices: continue
                 valid_discount_prices = [p for p in discount_prices if p is not None]
 
+                # Find dates for min/max prices
+                min_p = min(valid_prices)
+                max_p = max(valid_prices)
+                min_price_date = dates[prices.index(min_p)].strftime('%Y-%m-%d')
+                max_price_date = dates[prices.index(max_p)].strftime('%Y-%m-%d')
+
+                if valid_discount_prices:
+                    min_d = min(valid_discount_prices)
+                    max_d = max(valid_discount_prices)
+                    min_discount_date = dates[discount_prices.index(min_d)].strftime('%Y-%m-%d')
+                    max_discount_date = dates[discount_prices.index(max_d)].strftime('%Y-%m-%d')
+                else:
+                    min_d = max_d = min_discount_date = max_discount_date = None
+
                 charts_data.append({
                     'product_name': item['display_name'],
                     'product_category': group_rows[0]['Category_Name'],
@@ -209,10 +218,10 @@ def products(request):
                     'prices': prices,
                     'discount_prices': discount_prices,
                     'url': group_rows[-1]['Product_URL'],
-                    'highest_price': format_price(max(valid_prices)),
-                    'lowest_price': format_price(min(valid_prices)),
-                    'lowest_discount_price': format_price(min(valid_discount_prices)) if valid_discount_prices else "N/A",
-                    'highest_discount_price': format_price(max(valid_discount_prices)) if valid_discount_prices else "N/A",
+                    'highest_price': format_price(max_p),
+                    'lowest_price': format_price(min_p),
+                    'lowest_discount_price': format_price(min_d) if min_d is not None else "N/A",
+                    'highest_discount_price': format_price(max_d) if max_d is not None else "N/A",
                     'shop_logo': shop_logo_mapping.get(item['shop_name'], '')
                 })
 
@@ -220,18 +229,39 @@ def products(request):
                     'shop_name': item['shop_name'],
                     'product_name': item['display_name'],
                     'product_category': group_rows[0]['Category_Name'],
-                    'current_price': f"{format_price(prices[0])} - {format_price(prices[-1])}" if len(prices) > 1 else format_price(prices[0]),
-                    'discount_price': f"{format_price(discount_prices[0])} - {format_price(discount_prices[-1])}" if len(discount_prices) > 1 else format_price(discount_prices[0]),
+                    'price_details': {
+                        'start_price': prices[0],
+                        'end_price': prices[-1],
+                        'min_price': min_p,
+                        'max_price': max_p,
+                    },
+                    'discount_details': {
+                        'start_price': discount_prices[0],
+                        'end_price': discount_prices[-1],
+                        'min_price': min_d,
+                        'max_price': max_d,
+                    },
+                    'dates': {
+                        'start_date': dates[0].strftime('%Y-%m-%d'),
+                        'end_date': dates[-1].strftime('%Y-%m-%d'),
+                        'min_price_date': min_price_date,
+                        'max_price_date': max_price_date,
+                        'min_discount_price_date': min_discount_date,
+                        'max_discount_price_date': max_discount_date,
+                    },
                     'price_change': calculate_price_change(prices),
-                    'discount_price_change': calculate_price_change(valid_discount_prices)
+                    'discount_price_change': calculate_price_change(valid_discount_prices),
+                    'url': group_rows[-1]['Product_URL'],
+                    # Helper for template display
+                    'display_price': f"{format_price(prices[0])} - {format_price(prices[-1])}" if len(prices) > 1 else format_price(prices[0]),
+                    'display_discount_price': f"{format_price(discount_prices[0])} - {format_price(discount_prices[-1])}" if len(discount_prices) > 1 else format_price(discount_prices[0]),
                 })
 
             if charts_data:
                 no_results = False
 
-    # Meta, categories, shops and pagination URL (rest remains same)
+    # Meta and Sidebar Data
     if product_search and db_path and not search_error:
-        # Re-fetch categories for the sidebar if searching
         try:
             con = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
             cursor = con.cursor()
@@ -245,33 +275,110 @@ def products(request):
             con.close()
         except: pass
 
-    meta_description = f"'{product_search}' için market fiyatları" if product_search else "Market gıda fiyat analizi."
-    shops_list = [{'name': s, 'logo': shop_logo_mapping.get(s, ''), 'selected': s in selected_shops} for s in shop_names]
+    return {
+        'charts_data': charts_data,
+        'table_data': table_data,
+        'no_results': no_results,
+        'search_error': search_error,
+        'pagination': pagination,
+        'shop_names': shop_names,
+        'shop_logo_mapping': shop_logo_mapping,
+        'available_food_categories': available_food_categories,
+        'product_search': product_search,
+        'selected_shops': selected_shops,
+        'selected_category_name': selected_category_name,
+        'start_date_str': start_date_str,
+        'end_date_str': end_date_str,
+        'db_path': db_path
+    }
+
+def index(request):
+    """Renders the landing page."""
+    context = {
+        'title': 'Ara',
+        'search_query': '',
+        'show_header_search': True,
+        'meta_description': "Türkiye'deki süpermarketlerin gıda fiyatlarını karşılaştırın. En uygun fiyatlı ürünleri bulun ve bütçenizi koruyun."
+    }
+    return render(request, 'index.html', context)
+
+def products(request):
+    """Renders the home page with shop and category dropdowns."""
+    data = _get_product_data(request)
+    
+    meta_description = f"'{data['product_search']}' için market fiyatları" if data['product_search'] else "Market gıda fiyat analizi."
+    shops_list = [{'name': s, 'logo': data['shop_logo_mapping'].get(s, ''), 'selected': s in data['selected_shops']} for s in data['shop_names']]
+    
     q_dict = request.GET.copy()
     q_dict.pop('page', None)
     pagination_base_url = f"{request.path}?{q_dict.urlencode()}&page=" if q_dict else f"{request.path}?page="
 
     context = {
-        'title': f"{product_search or 'Ürünler'} - Fiyat Analizi",
+        'title': f"{data['product_search'] or 'Ürünler'} - Fiyat Analizi",
         'shops': shops_list,
-        'food_categories': available_food_categories,
-        'charts_data': charts_data,
-        'category_name': selected_category_name,
-        'selected_shops': selected_shops,
-        'start_date': start_date_str,
-        'end_date': end_date_str,
+        'food_categories': data['available_food_categories'],
+        'charts_data': data['charts_data'],
+        'category_name': data['selected_category_name'],
+        'selected_shops': data['selected_shops'],
+        'start_date': data['start_date_str'],
+        'end_date': data['end_date_str'],
         'results_title': 'Fiyat Analizi',
-        'no_results': no_results,
-        'product_search': product_search or '',
-        'search_query': product_search or '',
-        'search_error': search_error,
+        'no_results': data['no_results'],
+        'product_search': data['product_search'] or '',
+        'search_query': data['product_search'] or '',
+        'search_error': data['search_error'],
         'show_header_search': True,
-        'pagination': pagination,
+        'pagination': data['pagination'],
         'pagination_base_url': pagination_base_url,
-        'table_data': table_data,
+        'table_data': data['table_data'],
         'meta_description': meta_description
     }
     return render(request, 'products.html', context)
+
+def api_products(request):
+    """API endpoint that returns product data in JSON format."""
+    data = _get_product_data(request)
+    
+    # Clean up results for the API response
+    api_results = []
+    for row in data['table_data']:
+        # Create a copy and remove display/formatting fields
+        api_item = {k: v for k, v in row.items() if k not in ['display_price', 'display_discount_price']}
+        
+        # Flatten and clean price_change
+        if 'price_change' in api_item:
+            pc = api_item['price_change']
+            api_item['price_change'] = {
+                'price': pc.get('price'),
+                'percentage': pc.get('percentage')
+            }
+            
+        # Flatten and clean discount_price_change
+        if 'discount_price_change' in api_item:
+            dpc = api_item['discount_price_change']
+            api_item['discount_price_change'] = {
+                'price': dpc.get('price'),
+                'percentage': dpc.get('percentage')
+            }
+
+        api_results.append(api_item)
+
+    return JsonResponse({
+        'results': api_results,
+        'currency': 'TL',
+        'date_range': {
+            'start_date': data['start_date_str'],
+            'end_date': data['end_date_str']
+        },
+        'search_error': data['search_error']
+    })
+
+def api_shops(request):
+    """API endpoint that returns a list of all available shop names."""
+    shop_names, _ = get_shop_names()
+    return JsonResponse({
+        'shops': shop_names
+    })
 
 def about(request): return render(request, 'about.html', {'title': 'Hakkında'})
 def privacy(request):

@@ -146,33 +146,29 @@ def unzip_new_db_file(base_downloads_path=None):
         print(f"Error extracting 7z file: {e}")
 
 def calculate_price_change(prices_list):
-    """Calculates price change and returns a dictionary with formatted text and direction."""
+    """Calculates price change and returns a dictionary with price and percentage."""
     if len(prices_list) < 2:
-        return {'text': "N/A", 'direction': 'na'}
+        return {'price': 0.0, 'percentage': 0.0, 'text': "N/A"}
 
     first_price = prices_list[0]
     last_price = prices_list[-1]
     
     if first_price is None or last_price is None:
-        return {'text': "N/A", 'direction': 'na'}
-
-    if first_price == 0: # Avoid division by zero
-        if last_price > 0:
-            return {'text': f"{format_price(last_price)} (inf%)", 'direction': 'positive'}
-        else:
-            return {'text': "0,00 TL (0%)", 'direction': 'zero'}
+        return {'price': 0.0, 'percentage': 0.0, 'text': "N/A"}
 
     price_change_value = last_price - first_price
-    percentage_change = (price_change_value / first_price) * 100
+    
+    if first_price == 0:
+        percentage_change = float('inf') if last_price > 0 else 0.0
+    else:
+        percentage_change = (price_change_value / first_price) * 100
     
     formatted_text = f"{format_price(price_change_value)} ({percentage_change:.0f}%)"
-    
-    if price_change_value > 0:
-        direction = 'positive'
-    elif price_change_value < 0:
-        direction = 'negative'
-    else:
-        direction = 'zero'
+    if price_change_value == 0:
         formatted_text = "0,00 TL (0%)"
 
-    return {'text': formatted_text, 'direction': direction}
+    return {
+        'price': round(price_change_value, 2),
+        'percentage': round(percentage_change, 2),
+        'text': formatted_text
+    }

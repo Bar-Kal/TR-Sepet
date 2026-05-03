@@ -106,21 +106,21 @@
                             <tr>
                                 <td>{{ row.shop_name }}</td>
                                 <td>{{ row.product_name }}</td>
-                                <td>{{ row.current_price }}</td>
-                                <td>{{ row.discount_price }}</td>
+                                <td>{{ row.display_price }}</td>
+                                <td>{{ row.display_discount_price }}</td>
                                 <td>
-                                    {% if row.price_change.direction == 'positive' %}
+                                    {% if row.price_change.price > 0 %}
                                         <span class="price-increase">⬆</span> {{ row.price_change.text }}
-                                    {% elif row.price_change.direction == 'negative' %}
+                                    {% elif row.price_change.price < 0 %}
                                         <span class="price-decrease">⬇</span> {{ row.price_change.text }}
                                     {% else %}
                                         {{ row.price_change.text }}
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if row.discount_price_change.direction == 'positive' %}
+                                    {% if row.discount_price_change.price > 0 %}
                                         <span class="price-increase">⬆</span> {{ row.discount_price_change.text }}
-                                    {% elif row.discount_price_change.direction == 'negative' %}
+                                    {% elif row.discount_price_change.price < 0 %}
                                         <span class="price-decrease">⬇</span> {{ row.discount_price_change.text }}
                                     {% else %}
                                         {{ row.discount_price_change.text }}
