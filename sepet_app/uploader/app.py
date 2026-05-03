@@ -9,15 +9,15 @@ def create_app():
     Creates and configures an instance of the Flask application for file uploading.
     """
     # Create the Flask application instance
-    app = Flask(__name__, static_folder='../frontend/static')
+    app = Flask(__name__, static_folder='../frontend_old/static')
 
-    # Set up the template loader to look in both the uploader's and the frontend's template folders
+    # Set up the template loader to look in both the uploader's and the frontend_old's template folders
     app.jinja_loader = ChoiceLoader([
         FileSystemLoader(os.path.join(app.root_path, 'templates')),
-        FileSystemLoader(os.path.join(app.root_path, '../frontend/templates'))
+        FileSystemLoader(os.path.join(app.root_path, '../frontend_old/templates'))
     ])
 
-    # Load app url and derive frontend domain
+    # Load app url and derive frontend_old domain
     app.config['INTERNAL_APP_DOMAIN'] = os.getenv('INTERNAL_APP_DOMAIN')
     app.config['FRONTEND_APP_DOMAIN'] = urljoin(app.config['INTERNAL_APP_DOMAIN'], '/')
 
@@ -64,7 +64,7 @@ def create_app():
 
     # --- Redirects to Frontend App ---
     # These routes catch the url_for() calls from the shared base.html template
-    # and redirect them to the main frontend application.
+    # and redirect them to the main frontend_old application.
 
     @app.route('/index')
     def index():
