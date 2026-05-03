@@ -3,6 +3,11 @@ beautifulsoup4
 pandas
 numpy
 Flask
+Django
+python-dotenv
+whitenoise
+gunicorn
+Werkzeug
 selenium
 webdriver-manager
 loguru
