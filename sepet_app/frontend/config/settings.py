@@ -20,6 +20,8 @@ DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 
 # ALLOWED_HOSTS for Railway example: ['your-app-name.up.railway.app', 'localhost', '127.0.0.1']
 ALLOWED_HOSTS = [h.strip() for h in os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',') if h.strip()]
+CSRF_TRUSTED_ORIGINS = [f"https://{h}" for h in ALLOWED_HOSTS if
+                        not h.startswith('localhost') and not h.startswith('127.0.0.1')]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
