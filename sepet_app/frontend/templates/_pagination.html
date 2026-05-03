@@ -1,0 +1,36 @@
+{% if pagination and pagination.total_pages > 1 %}
+<nav aria-label="Sayfalandırma" class="pagination-nav">
+    <ul class="pagination">
+        <!-- Previous -->
+        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+            <a class="page-link" href="{% if pagination.has_prev %}{{ pagination_base_url }}{{ pagination.page|add:"-1" }}{% else %}#{% endif %}">&laquo;</a>
+        </li>
+
+        <!-- Numbers -->
+        {% if pagination.start > 1 %}
+            <li class="page-item"><a class="page-link" href="{{ pagination_base_url }}1">1</a></li>
+            {% if pagination.start > 2 %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+            {% endif %}
+        {% endif %}
+
+        {% for page_num in pagination.page_range %}
+            <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                <a class="page-link" href="{{ pagination_base_url }}{{ page_num }}">{{ page_num }}</a>
+            </li>
+        {% endfor %}
+
+        {% if pagination.end < pagination.total_pages %}
+            {% if pagination.end < pagination.total_pages|add:"-1" %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+            {% endif %}
+            <li class="page-item"><a class="page-link" href="{{ pagination_base_url }}{{ pagination.total_pages }}">{{ pagination.total_pages }}</a></li>
+        {% endif %}
+
+        <!-- Next -->
+        <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+            <a class="page-link" href="{% if pagination.has_next %}{{ pagination_base_url }}{{ pagination.page|add:"1" }}{% else %}#{% endif %}">&raquo;</a>
+        </li>
+    </ul>
+</nav>
+{% endif %}

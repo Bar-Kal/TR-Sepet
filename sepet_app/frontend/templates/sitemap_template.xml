@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    {% for url, date in pages %}
+    <url>
+        <loc>{{ url }}</loc>
+        <lastmod>{{ date }}</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>{% if url == 'https://www.sepetanalizi.com/' %}1.0{% else %}0.8{% endif %}</priority>
+    </url>
+    {% endfor %}
+</urlset>

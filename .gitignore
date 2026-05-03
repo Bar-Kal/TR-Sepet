@@ -13,4 +13,4 @@ sepet_app/shell-scripts/
 
 sepet_app/models/trained_model/
 
-sepet_app/frontend_django/.env
+sepet_app/frontend/.env

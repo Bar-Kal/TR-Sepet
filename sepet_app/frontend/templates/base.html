@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
+    <title>{% block title %}Sepet - Gıda Fiyat Analizi ve Karşılaştırma{% endblock %}</title>
+    <meta name="title" content="{% block meta_title %}Sepet - Gıda Fiyat Analizi ve Karşılaştırma{% endblock %}">
+    <meta name="description" content="{% block meta_description %}Marketlerdeki gıda ürünlerinin fiyat değişimlerini takip edin. 140'tan fazla ürünün güncel ve geçmiş fiyatlarını karşılaştırarak bütçenizi yönetin.{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}gıda fiyatları, market fiyatları, fiyat karşılaştırma, enflasyon takibi, ucuz gıda, sepet analizi{% endblock %}">
+    <meta name="author" content="Bar-Kal">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ canonical_url|default:request.build_absolute_uri }}">
+    <meta property="og:title" content="{% block og_title %}Sepet - Gıda Fiyat Analizi ve Karşılaştırma{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Marketlerdeki gıda ürünlerinin fiyat değişimlerini takip edin. 140'tan fazla ürünün güncel ve geçmiş fiyatlarını karşılaştırarak bütçenizi yönetin.{% endblock %}">
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/page/logo.png' %}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ canonical_url|default:request.build_absolute_uri }}">
+    <meta property="twitter:title" content="{% block twitter_title %}Sepet - Gıda Fiyat Analizi ve Karşılaştırma{% endblock %}">
+    <meta property="twitter:description" content="{% block twitter_description %}Marketlerdeki gıda ürünlerinin fiyat değişimlerini takip edin. 140'tan fazla ürünün güncel ve geçmiş fiyatlarını karşılaştırarak bütçenizi yönetin.{% endblock %}">
+    <meta property="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/page/logo.png' %}">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ canonical_url|default:request.build_absolute_uri }}">
+
+    <!-- PWA -->
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <meta name="theme-color" content="#28a745">
+
+    <link rel="icon" href="{% static 'img/page/favicon.ico' %}" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Sepet",
+      "url": "https://www.sepetanalizi.com",
+      "logo": "https://www.sepetanalizi.com/static/img/page/logo.png",
+      "description": "Türkiye'deki süpermarketlerin gıda fiyatlarını karşılaştıran ve analiz eden platform."
+    }
+    </script>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="nav-left">
+                    <a href="{% url 'index' %}" class="logo-brand">
+                        <img src="{% static 'img/page/logo.png' %}" alt="Sepet Logo" class="logo">
+                        <span class="brand">Sepet</span>
+                    </a>
+                </div>
+                {% if show_header_search %}
+                <div class="nav-center">
+                    <form action="{% url 'products' %}" method="get" class="header-search-form">
+                        <input type="search" name="q" class="shared-search-bar" placeholder="Gıda ürünü girin ( Peynir | Makarna | Kuzu | Dana | Sucuk | ... )" value="{{ search_query|default_if_none:'' }}" pattern="^[a-zA-Z0-9çÇğĞıİöÖşŞüÜ\s]{2,30}$" minlength="2" maxlength="30" title="Arama çubuğuna sadece harf, rakam ve Türkçe karakterler girebilirsiniz. En az 2, en fazla 30 karakter olmalıdır.">
+                    </form>
+                </div>
+                {% endif %}
+                <div class="nav-right">
+                    <a href="{% url 'about' %}">Hakkında</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- The content block is where child templates will insert their content -->
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; {{ current_year }} Sepet</p>
+            <a href="https://github.com/Bar-Kal/TR-Sepet" target="_blank" class="github-icon-link" aria-label="GitHub'da Bizi Takip Edin"><img src="{% static 'img/page/github-logo.svg' %}" alt="GitHub logo" style="height: 1.5em; vertical-align: middle;"></a>
+            <a href="{% url 'privacy' %}" class="footer-link">Gizlilik Politikası</a>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/search.js' %}"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
