@@ -33,6 +33,8 @@ def products(request):
     table_data = []
     no_results = True
     search_error = None
+    pagination = None
+    page_obj = []
     
     db_path = get_db_path()
     shop_names, shop_logo_mapping = get_shop_names()
