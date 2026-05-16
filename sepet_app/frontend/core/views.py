@@ -365,6 +365,7 @@ def api_products(request):
 
     return JsonResponse({
         'results': api_results,
+        'source': 'sepetanalizi.com',
         'currency': 'TL',
         'date_range': {
             'start_date': data['start_date_str'],
