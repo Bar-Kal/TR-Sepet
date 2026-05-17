@@ -70,22 +70,101 @@ server_card_data = {
             "inputSchema": {
                 "type": "object",
                 "properties": {
-                    "product": {"type": "string", "description": "The search term for the product (e.g., 'süt', 'peynir')"},
-                    "category": {"type": "string", "description": "Product category to filter by"},
-                    "shops": {"type": "array", "items": {"type": "string"}, "description": "List of specific shop names"},
-                    "page": {"type": "integer", "default": 1}
+                    "product": {
+                        "type": "string", 
+                        "description": "The search term for the product (e.g., 'süt', 'peynir'). Must be 2-30 characters long containing only letters, numbers, and Turkish characters.",
+                        "examples": ["süt", "peynir", "makarna"]
+                    },
+                    "category": {
+                        "type": "string", 
+                        "description": "The product category to filter by (e.g., 'Süt ve Süt Ürünleri'). Use 'all' for no category filter. Use 'get_available_categories' to see valid names.",
+                        "default": "all"
+                    },
+                    "shops": {
+                        "type": "array", 
+                        "items": {"type": "string"}, 
+                        "description": "List of specific shop names to filter by (e.g., ['Migros', 'A101']). Use 'get_available_shops' to see valid names.",
+                        "examples": [["Migros", "A101"]]
+                    },
+                    "start_date": {
+                        "type": "string", 
+                        "description": "Start date for price history in YYYY-MM-DD format.",
+                        "examples": ["2024-01-01"]
+                    },
+                    "end_date": {
+                        "type": "string", 
+                        "description": "End date for price history in YYYY-MM-DD format.",
+                        "examples": ["2024-12-31"]
+                    },
+                    "page": {
+                        "type": "integer", 
+                        "description": "Page number for paginated results (20 items per page).",
+                        "default": 1
+                    }
+                }
+            },
+            "outputSchema": {
+                "type": "object",
+                "properties": {
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "shop_name": {"type": "string"},
+                                "product_name": {"type": "string"},
+                                "product_category": {"type": "string"},
+                                "url": {"type": "string"},
+                                "price_details": {
+                                    "type": "object",
+                                    "properties": {
+                                        "start_price": {"type": "number"},
+                                        "end_price": {"type": "number"},
+                                        "min_price": {"type": "number"},
+                                        "max_price": {"type": "number"}
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "currency": {"type": "string", "default": "TL"},
+                    "date_range": {
+                        "type": "object",
+                        "properties": {
+                            "start_date": {"type": "string"},
+                            "end_date": {"type": "string"}
+                        }
+                    }
                 }
             }
         },
         {
             "name": "get_available_shops",
-            "description": "Get a list of all available Turkish supermarkets supported by the API.",
-            "inputSchema": {"type": "object", "properties": {}}
+            "description": "Get a list of all available Turkish supermarkets supported by the API. Use this to discover valid shop names for the 'shops' parameter.",
+            "inputSchema": {"type": "object", "properties": {}},
+            "outputSchema": {
+                "type": "object",
+                "properties": {
+                    "shops": {
+                        "type": "array",
+                        "items": {"type": "string"}
+                    }
+                }
+            }
         },
         {
             "name": "get_available_categories",
-            "description": "Get a list of all available food categories supported by the API.",
-            "inputSchema": {"type": "object", "properties": {}}
+            "description": "Get a list of all available food categories supported by the API. Use this to discover valid category names for the 'category' parameter.",
+            "inputSchema": {"type": "object", "properties": {}},
+            "outputSchema": {
+                "type": "object",
+                "properties": {
+                    "categories": {
+                        "type": "array",
+                        "items": {"type": "string"}
+                    }
+                }
+            }
         }
     ],
     "endpoints": {
