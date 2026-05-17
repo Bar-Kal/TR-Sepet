@@ -3,3 +3,15 @@ startCommand:
   command: python
   args:
     - mcp_server.py
+  env:
+    SEPET_API_URL: "{{config.api_url}}"
+
+configSchema:
+  type: object
+  properties:
+    api_url:
+      type: string
+      description: "The base URL of your deployed Sepet API (e.g., https://www.sepetanalizi.com)"
+      default: "https://www.sepetanalizi.com"
+  required:
+    - api_url
