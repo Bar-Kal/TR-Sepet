@@ -54,18 +54,49 @@ class SmitheryBotMiddleware(BaseHTTPMiddleware):
 
 # ... (rest of imports)
 
-# Create the Starlette application with discovery routes
-routes = [
-    # 1. MCP Server Card
-    Route("/.well-known/mcp/server-card.json", endpoint=lambda _: JSONResponse({
+# 1. MCP Server Card
+server_card_data = {
+    "serverInfo": {
         "name": "Sepet Analizi API",
-        "version": "1.0.0",
-        "description": "Turkish supermarket price analysis API",
-        "endpoints": {
-            "sse": "/mcp/sse"
+        "version": "1.0.0"
+    },
+    "authentication": {
+        "required": False
+    },
+    "tools": [
+        {
+            "name": "search_market_products",
+            "description": "Search for supermarket food prices in Turkey. Returns product price history, current prices, and discount information.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "product": {"type": "string", "description": "The search term for the product (e.g., 'süt', 'peynir')"},
+                    "category": {"type": "string", "description": "Product category to filter by"},
+                    "shops": {"type": "array", "items": {"type": "string"}, "description": "List of specific shop names"},
+                    "page": {"type": "integer", "default": 1}
+                }
+            }
+        },
+        {
+            "name": "get_available_shops",
+            "description": "Get a list of all available Turkish supermarkets supported by the API.",
+            "inputSchema": {"type": "object", "properties": {}}
+        },
+        {
+            "name": "get_available_categories",
+            "description": "Get a list of all available food categories supported by the API.",
+            "inputSchema": {"type": "object", "properties": {}}
         }
-    })),
-    # 2. OAuth Discovery (Returning 401 as per Smithery's tip for 'unauthenticated')
+    ],
+    "endpoints": {
+        "sse": "/mcp/sse"
+    }
+}
+
+routes = [
+    Route("/.well-known/mcp/server-card.json", endpoint=lambda _: JSONResponse(server_card_data)),
+    Route("/mcp/server-card.json", endpoint=lambda _: JSONResponse(server_card_data)),
+    # ... rest of routes
     # This signals to the scanner that we are reachable but have no specific OAuth config
     Route("/.well-known/oauth-authorization-server", endpoint=lambda _: JSONResponse(
         {"error": "not_supported"}, status_code=401
@@ -79,14 +110,6 @@ routes = [
     Route("/.well-known/oauth-protected-resource/mcp/sse", endpoint=lambda _: JSONResponse(
         {"error": "not_supported"}, status_code=401
     )),
-    Route("/mcp/server-card.json", endpoint=lambda _: JSONResponse({
-        "name": "Sepet Analizi API",
-        "version": "1.0.0",
-        "description": "Turkish supermarket price analysis API",
-        "endpoints": {
-            "sse": "/mcp/sse"
-        }
-    })),
     Mount("/mcp", app=mcp_app),
     Mount("/", app=django_app),
 ]
