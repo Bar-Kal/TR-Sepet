@@ -41,28 +41,33 @@ django_app = get_asgi_application()
 # mcp.sse_app() returns a Starlette application with /sse and /messages routes
 mcp_app = mcp.sse_app()
 
-# Create the combined application
-# We mount the MCP routes first, then fall back to Django for everything else
-app = Starlette(
-    routes=[
-        # MCP Discovery endpoint for Smithery and other clients
-        Route("/.well-known/mcp/server-card.json", endpoint=lambda _: JSONResponse({
-            "name": "Sepet Analizi API",
-            "version": "1.0.0",
-            "description": "Turkish supermarket price analysis API",
-            "endpoints": {
-                "sse": "/mcp/sse"
-            }
-        })),
-        # Mounting mcp_app at /mcp will result in:
-        # /mcp/sse
-        # /mcp/messages
-        Mount("/mcp", app=mcp_app),
-        Mount("/", app=django_app),
-    ]
-)
+# Create the Starlette application with discovery routes
+# Note: Some clients check /.well-known/mcp/server-card.json 
+# while others might check /mcp/server-card.json
+routes = [
+    Route("/.well-known/mcp/server-card.json", endpoint=lambda _: JSONResponse({
+        "name": "Sepet Analizi API",
+        "version": "1.0.0",
+        "description": "Turkish supermarket price analysis API",
+        "endpoints": {
+            "sse": "/mcp/sse"
+        }
+    })),
+    Route("/mcp/server-card.json", endpoint=lambda _: JSONResponse({
+        "name": "Sepet Analizi API",
+        "version": "1.0.0",
+        "description": "Turkish supermarket price analysis API",
+        "endpoints": {
+            "sse": "/mcp/sse"
+        }
+    })),
+    Mount("/mcp", app=mcp_app),
+    Mount("/", app=django_app),
+]
 
-# Add CORS middleware to allow Smithery and other web-based clients to connect
+app = Starlette(routes=routes)
+
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
