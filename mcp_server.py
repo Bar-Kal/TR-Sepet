@@ -75,4 +75,5 @@ async def get_available_categories() -> dict:
         return response.json()
 
 if __name__ == "__main__":
+    # Standard stdio run for local debugging
     mcp.run()

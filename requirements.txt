@@ -18,3 +18,5 @@ cryptography
 py7zr
 mcp
 httpx
+starlette
+uvicorn
