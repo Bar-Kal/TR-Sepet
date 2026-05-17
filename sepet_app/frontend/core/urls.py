@@ -1,7 +1,10 @@
 from django.urls import path
+from django.views.generic.base import RedirectView
+from django.templatetags.static import static
 from . import views
 
 urlpatterns = [
+    path('favicon.ico', RedirectView.as_view(url=static('img/page/favicon.ico'), permanent=True)),
     path('', views.index, name='index'),
     path('index', views.index, name='index_alias'),
     path('products', views.products, name='products'),
