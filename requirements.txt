@@ -16,3 +16,5 @@ gensim
 scikit-learn
 cryptography
 py7zr
+mcp
+httpx

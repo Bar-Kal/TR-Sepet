@@ -381,6 +381,13 @@ def api_shops(request):
         'shops': shop_names
     })
 
+def api_categories(request):
+    """API endpoint that returns a list of all available food categories."""
+    categories = get_food_categories()
+    return JsonResponse({
+        'categories': categories
+    })
+
 def about(request): return render(request, 'about.html', {'title': 'Hakkında'})
 def privacy(request):
     return render(request, 'privacy.html', {'title': 'Gizlilik Politikası', 'contact_email': os.getenv('CONTACT_EMAIL', 'default@example.com')})
