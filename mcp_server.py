@@ -4,7 +4,11 @@ import httpx
 from typing import List, Optional
 
 # Initialize the MCP Server
-mcp = FastMCP("Sepet Analizi API")
+mcp = FastMCP(
+    "Sepet Analizi API",
+    # Allow connections from any host on Railway
+    transport_security={"enable_dns_rebinding_protection": False}
+)
 
 # Use environment variable for local testing, default to the production URL
 API_BASE_URL = os.getenv("SEPET_API_URL", "https://www.sepetanalizi.com")
