@@ -17,7 +17,9 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 
 from django.core.asgi import get_asgi_application
 from starlette.applications import Starlette
-from starlette.routing import Mount
+from starlette.routing import Mount, Route
+from starlette.responses import JSONResponse
+from starlette.middleware.cors import CORSMiddleware
 
 # Import the mcp instance from our mcp_server.py
 try:
@@ -43,12 +45,29 @@ mcp_app = mcp.sse_app()
 # We mount the MCP routes first, then fall back to Django for everything else
 app = Starlette(
     routes=[
+        # MCP Discovery endpoint for Smithery and other clients
+        Route("/.well-known/mcp/server-card.json", endpoint=lambda _: JSONResponse({
+            "name": "Sepet Analizi API",
+            "version": "1.0.0",
+            "description": "Turkish supermarket price analysis API",
+            "endpoints": {
+                "sse": "/mcp/sse"
+            }
+        })),
         # Mounting mcp_app at /mcp will result in:
         # /mcp/sse
         # /mcp/messages
         Mount("/mcp", app=mcp_app),
         Mount("/", app=django_app),
     ]
+)
+
+# Add CORS middleware to allow Smithery and other web-based clients to connect
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 if __name__ == "__main__":
