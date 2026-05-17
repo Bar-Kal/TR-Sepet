@@ -1,6 +1,9 @@
 # Sepet 🛒
 
-**Sepet** is a powerful price comparison tool designed to track and analyze the prices of grocery products across various online stores in Turkey. It provides a comprehensive solution for collecting, storing, and visualizing price data, helping users make informed purchasing decisions.
+[![smithery badge](https://smithery.ai/badge/barkal/a01)](https://smithery.ai/servers/barkal/a01)
+
+**Sepet** is a powerful price comparison tool designed to track and analyze the prices of grocery products across various online stores in Turkey.
+ It provides a comprehensive solution for collecting, storing, and visualizing price data, helping users make informed purchasing decisions.
 
 ## ✨ Features
 
