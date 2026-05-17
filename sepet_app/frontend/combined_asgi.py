@@ -40,11 +40,23 @@ django_app = get_asgi_application()
 # Get the Starlette app for MCP
 # mcp.sse_app() returns a Starlette application with /sse and /messages routes
 mcp_app = mcp.sse_app()
+from starlette.middleware.base import BaseHTTPMiddleware
+
+class SmitheryBotMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        # If it's SmitheryBot, we want to ensure we don't block them 
+        # with strict Host or Origin checks at the Starlette level
+        user_agent = request.headers.get("user-agent", "")
+        if "SmitheryBot" in user_agent:
+            # We can modify the scope or headers here if needed
+            pass
+        return await call_next(request)
+
+# ... (rest of imports)
 
 # Create the Starlette application with discovery routes
-# Note: Some clients check /.well-known/mcp/server-card.json 
-# while others might check /mcp/server-card.json
 routes = [
+    # 1. MCP Server Card
     Route("/.well-known/mcp/server-card.json", endpoint=lambda _: JSONResponse({
         "name": "Sepet Analizi API",
         "version": "1.0.0",
@@ -53,6 +65,20 @@ routes = [
             "sse": "/mcp/sse"
         }
     })),
+    # 2. OAuth Discovery (Returning 401 as per Smithery's tip for 'unauthenticated')
+    # This signals to the scanner that we are reachable but have no specific OAuth config
+    Route("/.well-known/oauth-authorization-server", endpoint=lambda _: JSONResponse(
+        {"error": "not_supported"}, status_code=401
+    )),
+    Route("/.well-known/openid-configuration", endpoint=lambda _: JSONResponse(
+        {"error": "not_supported"}, status_code=401
+    )),
+    Route("/.well-known/oauth-protected-resource", endpoint=lambda _: JSONResponse(
+        {"error": "not_supported"}, status_code=401
+    )),
+    Route("/.well-known/oauth-protected-resource/mcp/sse", endpoint=lambda _: JSONResponse(
+        {"error": "not_supported"}, status_code=401
+    )),
     Route("/mcp/server-card.json", endpoint=lambda _: JSONResponse({
         "name": "Sepet Analizi API",
         "version": "1.0.0",
@@ -67,13 +93,15 @@ routes = [
 
 app = Starlette(routes=routes)
 
-# Add CORS middleware
+# Add Middlewares in order
+app.add_middleware(SmitheryBotMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 if __name__ == "__main__":
     import uvicorn
