@@ -128,6 +128,7 @@ server_card_data = {
                         }
                     },
                     "currency": {"type": "string", "default": "TL"},
+                    "source": {"type": "string", "default": "www.sepetanalizi.com"},
                     "date_range": {
                         "type": "object",
                         "properties": {
