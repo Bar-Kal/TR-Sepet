@@ -43,12 +43,14 @@ def create_app():
 
             if file:
                 try:
-                    files = {'file': (file.filename, file.read(), file.content_type)}
+                    # Use stream instead of read() to avoid loading the whole file into memory
+                    files = {'file': (file.filename, file.stream, file.content_type)}
                     data = {'secret_key': secret_key}
-                    response = requests.post(app.config['INTERNAL_APP_DOMAIN'], files=files, data=data)
+                    # Increase timeout for large file uploads
+                    response = requests.post(app.config['INTERNAL_APP_DOMAIN'], files=files, data=data, timeout=300)
                     
                     if response.status_code == 200:
-                        message = 'File successfully uploaded'
+                        message = 'File successfully uploaded and extraction started'
                         category = 'success'
                     else:
                         message = f"Failed to upload file: {response.json().get('error', 'Unknown error')}"

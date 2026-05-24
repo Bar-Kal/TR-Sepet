@@ -403,8 +403,13 @@ def upload_secure(request):
         file_path = os.path.join(settings.DATABASE_FOLDER, filename)
         with open(file_path, 'wb+') as dest:
             for chunk in file.chunks(): dest.write(chunk)
-        unzip_new_db_file()
-        return JsonResponse({'message': 'Success'}, status=200)
+        
+        # Run unzipping in background to avoid timeouts
+        import threading
+        thread = threading.Thread(target=unzip_new_db_file, args=(settings.DATABASE_FOLDER,))
+        thread.start()
+        
+        return JsonResponse({'message': 'File uploaded successfully, extraction started in background'}, status=200)
     return JsonResponse({'error': 'Failed'}, status=400)
 
 def robots_txt(request):

@@ -40,17 +40,21 @@ django_app = get_asgi_application()
 # Get the Starlette app for MCP
 # mcp.sse_app() returns a Starlette application with /sse and /messages routes
 mcp_app = mcp.sse_app()
-from starlette.middleware.base import BaseHTTPMiddleware
 
-class SmitheryBotMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request, call_next):
-        # If it's SmitheryBot, we want to ensure we don't block them 
-        # with strict Host or Origin checks at the Starlette level
-        user_agent = request.headers.get("user-agent", "")
-        if "SmitheryBot" in user_agent:
-            # We can modify the scope or headers here if needed
-            pass
-        return await call_next(request)
+class SmitheryBotMiddleware:
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] == "http":
+            # Access headers from scope directly to avoid consuming request body
+            headers = dict(scope.get("headers", []))
+            user_agent = headers.get(b"user-agent", b"").decode("utf-8", "ignore")
+            if "SmitheryBot" in user_agent:
+                # Logic for SmitheryBot can be added here
+                pass
+        
+        await self.app(scope, receive, send)
 
 # ... (rest of imports)
 
