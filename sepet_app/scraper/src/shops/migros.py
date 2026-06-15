@@ -61,19 +61,20 @@ class MigrosScraper(BaseScraper):
                 logger.info(f"Found {len(articles)} {product_name} articles on page {page_num}.")
 
                 for article in articles:
-                    product_name_element = article.find(id='product-name')
+                    product_name_element = article.find('fe-product-name').text.strip()
+                    product_url = str(article.next_element.next_element.next_element.attrs['href'])
                     product_price_element = article.find("div", {"class": "price-container"})
 
                     product_info = self.ScrapedProductInfo(
                         Scrape_Timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                        Display_Name=product_name_element.text.strip(),
+                        Display_Name=product_name_element,
                         Shop_ID=self.shop_id,
                         Category_ID=product['category_id'],
                         Product_ID=product['product_id'],
                         Discount_Price=self.get_prices(product_price_element.text)[0],
                         Price=self.get_prices(product_price_element.text)[1],
-                        URL=str(product_name_element.attrs['href']),
-                        Scraped_Product_ID=product_name_element.attrs['href'].split("p-")[-1]
+                        URL=str(product_url),
+                        Scraped_Product_ID=product_url.split("p-")[-1]
                     )
                     product_info = asdict(product_info)
                     scraped_data.append(product_info)
