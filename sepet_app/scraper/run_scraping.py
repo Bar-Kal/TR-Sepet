@@ -4,6 +4,7 @@ import random
 import time
 import json
 import pandas as pd
+import subprocess
 from datetime import datetime
 from pathlib import Path
 from loguru import logger
@@ -217,6 +218,13 @@ def main(arg_shop_name: str = None):
             logger.info(f"--- Starting process for {shop_name}: {shop_num}/{len(shops)} shops ---")
             logger.info(f"Distilbert classifier will be executed: {RUN_PRODUCT_CLASSIFIER}")
 
+            if shop_name == 'Koop':
+                logger.info(f"Activating VPN for {shop_name}")
+                try:
+                    subprocess.run(["sudo", "wg-quick", "up", "TR-17"], check=True)
+                except Exception as e:
+                    logger.error(f"An error occurred while enabling VPN: {e}")
+
             # Use the factory to get the correct scraper
             scraper = get_scraper(shop_config=shop, ignore_nonfood=RUN_PRODUCT_CLASSIFIER)
             scrape_categories(
@@ -225,6 +233,14 @@ def main(arg_shop_name: str = None):
                 filepath=download_folder,
                 today_str=today_str
             )
+
+            if shop_name == 'Koop':
+                logger.info(f"Disabling VPN for {shop_name}")
+                try:
+                    subprocess.run(["sudo", "wg-quick", "down", "TR-17"], check=True)
+                except Exception as e:
+                    logger.error(f"An error occurred while disabling VPN: {e}")
+
             logger.info("Starting data combination process...")
             combine_and_filter_csvs(base_downloads_path=Path(path_current_download_folder))
 
