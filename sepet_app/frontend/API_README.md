@@ -35,7 +35,7 @@ Returns a list of all available shop names in the database. Useful for discovery
 | `end_date` | End of date range (YYYY-MM-DD). | `?end_date=2026-03-01` |
 | `page` | Pagination page number. | `?page=2` |
 
-*Note: If no date range is provided, the API defaults to the last 90 days.*
+*Note: If no date range is provided, the API defaults to the last 180 days.*
 
 ## Example Requests
 

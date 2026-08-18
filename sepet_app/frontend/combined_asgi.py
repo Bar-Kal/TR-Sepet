@@ -39,7 +39,7 @@ django_app = get_asgi_application()
 
 # Get the Starlette app for MCP
 # mcp.sse_app() returns a Starlette application with /sse and /messages routes
-mcp_app = mcp.sse_app()
+mcp_app = mcp.http_app(transport="sse")
 
 class SmitheryBotMiddleware:
     def __init__(self, app):
