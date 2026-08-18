@@ -16,7 +16,7 @@ gensim
 scikit-learn
 cryptography
 py7zr
-mcp
+fastmcp
 httpx
 starlette
 uvicorn
