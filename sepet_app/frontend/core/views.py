@@ -46,10 +46,10 @@ def _get_product_data(request):
         try:
             start_date_str, end_date_str = date_range_param.split(' - ')
         except ValueError:
-            start_date_str = (datetime.now() - timedelta(days=90)).strftime('%Y-%m-%d')
+            start_date_str = (datetime.now() - timedelta(days=180)).strftime('%Y-%m-%d')
             end_date_str = datetime.now().strftime('%Y-%m-%d')
     else:
-        start_date_str = (datetime.now() - timedelta(days=90)).strftime('%Y-%m-%d')
+        start_date_str = (datetime.now() - timedelta(days=180)).strftime('%Y-%m-%d')
         end_date_str = datetime.now().strftime('%Y-%m-%d')
 
     page_num = request.GET.get('page', 1)
